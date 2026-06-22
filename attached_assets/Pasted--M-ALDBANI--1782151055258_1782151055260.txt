@@ -1,0 +1,545 @@
+خطة مشروع M-ALDBANI كاملة (الإصدار الاحترافي)
+الرؤية
+ليس مجرد موقع شخصي.
+بل منصة متكاملة تجمع بين:
+
+
+Personal Brand
+
+
+Portfolio
+
+
+CRM
+
+
+Community
+
+
+Client Portal
+
+
+Consulting System
+
+
+Marketing Platform
+
+
+
+الهيكل العام
+Public Website
+الجزء الذي يراه الزائر.
+Home
+قسم Hero ثلاثي الأبعاد.
+يحتوي على:
+
+
+اسم محمد الدباني
+
+
+نبذة قصيرة
+
+
+نموذج 3D تفاعلي
+
+
+CTA
+
+
+الأزرار:
+
+
+احجز استشارة
+
+
+استعرض الأعمال
+
+
+انضم إلى المجتمع
+
+
+
+About
+عرض:
+
+
+السيرة الذاتية
+
+
+سنوات الخبرة
+
+
+الشهادات
+
+
+الإنجازات
+
+
+مع Timeline تفاعلي.
+
+Portfolio
+عرض المشاريع بشكل إبداعي.
+التصنيفات:
+
+
+تطوير مواقع
+
+
+تطبيقات
+
+
+استشارات
+
+
+ذكاء اصطناعي
+
+
+إدارة مشاريع
+
+
+كل مشروع يحتوي:
+
+
+صور
+
+
+فيديو
+
+
+النتائج
+
+
+التقنيات المستخدمة
+
+
+
+Services
+الخدمات المقدمة.
+مثل:
+
+
+استشارة تقنية
+
+
+تطوير مواقع
+
+
+تحليل أعمال
+
+
+حلول الذكاء الاصطناعي
+
+
+
+Articles
+مقالات محمد.
+تصنيفات.
+SEO كامل.
+
+MD Community
+مجتمع خاص.
+يشبه:
+LinkedIn + Telegram Channel
+يتم نشر:
+
+
+أخبار
+
+
+مقالات
+
+
+تحديثات
+
+
+إعلانات
+
+
+
+Contact
+وسائل التواصل.
+نموذج سريع.
+واتساب.
+بريد إلكتروني.
+
+نظام الاستشارات
+Booking System
+اختيار:
+
+
+نوع الاستشارة
+
+
+التاريخ
+
+
+الوقت
+
+
+المدة
+
+
+الدفع الإلكتروني.
+تأكيد تلقائي.
+إشعارات.
+
+لوحة العميل
+Dashboard
+إحصائيات العميل.
+
+My Consultations
+الاستشارات السابقة.
+الاستشارات القادمة.
+التسجيلات.
+الملاحظات.
+
+Messages
+نظام محادثات مباشر.
+يشبه Slack.
+
+Files
+الملفات المشتركة.
+تحميل.
+رفع.
+مراجعة.
+
+Invoices
+الفواتير.
+المدفوعات.
+العقود.
+
+Notifications
+التنبيهات.
+
+MD Community
+Posts
+منشورات.
+
+Seen Tracking
+محمد يرى:
+
+
+من شاهد
+
+
+من لم يشاهد
+
+
+وقت المشاهدة
+
+
+
+Comments
+التعليقات.
+
+Reactions
+التفاعلات.
+
+CRM System
+أهم جزء.
+
+Dashboard
+عدد:
+
+
+الزوار
+
+
+العملاء
+
+
+الاستشارات
+
+
+الإيرادات
+
+
+Realtime.
+
+Leads
+كل شخص تواصل.
+تصنيفه:
+
+
+جديد
+
+
+جاري التواصل
+
+
+عميل
+
+
+مرفوض
+
+
+
+Clients
+إدارة العملاء.
+
+Consultations
+إدارة الاستشارات.
+
+Community
+إدارة المجتمع.
+
+Content
+إدارة:
+
+
+المقالات
+
+
+الصفحات
+
+
+الأخبار
+
+
+
+Services
+إضافة خدمة جديدة.
+تعديلها.
+حذفها.
+
+Projects
+إضافة مشروع جديد.
+بدون مبرمج.
+
+Analytics
+لوحة احترافية.
+تشمل:
+
+
+Live Visitors
+
+
+Sessions
+
+
+Conversion Rate
+
+
+Heatmaps
+
+
+Traffic Sources
+
+
+
+Marketing System
+Email Marketing
+SMTP2GO
+إرسال:
+
+
+نشرات بريدية
+
+
+عروض
+
+
+تحديثات
+
+
+
+Automation
+إذا سجل مستخدم جديد:
+يرسل له:
+
+
+رسالة ترحيب
+
+
+أحدث الأعمال
+
+
+رابط المجتمع
+
+
+تلقائياً.
+
+Authentication
+طرق الدخول
+Mobile
+رقم الجوال.
+OTP.
+
+Email
+البريد الإلكتروني.
+كلمة مرور.
+
+Social Login
+Google.
+LinkedIn.
+
+اللغات
+العربية
+RTL كامل.
+
+الإنجليزية
+LTR كامل.
+
+تبديل فوري بدون إعادة تحميل.
+
+التصميم
+Style
+Luxury Tech
+
+ألوان الهوية:
+
+
+#0A0A0A
+
+
+#FFFFFF
+
+
+#2563EB
+
+
+#7C3AED
+
+
+
+Typography
+English:
+
+
+Sora
+
+
+Inter
+
+
+Arabic:
+
+
+IBM Plex Sans Arabic
+
+
+Alexandria
+
+
+
+المؤثرات البصرية
+Three.js
+
+
+Background Particles
+
+
+Floating Objects
+
+
+Animated Geometry
+
+
+
+GSAP
+
+
+Smooth Animations
+
+
+Scroll Effects
+
+
+
+Framer Motion
+
+
+UI Transitions
+
+
+Page Transitions
+
+
+
+التقنيات
+Frontend
+
+
+Next.js 15
+
+
+TypeScript
+
+
+Tailwind CSS
+
+
+Framer Motion
+
+
+GSAP
+
+
+Three.js
+
+
+
+Backend
+
+
+NestJS
+
+
+
+Database
+
+
+MongoDB Atlas
+
+
+
+Realtime
+
+
+Socket.IO
+
+
+
+Storage
+
+
+AWS S3 أو Cloudflare R2
+
+
+
+Email
+
+
+SMTP2GO
+
+
+
+Deployment
+
+
+Vercel
+
+
+Railway
+
+
+Cloudflare
+
+
+
+مراحل التنفيذ
+المرحلة 1
+الهوية + الموقع العام
+المرحلة 2
+لوحة الإدارة
+المرحلة 3
+لوحة العميل
+المرحلة 4
+المجتمع MD
+المرحلة 5
+CRM المتقدم
+المرحلة 6
+الأتمتة والبريد
+المرحلة 7
+الذكاء الاصطناعي والتحليلات المتقدمة
+بهذه الخطة يصبح m-aldbani.site منصة شخصية احترافية يمكن تطويرها مستقبلاً إلى شركة أو أكاديمية أو مجتمع تقني متكامل دون الحاجة لإعادة بناء النظام من الصفر.
