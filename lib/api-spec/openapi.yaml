@@ -1,22 +1,30 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: M-ALDBANI platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: public
+    description: Public content
+  - name: client
+    description: Client portal
+  - name: admin
+    description: Admin CRM
+  - name: community
+    description: MD Community
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +32,808 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # AUTH
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # PUBLIC - PROJECTS
+  /projects:
+    get:
+      operationId: listProjects
+      tags: [public]
+      summary: List portfolio projects
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+  /projects/{id}:
+    get:
+      operationId: getProject
+      tags: [public]
+      summary: Get a project
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  # PUBLIC - SERVICES
+  /services:
+    get:
+      operationId: listServices
+      tags: [public]
+      summary: List services
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+
+  # PUBLIC - ARTICLES
+  /articles:
+    get:
+      operationId: listArticles
+      tags: [public]
+      summary: List articles
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Article"
+  /articles/{slug}:
+    get:
+      operationId: getArticle
+      tags: [public]
+      summary: Get an article by slug
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+
+  # PUBLIC - CONTACT & BOOKING
+  /contact:
+    post:
+      operationId: submitContact
+      tags: [public]
+      summary: Submit contact form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /consultations/book:
+    post:
+      operationId: bookConsultation
+      tags: [public]
+      summary: Book a consultation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consultation"
+
+  /consultations/slots:
+    get:
+      operationId: getAvailableSlots
+      tags: [public]
+      summary: Get available booking slots for a date
+      parameters:
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  # CLIENT PORTAL
+  /client/consultations:
+    get:
+      operationId: getMyConsultations
+      tags: [client]
+      summary: Get my consultations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Consultation"
+
+  /client/messages:
+    get:
+      operationId: getMyMessages
+      tags: [client]
+      summary: Get messages
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+    post:
+      operationId: sendMessage
+      tags: [client]
+      summary: Send a message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /client/files:
+    get:
+      operationId: getMyFiles
+      tags: [client]
+      summary: Get shared files
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SharedFile"
+
+  /client/invoices:
+    get:
+      operationId: getMyInvoices
+      tags: [client]
+      summary: Get invoices
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invoice"
+
+  /client/notifications:
+    get:
+      operationId: getMyNotifications
+      tags: [client]
+      summary: Get notifications
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  # ADMIN CRM
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get CRM dashboard statistics
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/leads:
+    get:
+      operationId: listLeads
+      tags: [admin]
+      summary: List all leads
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lead"
+    post:
+      operationId: createLead
+      tags: [admin]
+      summary: Create a lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+
+  /admin/leads/{id}:
+    patch:
+      operationId: updateLead
+      tags: [admin]
+      summary: Update a lead
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+    delete:
+      operationId: deleteLead
+      tags: [admin]
+      summary: Delete a lead
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/clients:
+    get:
+      operationId: listClients
+      tags: [admin]
+      summary: List all clients
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /admin/consultations:
+    get:
+      operationId: listAllConsultations
+      tags: [admin]
+      summary: List all consultations
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Consultation"
+
+  /admin/consultations/{id}:
+    patch:
+      operationId: updateConsultation
+      tags: [admin]
+      summary: Update consultation status/notes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConsultationUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consultation"
+
+  /admin/projects:
+    get:
+      operationId: listAdminProjects
+      tags: [admin]
+      summary: List all projects (admin)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+    post:
+      operationId: createProject
+      tags: [admin]
+      summary: Create a portfolio project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /admin/projects/{id}:
+    patch:
+      operationId: updateProject
+      tags: [admin]
+      summary: Update a project
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    delete:
+      operationId: deleteProject
+      tags: [admin]
+      summary: Delete a project
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/articles:
+    post:
+      operationId: createArticle
+      tags: [admin]
+      summary: Create an article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+
+  /admin/articles/{id}:
+    patch:
+      operationId: updateArticle
+      tags: [admin]
+      summary: Update an article
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+    delete:
+      operationId: deleteArticle
+      tags: [admin]
+      summary: Delete an article
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/services:
+    post:
+      operationId: createService
+      tags: [admin]
+      summary: Create a service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+  /admin/services/{id}:
+    patch:
+      operationId: updateService
+      tags: [admin]
+      summary: Update a service
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+    delete:
+      operationId: deleteService
+      tags: [admin]
+      summary: Delete a service
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/analytics:
+    get:
+      operationId: getAnalytics
+      tags: [admin]
+      summary: Get traffic and engagement analytics
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Analytics"
+
+  # COMMUNITY
+  /community/posts:
+    get:
+      operationId: listCommunityPosts
+      tags: [community]
+      summary: List community posts
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityPost"
+    post:
+      operationId: createCommunityPost
+      tags: [community]
+      summary: Create a community post (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityPostInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+
+  /community/posts/{id}:
+    get:
+      operationId: getCommunityPost
+      tags: [community]
+      summary: Get a community post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+
+  /community/posts/{id}/reactions:
+    post:
+      operationId: reactToPost
+      tags: [community]
+      summary: React to a post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReactionInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /community/posts/{id}/comments:
+    post:
+      operationId: commentOnPost
+      tags: [community]
+      summary: Comment on a post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+
+  /community/posts/{id}/seen:
+    post:
+      operationId: markPostSeen
+      tags: [community]
+      summary: Mark post as seen
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +841,706 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        role:
+          type: string
+        avatar:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, name, email, role, createdAt]
+
+    RegisterInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+      required: [name, email, password]
+
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+      required: [user, token]
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        titleAr:
+          type: string
+        description:
+          type: string
+        descriptionAr:
+          type: string
+        category:
+          type: string
+        technologies:
+          type: array
+          items:
+            type: string
+        image:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        results:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        order:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, title, titleAr, description, descriptionAr, category, technologies, image, featured, order, createdAt]
+
+    ProjectInput:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        description:
+          type: string
+        descriptionAr:
+          type: string
+        category:
+          type: string
+        technologies:
+          type: array
+          items:
+            type: string
+        image:
+          type: string
+        results:
+          type: string
+        featured:
+          type: boolean
+        order:
+          type: integer
+      required: [title, titleAr, description, descriptionAr, category, technologies, image]
+
+    ProjectUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        description:
+          type: string
+        descriptionAr:
+          type: string
+        category:
+          type: string
+        technologies:
+          type: array
+          items:
+            type: string
+        image:
+          type: string
+        results:
+          type: string
+        featured:
+          type: boolean
+        order:
+          type: integer
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        titleAr:
+          type: string
+        description:
+          type: string
+        descriptionAr:
+          type: string
+        icon:
+          type: string
+        price:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        order:
+          type: integer
+      required: [id, title, titleAr, description, descriptionAr, icon, featured, order]
+
+    ServiceInput:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        description:
+          type: string
+        descriptionAr:
+          type: string
+        icon:
+          type: string
+        price:
+          type: string
+        featured:
+          type: boolean
+        order:
+          type: integer
+      required: [title, titleAr, description, descriptionAr, icon]
+
+    ServiceUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        description:
+          type: string
+        descriptionAr:
+          type: string
+        icon:
+          type: string
+        price:
+          type: string
+        featured:
+          type: boolean
+        order:
+          type: integer
+
+    Article:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        titleAr:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        excerptAr:
+          type: string
+        content:
+          type: string
+        contentAr:
+          type: string
+        category:
+          type: string
+        coverImage:
+          type: string
+        readTime:
+          type: integer
+        published:
+          type: boolean
+        publishedAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, title, titleAr, slug, excerpt, excerptAr, content, contentAr, category, coverImage, readTime, published, createdAt]
+
+    ArticleInput:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        excerptAr:
+          type: string
+        content:
+          type: string
+        contentAr:
+          type: string
+        category:
+          type: string
+        coverImage:
+          type: string
+        readTime:
+          type: integer
+        published:
+          type: boolean
+      required: [title, titleAr, slug, excerpt, excerptAr, content, contentAr, category, coverImage]
+
+    ArticleUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        titleAr:
+          type: string
+        excerpt:
+          type: string
+        excerptAr:
+          type: string
+        content:
+          type: string
+        contentAr:
+          type: string
+        category:
+          type: string
+        coverImage:
+          type: string
+        readTime:
+          type: integer
+        published:
+          type: boolean
+
+    Consultation:
+      type: object
+      properties:
+        id:
+          type: string
+        clientId:
+          type: ["string", "null"]
+        clientName:
+          type: string
+        clientEmail:
+          type: string
+        clientPhone:
+          type: string
+        type:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        duration:
+          type: integer
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+        adminNotes:
+          type: ["string", "null"]
+        meetingLink:
+          type: ["string", "null"]
+        price:
+          type: ["number", "null"]
+        paid:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, clientName, clientEmail, clientPhone, type, date, time, duration, status, paid, createdAt]
+
+    BookingInput:
+      type: object
+      properties:
+        clientName:
+          type: string
+        clientEmail:
+          type: string
+        clientPhone:
+          type: string
+        type:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        duration:
+          type: integer
+        notes:
+          type: string
+      required: [clientName, clientEmail, clientPhone, type, date, time, duration]
+
+    ConsultationUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+        adminNotes:
+          type: string
+        meetingLink:
+          type: string
+        price:
+          type: number
+        paid:
+          type: boolean
+
+    ContactInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        message:
+          type: string
+        subject:
+          type: string
+      required: [name, email, message]
+
+    Lead:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        source:
+          type: string
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+        value:
+          type: ["number", "null"]
+        createdAt:
+          type: string
+      required: [id, name, email, source, status, createdAt]
+
+    LeadInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        source:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+        value:
+          type: number
+      required: [name, email, source]
+
+    LeadUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        source:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+        value:
+          type: number
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        senderId:
+          type: string
+        senderName:
+          type: string
+        content:
+          type: string
+        read:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, senderId, senderName, content, read, createdAt]
+
+    MessageInput:
+      type: object
+      properties:
+        content:
+          type: string
+      required: [content]
+
+    SharedFile:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        size:
+          type: integer
+        type:
+          type: string
+        uploadedAt:
+          type: string
+      required: [id, name, url, size, type, uploadedAt]
+
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+        number:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+        dueDate:
+          type: string
+        paidAt:
+          type: ["string", "null"]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvoiceItem"
+        createdAt:
+          type: string
+      required: [id, number, amount, currency, status, dueDate, createdAt]
+
+    InvoiceItem:
+      type: object
+      properties:
+        description:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+      required: [description, quantity, price]
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+        read:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, title, message, type, read, createdAt]
+
+    AdminStats:
+      type: object
+      properties:
+        totalVisitors:
+          type: integer
+        totalClients:
+          type: integer
+        totalConsultations:
+          type: integer
+        totalRevenue:
+          type: number
+        pendingConsultations:
+          type: integer
+        newLeads:
+          type: integer
+        monthlyRevenue:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyRevenue"
+        consultationsByType:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountByType"
+        leadsByStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountByType"
+      required: [totalVisitors, totalClients, totalConsultations, totalRevenue, pendingConsultations, newLeads, monthlyRevenue, consultationsByType, leadsByStatus]
+
+    MonthlyRevenue:
+      type: object
+      properties:
+        month:
+          type: string
+        revenue:
+          type: number
+      required: [month, revenue]
+
+    CountByType:
+      type: object
+      properties:
+        type:
+          type: string
+        count:
+          type: integer
+      required: [type, count]
+
+    Analytics:
+      type: object
+      properties:
+        pageViews:
+          type: integer
+        uniqueVisitors:
+          type: integer
+        avgSessionDuration:
+          type: number
+        bounceRate:
+          type: number
+        topPages:
+          type: array
+          items:
+            $ref: "#/components/schemas/PageStat"
+        trafficSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountByType"
+        dailyVisitors:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyVisitors"
+      required: [pageViews, uniqueVisitors, avgSessionDuration, bounceRate, topPages, trafficSources, dailyVisitors]
+
+    PageStat:
+      type: object
+      properties:
+        path:
+          type: string
+        views:
+          type: integer
+      required: [path, views]
+
+    DailyVisitors:
+      type: object
+      properties:
+        date:
+          type: string
+        visitors:
+          type: integer
+      required: [date, visitors]
+
+    CommunityPost:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        type:
+          type: string
+        image:
+          type: ["string", "null"]
+        reactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Reaction"
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+        seenCount:
+          type: integer
+        publishedAt:
+          type: string
+      required: [id, title, content, type, reactions, comments, seenCount, publishedAt]
+
+    CommunityPostInput:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        type:
+          type: string
+        image:
+          type: string
+      required: [title, content, type]
+
+    Reaction:
+      type: object
+      properties:
+        emoji:
+          type: string
+        count:
+          type: integer
+        userReacted:
+          type: boolean
+      required: [emoji, count, userReacted]
+
+    ReactionInput:
+      type: object
+      properties:
+        emoji:
+          type: string
+      required: [emoji]
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        authorName:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+      required: [id, authorName, content, createdAt]
+
+    CommentInput:
+      type: object
+      properties:
+        content:
+          type: string
+      required: [content]

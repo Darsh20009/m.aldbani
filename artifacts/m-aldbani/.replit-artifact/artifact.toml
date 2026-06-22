@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "M-ALDBANI Platform"
+version = "1.0.0"
+id = "artifacts/m-aldbani"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23559
+
+[services.development]
+run = "pnpm --filter @workspace/m-aldbani run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/m-aldbani", "run", "build" ]
+publicDir = "artifacts/m-aldbani/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23559"
+BASE_PATH = "/"

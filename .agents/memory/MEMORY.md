@@ -1,0 +1,3 @@
+- [MongoDB setup](mongodb.md) — uses Mongoose in api-server, no Drizzle/PostgreSQL, connection at artifacts/api-server/src/lib/mongodb.ts
+- [Mongoose pre-hooks](mongoose-hooks.md) — async pre-save hooks must NOT call next() in Mongoose 9.x; just return early
+- [Frontend hook imports](frontend-paths.md) — hooks in src/hooks/, components in src/components/layout/; use ../../hooks/ not ../hooks/ from layout files
