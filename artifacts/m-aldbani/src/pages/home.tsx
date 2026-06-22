@@ -3,7 +3,7 @@ import { useLanguage } from "../hooks/use-language";
 import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782151064834.png";
+import { LogoMark } from "@/components/Logo";
 
 export default function Home() {
   const { t } = useLanguage();
@@ -53,8 +53,8 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="flex justify-center mb-8"
           >
-            <div className="h-24 w-24 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-lg shadow-primary/10">
-              <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+            <div className="rounded-2xl overflow-hidden shadow-lg shadow-primary/10">
+              <LogoMark size={96} />
             </div>
           </motion.div>
 
@@ -161,8 +161,8 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <div className="flex justify-center mb-6">
-              <div className="h-16 w-16 rounded-2xl overflow-hidden border border-primary/20 shadow-md">
-                <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+              <div className="rounded-2xl overflow-hidden shadow-md">
+                <LogoMark size={64} />
               </div>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 font-heading">

@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { useLanguage } from "../../hooks/use-language";
 import { useAuth } from "../../hooks/use-auth";
-import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782151064834.png";
+import { LogoMark } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
@@ -12,8 +12,8 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full navbar-blur">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="h-10 w-10 rounded-xl overflow-hidden border border-primary/20 shadow-sm group-hover:shadow-primary/20 group-hover:border-primary/50 transition-all duration-300">
-            <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+          <div className="rounded-xl overflow-hidden shadow-sm group-hover:shadow-primary/20 transition-all duration-300">
+            <LogoMark size={40} />
           </div>
           <span className="font-heading text-base font-bold tracking-tight text-foreground hidden sm:block">
             M-ALDBANI
