@@ -23,7 +23,7 @@ export default function Community() {
             <h1 className="text-4xl font-bold font-heading mb-4">
               {t("MD Community Feed", "مجتمع MD")}
             </h1>
-            <p className="text-white/60 text-lg">
+            <p className="text-foreground/60 text-lg">
               {t("Exclusive updates, quick thoughts, and behind-the-scenes insights.", "تحديثات حصرية، أفكار سريعة، وكواليس العمل.")}
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function Community() {
                     </Avatar>
                     <div>
                       <h3 className="font-bold font-heading">Mohammed Al-Dabbani</h3>
-                      <p className="text-xs text-white/50">{format(new Date(post.publishedAt || post.createdAt || Date.now()), 'MMM d, yyyy')}</p>
+                      <p className="text-xs text-foreground/50">{format(new Date(post.publishedAt || post.createdAt || Date.now()), 'MMM d, yyyy')}</p>
                     </div>
                   </div>
                   
@@ -59,20 +59,20 @@ export default function Community() {
                   </div>
                   
                   {post.image && (
-                    <div className="rounded-lg overflow-hidden mb-4 border border-white/10">
+                    <div className="rounded-lg overflow-hidden mb-4 border border-border">
                       <img src={post.image} alt={post.title} className="w-full object-cover" />
                     </div>
                   )}
                   
-                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                  <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" className="text-white/70 hover:text-white" onClick={() => handleReact(post.id, '👍')}>
+                      <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-white" onClick={() => handleReact(post.id, '👍')}>
                         👍 {post.reactions?.find(r => r.emoji === '👍')?.count || 0}
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-white/70 hover:text-white" onClick={() => handleReact(post.id, '🚀')}>
+                      <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-white" onClick={() => handleReact(post.id, '🚀')}>
                         🚀 {post.reactions?.find(r => r.emoji === '🚀')?.count || 0}
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-white/70 hover:text-white" onClick={() => handleReact(post.id, '💡')}>
+                      <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-white" onClick={() => handleReact(post.id, '💡')}>
                         💡 {post.reactions?.find(r => r.emoji === '💡')?.count || 0}
                       </Button>
                     </div>
@@ -85,7 +85,7 @@ export default function Community() {
             )}
             
             {!isLoading && posts.length === 0 && (
-              <div className="text-center py-12 text-white/50 border border-white/10 rounded-xl border-dashed">
+              <div className="text-center py-12 text-foreground/50 border border-border rounded-xl border-dashed">
                 {t("No posts yet.", "لا توجد منشورات بعد.")}
               </div>
             )}

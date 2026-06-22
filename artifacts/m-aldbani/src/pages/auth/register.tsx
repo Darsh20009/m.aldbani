@@ -65,7 +65,7 @@ export default function Register() {
             <h1 className="text-3xl font-bold font-heading mb-2">
               {t("Request Access", "طلب الانضمام")}
             </h1>
-            <p className="text-white/60">
+            <p className="text-foreground/60">
               {t("Create an account for the client portal.", "قم بإنشاء حساب للوصول إلى بوابة العملاء.")}
             </p>
           </div>
@@ -79,7 +79,7 @@ export default function Register() {
                   <FormItem>
                     <FormLabel>{t("Full Name", "الاسم الكامل")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" className="bg-background/50 border-white/10" {...field} />
+                      <Input placeholder="John Doe" className="bg-background/50 border-border" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -93,7 +93,7 @@ export default function Register() {
                   <FormItem>
                     <FormLabel>{t("Email", "البريد الإلكتروني")}</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="client@example.com" className="bg-background/50 border-white/10" {...field} />
+                      <Input type="email" placeholder="client@example.com" className="bg-background/50 border-border" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -107,7 +107,7 @@ export default function Register() {
                   <FormItem>
                     <FormLabel>{t("Phone Number (Optional)", "رقم الهاتف (اختياري)")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="+1 234 567 8900" className="bg-background/50 border-white/10" {...field} />
+                      <Input placeholder="+1 234 567 8900" className="bg-background/50 border-border" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,7 +121,7 @@ export default function Register() {
                   <FormItem>
                     <FormLabel>{t("Password", "كلمة المرور")}</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" className="bg-background/50 border-white/10" {...field} />
+                      <Input type="password" placeholder="••••••••" className="bg-background/50 border-border" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -134,7 +134,7 @@ export default function Register() {
             </form>
           </Form>
 
-          <div className="mt-8 text-center text-sm text-white/60">
+          <div className="mt-8 text-center text-sm text-foreground/60">
             {t("Already have an account?", "لديك حساب بالفعل؟")}{" "}
             <Link href="/auth/login" className="text-primary hover:underline">
               {t("Sign in", "تسجيل الدخول")}

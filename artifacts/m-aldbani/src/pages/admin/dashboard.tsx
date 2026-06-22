@@ -23,25 +23,25 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-heading mb-2 text-white">Dashboard Overview</h1>
-        <p className="text-white/60">Key performance indicators and metrics.</p>
+        <p className="text-foreground/60">Key performance indicators and metrics.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="glass-card p-6 rounded-xl border-t-4 border-t-primary">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Total Visitors</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Total Visitors</h3>
           <p className="text-3xl font-bold font-mono text-white">{stats.totalVisitors.toLocaleString()}</p>
         </div>
         <div className="glass-card p-6 rounded-xl border-t-4 border-t-secondary">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Total Clients</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Total Clients</h3>
           <p className="text-3xl font-bold font-mono text-white">{stats.totalClients}</p>
         </div>
         <div className="glass-card p-6 rounded-xl border-t-4 border-t-blue-400">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Consultations</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Consultations</h3>
           <p className="text-3xl font-bold font-mono text-white">{stats.totalConsultations}</p>
           <p className="text-xs text-yellow-400 mt-2">{stats.pendingConsultations} pending</p>
         </div>
         <div className="glass-card p-6 rounded-xl border-t-4 border-t-green-400">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Total Revenue</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Total Revenue</h3>
           <p className="text-3xl font-bold font-mono text-white">${stats.totalRevenue.toLocaleString()}</p>
           <p className="text-xs text-green-400 mt-2">{stats.newLeads} new leads</p>
         </div>
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
             </ResponsiveContainer>
             <div className="flex flex-wrap justify-center gap-4 mt-4">
               {stats.consultationsByType.map((entry, index) => (
-                <div key={entry.type} className="flex items-center gap-2 text-sm text-white/70">
+                <div key={entry.type} className="flex items-center gap-2 text-sm text-foreground/70">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
                   {entry.type} ({entry.count})
                 </div>

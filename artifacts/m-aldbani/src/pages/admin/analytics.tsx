@@ -21,24 +21,24 @@ export default function AdminAnalytics() {
     <AdminLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-heading mb-2 text-white">Analytics</h1>
-        <p className="text-white/60">Platform traffic, engagement, and performance metrics.</p>
+        <p className="text-foreground/60">Platform traffic, engagement, and performance metrics.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="glass-card p-6 rounded-xl">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Page Views</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Page Views</h3>
           <p className="text-3xl font-bold font-mono text-white">{analytics.pageViews.toLocaleString()}</p>
         </div>
         <div className="glass-card p-6 rounded-xl">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Unique Visitors</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Unique Visitors</h3>
           <p className="text-3xl font-bold font-mono text-white">{analytics.uniqueVisitors.toLocaleString()}</p>
         </div>
         <div className="glass-card p-6 rounded-xl">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Avg Session</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Avg Session</h3>
           <p className="text-3xl font-bold font-mono text-white">{Math.floor(analytics.avgSessionDuration / 60)}m {analytics.avgSessionDuration % 60}s</p>
         </div>
         <div className="glass-card p-6 rounded-xl">
-          <h3 className="text-white/60 text-sm font-medium mb-2">Bounce Rate</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">Bounce Rate</h3>
           <p className="text-3xl font-bold font-mono text-white">{analytics.bounceRate}%</p>
         </div>
       </div>
@@ -71,7 +71,7 @@ export default function AdminAnalytics() {
           <h3 className="text-lg font-bold font-heading mb-6 text-white">Top Pages</h3>
           <div className="space-y-4">
             {analytics.topPages.map((page, i) => (
-              <div key={i} className="flex justify-between items-center pb-3 border-b border-white/5 last:border-0 last:pb-0">
+              <div key={i} className="flex justify-between items-center pb-3 border-b border-border/50 last:border-0 last:pb-0">
                 <span className="text-white/80 font-mono text-sm">{page.path}</span>
                 <span className="font-bold text-white">{page.views.toLocaleString()}</span>
               </div>

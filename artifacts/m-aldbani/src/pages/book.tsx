@@ -84,7 +84,7 @@ export default function Book() {
             <h1 className="text-4xl font-bold font-heading mb-4">
               {t("Book a Consultation", "احجز استشارة")}
             </h1>
-            <p className="text-white/60 text-lg">
+            <p className="text-foreground/60 text-lg">
               {t("Schedule a focused session to discuss your technical challenges and strategic goals.", "حدد جلسة مركزة لمناقشة تحدياتك التقنية وأهدافك الاستراتيجية.")}
             </p>
           </div>
@@ -94,7 +94,7 @@ export default function Book() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 {step === 1 && (
                   <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-                    <h2 className="text-xl font-bold font-heading border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-bold font-heading border-b border-border pb-4">
                       {t("Select Service", "اختر الخدمة")}
                     </h2>
                     
@@ -106,7 +106,7 @@ export default function Book() {
                           <FormLabel>{t("Consultation Type", "نوع الاستشارة")}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="bg-background/50 border-white/10">
+                              <SelectTrigger className="bg-background/50 border-border">
                                 <SelectValue placeholder={t("Select a service", "اختر خدمة")} />
                               </SelectTrigger>
                             </FormControl>
@@ -132,7 +132,7 @@ export default function Book() {
 
                 {step === 2 && (
                   <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-                    <h2 className="text-xl font-bold font-heading border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-bold font-heading border-b border-border pb-4">
                       {t("Select Date & Time", "اختر التاريخ والوقت")}
                     </h2>
                     
@@ -145,7 +145,7 @@ export default function Book() {
                           <FormControl>
                             <Input 
                               type="date" 
-                              className="bg-background/50 border-white/10" 
+                              className="bg-background/50 border-border" 
                               {...field} 
                               onChange={e => {
                                 field.onChange(e);
@@ -168,7 +168,7 @@ export default function Book() {
                             <FormLabel>{t("Available Times", "الأوقات المتاحة")}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger className="bg-background/50 border-white/10">
+                                <SelectTrigger className="bg-background/50 border-border">
                                   <SelectValue placeholder={t("Select a time slot", "اختر وقت")} />
                                 </SelectTrigger>
                               </FormControl>
@@ -190,7 +190,7 @@ export default function Book() {
                     )}
                     
                     <div className="flex gap-4">
-                      <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-full border-white/20">
+                      <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-full border-border">
                         {t("Back", "رجوع")}
                       </Button>
                       <Button type="button" onClick={() => form.trigger(["date", "time"]).then(valid => valid && setStep(3))} className="w-full bg-primary hover:bg-primary/90 text-white">
@@ -202,7 +202,7 @@ export default function Book() {
 
                 {step === 3 && (
                   <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-                    <h2 className="text-xl font-bold font-heading border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-bold font-heading border-b border-border pb-4">
                       {t("Your Details", "بياناتك")}
                     </h2>
                     
@@ -214,7 +214,7 @@ export default function Book() {
                           <FormItem>
                             <FormLabel>{t("Full Name", "الاسم الكامل")}</FormLabel>
                             <FormControl>
-                              <Input placeholder="John Doe" className="bg-background/50 border-white/10" {...field} />
+                              <Input placeholder="John Doe" className="bg-background/50 border-border" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -227,7 +227,7 @@ export default function Book() {
                           <FormItem>
                             <FormLabel>{t("Phone Number", "رقم الهاتف")}</FormLabel>
                             <FormControl>
-                              <Input placeholder="+1 234 567 8900" className="bg-background/50 border-white/10" {...field} />
+                              <Input placeholder="+1 234 567 8900" className="bg-background/50 border-border" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -242,7 +242,7 @@ export default function Book() {
                         <FormItem>
                           <FormLabel>{t("Email", "البريد الإلكتروني")}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="john@example.com" className="bg-background/50 border-white/10" {...field} />
+                            <Input type="email" placeholder="john@example.com" className="bg-background/50 border-border" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -258,7 +258,7 @@ export default function Book() {
                           <FormControl>
                             <Textarea 
                               placeholder={t("Briefly describe what you'd like to discuss...", "صف بإيجاز ما تود مناقشته...")} 
-                              className="min-h-[100px] bg-background/50 border-white/10 resize-none" 
+                              className="min-h-[100px] bg-background/50 border-border resize-none" 
                               {...field} 
                             />
                           </FormControl>
@@ -268,7 +268,7 @@ export default function Book() {
                     />
                     
                     <div className="flex gap-4">
-                      <Button type="button" variant="outline" onClick={() => setStep(2)} className="w-full border-white/20">
+                      <Button type="button" variant="outline" onClick={() => setStep(2)} className="w-full border-border">
                         {t("Back", "رجوع")}
                       </Button>
                       <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white font-bold" disabled={bookConsultation.isPending}>

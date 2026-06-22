@@ -28,17 +28,17 @@ export default function ClientDashboard() {
     <ClientLayout>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="glass-card p-6 rounded-xl border-l-4 border-l-primary">
-          <h3 className="text-white/60 text-sm font-medium mb-2">{t("Upcoming Consultations", "استشارات قادمة")}</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">{t("Upcoming Consultations", "استشارات قادمة")}</h3>
           <p className="text-3xl font-bold font-mono">{upcomingConsultations.length}</p>
         </div>
         
         <div className="glass-card p-6 rounded-xl border-l-4 border-l-secondary">
-          <h3 className="text-white/60 text-sm font-medium mb-2">{t("Unread Messages", "رسائل غير مقروءة")}</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">{t("Unread Messages", "رسائل غير مقروءة")}</h3>
           <p className="text-3xl font-bold font-mono">{unreadMessages.length}</p>
         </div>
         
         <div className="glass-card p-6 rounded-xl border-l-4 border-l-white/20">
-          <h3 className="text-white/60 text-sm font-medium mb-2">{t("Notifications", "إشعارات")}</h3>
+          <h3 className="text-foreground/60 text-sm font-medium mb-2">{t("Notifications", "إشعارات")}</h3>
           <p className="text-3xl font-bold font-mono">{unreadNotifications.length}</p>
         </div>
       </div>
@@ -53,11 +53,11 @@ export default function ClientDashboard() {
           </div>
           
           {upcomingConsultations.length > 0 ? (
-            <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="p-4 bg-white/5 rounded-lg border border-border">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <p className="font-bold text-lg mb-1">{upcomingConsultations[0].type}</p>
-                  <p className="text-white/60 text-sm">{upcomingConsultations[0].date} at {upcomingConsultations[0].time}</p>
+                  <p className="text-foreground/60 text-sm">{upcomingConsultations[0].date} at {upcomingConsultations[0].time}</p>
                 </div>
                 <span className="px-2 py-1 bg-primary/20 text-primary text-xs rounded font-medium">
                   {upcomingConsultations[0].status}
@@ -68,7 +68,7 @@ export default function ClientDashboard() {
                   {t("Join Meeting", "انضم للاجتماع")}
                 </a>
               ) : (
-                <div className="text-center py-2 bg-white/5 text-white/50 rounded font-medium text-sm">
+                <div className="text-center py-2 bg-white/5 text-foreground/50 rounded font-medium text-sm">
                   {t("Meeting link pending", "رابط الاجتماع قيد الانتظار")}
                 </div>
               )}
@@ -91,7 +91,7 @@ export default function ClientDashboard() {
           {messages.length > 0 ? (
             <div className="space-y-4">
               {messages.slice(0, 3).map(msg => (
-                <div key={msg.id} className="p-3 bg-white/5 rounded-lg border border-white/5 flex gap-3">
+                <div key={msg.id} className="p-3 bg-white/5 rounded-lg border border-border/50 flex gap-3">
                   <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center shrink-0 text-primary text-xs">
                     {msg.senderName.charAt(0)}
                   </div>
@@ -100,7 +100,7 @@ export default function ClientDashboard() {
                       <p className="font-medium text-sm">{msg.senderName}</p>
                       <p className="text-xs text-white/40">{new Date(msg.createdAt).toLocaleDateString()}</p>
                     </div>
-                    <p className="text-sm text-white/70 truncate">{msg.content}</p>
+                    <p className="text-sm text-foreground/70 truncate">{msg.content}</p>
                   </div>
                 </div>
               ))}

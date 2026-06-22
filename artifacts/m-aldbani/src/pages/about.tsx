@@ -23,7 +23,7 @@ export default function About() {
             <h2 className="text-2xl text-primary font-semibold mb-6">
               {t("Technology Consultant & Entrepreneur", "مستشار تقني ورائد أعمال")}
             </h2>
-            <div className="prose prose-invert prose-lg text-white/70 max-w-none mb-12">
+            <div className="prose prose-invert prose-lg text-foreground/70 max-w-none mb-12">
               <p>
                 {t(
                   "With over a decade of experience bridging the gap between complex technological capabilities and strategic business objectives, I help visionary leaders build, scale, and optimize their digital infrastructure.",
@@ -38,7 +38,7 @@ export default function About() {
               </p>
             </div>
             
-            <h3 className="text-2xl font-bold font-heading mb-8 border-b border-white/10 pb-4">
+            <h3 className="text-2xl font-bold font-heading mb-8 border-b border-border pb-4">
               {t("Experience & Milestones", "الخبرات والمحطات")}
             </h3>
             
@@ -55,7 +55,7 @@ export default function About() {
                   <div className="glass-card p-6 rounded-xl flex-1 relative overflow-hidden">
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
                     <h4 className="text-xl font-bold mb-2">{t(item.title, item.title)}</h4>
-                    <p className="text-white/60">{t(item.org, item.org)}</p>
+                    <p className="text-foreground/60">{t(item.org, item.org)}</p>
                   </div>
                 </div>
               ))}

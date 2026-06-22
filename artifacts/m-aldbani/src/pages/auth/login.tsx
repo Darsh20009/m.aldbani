@@ -60,7 +60,7 @@ export default function Login() {
             <h1 className="text-3xl font-bold font-heading mb-2">
               {t("Client Portal", "بوابة العملاء")}
             </h1>
-            <p className="text-white/60">
+            <p className="text-foreground/60">
               {t("Sign in to access your dashboard.", "سجل الدخول للوصول إلى لوحة التحكم.")}
             </p>
           </div>
@@ -74,7 +74,7 @@ export default function Login() {
                   <FormItem>
                     <FormLabel>{t("Email", "البريد الإلكتروني")}</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="client@example.com" className="bg-background/50 border-white/10" {...field} />
+                      <Input type="email" placeholder="client@example.com" className="bg-background/50 border-border" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -88,7 +88,7 @@ export default function Login() {
                   <FormItem>
                     <FormLabel>{t("Password", "كلمة المرور")}</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" className="bg-background/50 border-white/10" {...field} />
+                      <Input type="password" placeholder="••••••••" className="bg-background/50 border-border" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -101,7 +101,7 @@ export default function Login() {
             </form>
           </Form>
 
-          <div className="mt-8 text-center text-sm text-white/60">
+          <div className="mt-8 text-center text-sm text-foreground/60">
             {t("Don't have an account?", "ليس لديك حساب؟")}{" "}
             <Link href="/auth/register" className="text-primary hover:underline">
               {t("Request access", "اطلب الانضمام")}

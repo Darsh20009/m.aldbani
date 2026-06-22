@@ -18,9 +18,9 @@ export default function ArticleDetail() {
     return (
       <RootLayout>
         <div className="container mx-auto px-4 py-24 max-w-3xl animate-pulse">
-          <div className="h-8 bg-white/10 rounded w-1/4 mb-6"></div>
-          <div className="h-16 bg-white/10 rounded w-full mb-12"></div>
-          <div className="h-96 bg-white/10 rounded w-full mb-12"></div>
+          <div className="h-8 bg-primary/10 rounded w-1/4 mb-6"></div>
+          <div className="h-16 bg-primary/10 rounded w-full mb-12"></div>
+          <div className="h-96 bg-primary/10 rounded w-full mb-12"></div>
         </div>
       </RootLayout>
     );
@@ -43,7 +43,7 @@ export default function ArticleDetail() {
             </h1>
             
             {article.coverImage && (
-              <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden mb-12 border border-white/10">
+              <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden mb-12 border border-border">
                 <img 
                   src={article.coverImage} 
                   alt={language === "ar" ? article.titleAr : article.title}

@@ -42,20 +42,20 @@ export default function ClientMessages() {
   return (
     <ClientLayout>
       <div className="flex flex-col h-[calc(100vh-140px)] glass-card rounded-xl overflow-hidden">
-        <div className="p-4 border-b border-white/10 bg-white/5">
+        <div className="p-4 border-b border-border bg-white/5">
           <h2 className="font-bold font-heading">{t("Consultation Chat", "محادثة الاستشارة")}</h2>
-          <p className="text-xs text-white/50">{t("Messages are secured and private.", "الرسائل مؤمنة وخاصة.")}</p>
+          <p className="text-xs text-foreground/50">{t("Messages are secured and private.", "الرسائل مؤمنة وخاصة.")}</p>
         </div>
         
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {isLoading ? (
             <div className="space-y-4 animate-pulse">
               <div className="flex gap-3 max-w-[80%]">
-                <div className="w-8 h-8 rounded-full bg-white/10" />
-                <div className="h-16 bg-white/10 rounded-xl rounded-tl-none w-full" />
+                <div className="w-8 h-8 rounded-full bg-primary/10" />
+                <div className="h-16 bg-primary/10 rounded-xl rounded-tl-none w-full" />
               </div>
               <div className="flex gap-3 max-w-[80%] ml-auto flex-row-reverse">
-                <div className="h-12 bg-white/10 rounded-xl rounded-tr-none w-full" />
+                <div className="h-12 bg-primary/10 rounded-xl rounded-tr-none w-full" />
               </div>
             </div>
           ) : messages.length === 0 ? (
@@ -85,12 +85,12 @@ export default function ClientMessages() {
           <div ref={messagesEndRef} />
         </div>
         
-        <form onSubmit={handleSend} className="p-4 bg-white/5 border-t border-white/10 flex gap-2">
+        <form onSubmit={handleSend} className="p-4 bg-white/5 border-t border-border flex gap-2">
           <Input 
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder={t("Type your message...", "اكتب رسالتك...")}
-            className="flex-1 bg-background/50 border-white/10"
+            className="flex-1 bg-background/50 border-border"
           />
           <Button type="submit" disabled={!content.trim() || sendMessage.isPending} className="bg-primary hover:bg-primary/90 text-white">
             {t("Send", "إرسال")}

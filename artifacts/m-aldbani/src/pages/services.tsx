@@ -19,7 +19,7 @@ export default function Services() {
             <h1 className="text-4xl font-bold font-heading mb-4">
               {t("Consulting Services", "الخدمات الاستشارية")}
             </h1>
-            <p className="text-white/60 text-lg">
+            <p className="text-foreground/60 text-lg">
               {t("Strategic advisory and technical execution for forward-thinking organizations.", "استشارات استراتيجية وتنفيذ تقني للمنظمات ذات التفكير المستقبلي.")}
             </p>
           </div>
@@ -42,7 +42,7 @@ export default function Services() {
                 >
                   <div className="absolute -right-12 -top-12 w-40 h-40 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors duration-500" />
                   
-                  <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center mb-6 border border-white/10 text-2xl">
+                  <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center mb-6 border border-border text-2xl">
                     {service.icon || "⚡"}
                   </div>
                   
@@ -50,11 +50,11 @@ export default function Services() {
                     {language === "ar" ? service.titleAr : service.title}
                   </h3>
                   
-                  <p className="text-white/60 mb-8 flex-1">
+                  <p className="text-foreground/60 mb-8 flex-1">
                     {language === "ar" ? service.descriptionAr : service.description}
                   </p>
                   
-                  <div className="mt-auto pt-6 border-t border-white/10 flex items-center justify-between">
+                  <div className="mt-auto pt-6 border-t border-border flex items-center justify-between">
                     {service.price && (
                       <span className="text-lg font-mono text-primary font-semibold">
                         {service.price}

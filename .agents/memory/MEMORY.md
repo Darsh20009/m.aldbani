@@ -1,3 +1,4 @@
-- [MongoDB setup](mongodb.md) — uses Mongoose in api-server, no Drizzle/PostgreSQL, connection at artifacts/api-server/src/lib/mongodb.ts
-- [Mongoose pre-hooks](mongoose-hooks.md) — async pre-save hooks must NOT call next() in Mongoose 9.x; just return early
-- [Frontend hook imports](frontend-paths.md) — hooks in src/hooks/, components in src/components/layout/; use ../../hooks/ not ../hooks/ from layout files
+- [MongoDB setup](mongodb.md) — uses Mongoose in api-server, NOT PostgreSQL/Drizzle; lib/db package is unused
+- [Mongoose async pre-hooks](mongoose-hooks.md) — Mongoose 9.x async pre-save hooks must NOT call next(); just return early
+- [Frontend hook import paths](frontend-paths.md) — hooks in src/hooks/; layout components use ../../hooks/ not ../hooks/
+- [Git push via project task](git-push-task.md) — main agent git operations sandboxed; use project tasks for git commit/push to external remotes

@@ -65,7 +65,7 @@ export default function Contact() {
               <h1 className="text-4xl md:text-5xl font-bold font-heading mb-6">
                 {t("Let's build something extraordinary.", "دعنا نبني شيئاً استثنائياً.")}
               </h1>
-              <p className="text-lg text-white/60 mb-12">
+              <p className="text-lg text-foreground/60 mb-12">
                 {t("Whether you're looking for technical consulting, project architecture, or executive advisory, I'm here to help.", "سواء كنت تبحث عن استشارات تقنية، أو هندسة مشاريع، أو استشارات تنفيذية، أنا هنا للمساعدة.")}
               </p>
 
@@ -121,7 +121,7 @@ export default function Contact() {
                         <FormItem>
                           <FormLabel>{t("Name", "الاسم")}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t("Your name", "اسمك")} className="bg-background/50 border-white/10 focus-visible:ring-primary" {...field} />
+                            <Input placeholder={t("Your name", "اسمك")} className="bg-background/50 border-border focus-visible:ring-primary" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -134,7 +134,7 @@ export default function Contact() {
                         <FormItem>
                           <FormLabel>{t("Email", "البريد الإلكتروني")}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="john@example.com" className="bg-background/50 border-white/10 focus-visible:ring-primary" {...field} />
+                            <Input type="email" placeholder="john@example.com" className="bg-background/50 border-border focus-visible:ring-primary" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -149,7 +149,7 @@ export default function Contact() {
                       <FormItem>
                         <FormLabel>{t("Subject", "الموضوع")}</FormLabel>
                         <FormControl>
-                          <Input placeholder={t("How can I help?", "كيف يمكنني المساعدة؟")} className="bg-background/50 border-white/10 focus-visible:ring-primary" {...field} />
+                          <Input placeholder={t("How can I help?", "كيف يمكنني المساعدة؟")} className="bg-background/50 border-border focus-visible:ring-primary" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -165,7 +165,7 @@ export default function Contact() {
                         <FormControl>
                           <Textarea 
                             placeholder={t("Tell me about your project...", "أخبرني عن مشروعك...")} 
-                            className="min-h-[150px] bg-background/50 border-white/10 focus-visible:ring-primary resize-none" 
+                            className="min-h-[150px] bg-background/50 border-border focus-visible:ring-primary resize-none" 
                             {...field} 
                           />
                         </FormControl>

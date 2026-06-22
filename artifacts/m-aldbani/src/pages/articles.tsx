@@ -16,7 +16,7 @@ export default function Articles() {
             <h1 className="text-4xl font-bold font-heading mb-4">
               {t("Insights & Articles", "الرؤى والمقالات")}
             </h1>
-            <p className="text-white/60 text-lg">
+            <p className="text-foreground/60 text-lg">
               {t("Thoughts on technology, leadership, and the future of digital business.", "أفكار حول التكنولوجيا والقيادة ومستقبل الأعمال الرقمية.")}
             </p>
           </div>
@@ -56,7 +56,7 @@ export default function Articles() {
                         <h3 className="text-2xl font-bold font-heading mb-3 group-hover:text-primary transition-colors">
                           {language === "ar" ? article.titleAr : article.title}
                         </h3>
-                        <p className="text-white/60 line-clamp-2">
+                        <p className="text-foreground/60 line-clamp-2">
                           {language === "ar" ? article.excerptAr : article.excerpt}
                         </p>
                       </div>

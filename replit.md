@@ -1,45 +1,61 @@
-# [Project name]
+# M-ALDBANI Platform | منصة محمد الدباني
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Personal brand platform for Mohammed Al-Dabbani — bilingual (AR/EN) consulting & business development site with client portal, admin CRM, and community.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `pnpm --filter @workspace/api-server run dev` — API server (port 8080, MongoDB Atlas)
+- `pnpm --filter @workspace/m-aldbani run dev` — React frontend (port 23559)
+- `pnpm --filter @workspace/api-server exec tsx src/seed.ts` — Re-seed MongoDB with demo data
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- Frontend: React + Vite, Tailwind CSS v4, Framer Motion, Wouter, React Query
 - API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- DB: **MongoDB Atlas** + Mongoose (NOT PostgreSQL — `lib/db` is unused)
+- Auth: JWT (`SESSION_SECRET`), bcryptjs
+- API codegen: Orval (from `lib/api-spec/openapi.yaml`)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/m-aldbani/` — React frontend (PWA)
+- `artifacts/api-server/` — Express API
+- `artifacts/api-server/src/models/` — Mongoose models
+- `artifacts/api-server/src/routes/` — API routes (auth, public, client, admin, community)
+- `lib/api-spec/openapi.yaml` — OpenAPI spec (source of truth)
+- `lib/api-client-react/src/generated/` — Generated React Query hooks + Zod schemas
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- MongoDB over PostgreSQL — document model suits varied content (projects, articles, services)
+- JWT in localStorage — client portal and admin use Bearer token auth
+- Bilingual via `LanguageProvider` — RTL/LTR toggled dynamically on `<html dir>`
+- Off-white light theme (`#FAF8F4`) — brand color scheme with `#2563EB` blue and `#7C3AED` purple
+- PWA — `manifest.json`, `sw.js` service worker, `apple-touch-icon` for iOS Add to Home Screen
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- **Public**: Home, About, Portfolio, Services, Articles, Community (social feed), Contact, Booking
+- **Client Portal**: Dashboard, Consultations, Messages, Files, Invoices
+- **Admin CRM**: Dashboard (KPIs), Leads, Clients, Consultations, Portfolio, Articles, Services, Analytics
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Off-white background (#FAF8F4), not dark theme
+- Logo (`attached_assets/Screenshot_2026-06-22_at_8.55.58_PM_1782151064834.png`) must appear everywhere: navbar, hero, footer, portal sidebars, PWA icons
+- Arabic RTL + English LTR bilingual — `t(en, ar)` helper from `useLanguage()`
+- PWA support required — installable as app on mobile
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Mongoose 9.x pre-save async hooks: do NOT call `next()` — just `return` early. Calling `next()` throws "next is not a function".
+- Hooks in `src/hooks/`, components in `src/components/layout/` — use `../../hooks/` not `../hooks/` in layout files.
+- MongoDB seed: `pnpm exec tsx src/seed.ts` from `artifacts/api-server/`
+- GitHub push requires a project task (main agent git operations are sandboxed). Task #1 created for this.
+- Admin login: `admin@m-aldbani.com` / `Admin@2024`
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- See `pnpm-workspace` skill for workspace structure
+- See `lib/api-spec/openapi.yaml` for full API contract

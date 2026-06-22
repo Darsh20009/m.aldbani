@@ -11,7 +11,7 @@ export default function ClientFiles() {
     <ClientLayout>
       <div className="mb-8">
         <h1 className="text-2xl font-bold font-heading mb-2">{t("Shared Files", "الملفات المشتركة")}</h1>
-        <p className="text-white/60 text-sm">
+        <p className="text-foreground/60 text-sm">
           {t("Documents and resources shared by the consultant.", "المستندات والموارد التي شاركها المستشار.")}
         </p>
       </div>
@@ -26,7 +26,7 @@ export default function ClientFiles() {
         <div className="glass-card p-12 text-center rounded-xl">
           <div className="text-4xl mb-4">📂</div>
           <h3 className="text-lg font-bold mb-2">{t("No files yet", "لا توجد ملفات بعد")}</h3>
-          <p className="text-white/50">{t("Files shared with you will appear here.", "ستظهر الملفات التي تمت مشاركتها معك هنا.")}</p>
+          <p className="text-foreground/50">{t("Files shared with you will appear here.", "ستظهر الملفات التي تمت مشاركتها معك هنا.")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -36,10 +36,10 @@ export default function ClientFiles() {
                 📄
               </div>
               <h4 className="font-bold text-sm mb-1 line-clamp-1 w-full" title={file.name}>{file.name}</h4>
-              <p className="text-xs text-white/50 mb-6 uppercase">
+              <p className="text-xs text-foreground/50 mb-6 uppercase">
                 {file.type.split('/')[1] || file.type} • {(file.size / 1024 / 1024).toFixed(2)} MB
               </p>
-              <Button asChild variant="outline" className="w-full mt-auto border-white/10 hover:bg-primary/20 hover:text-primary transition-colors">
+              <Button asChild variant="outline" className="w-full mt-auto border-border hover:bg-primary/20 hover:text-primary transition-colors">
                 <a href={file.url} download target="_blank" rel="noopener noreferrer">
                   {t("Download", "تحميل")}
                 </a>

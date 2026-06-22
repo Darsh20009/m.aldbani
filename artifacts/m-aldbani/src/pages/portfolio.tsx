@@ -17,7 +17,7 @@ export default function Portfolio() {
             <h1 className="text-4xl font-bold font-heading mb-4">
               {t("Selected Works", "الأعمال المختارة")}
             </h1>
-            <p className="text-white/60 text-lg">
+            <p className="text-foreground/60 text-lg">
               {t("A curated selection of high-impact technical executions and strategic consulting engagements.", "مجموعة مختارة من التنفيذات التقنية عالية التأثير والاستشارات الاستراتيجية.")}
             </p>
           </div>
@@ -56,17 +56,17 @@ export default function Portfolio() {
                             {project.category}
                           </Badge>
                         </div>
-                        <p className="text-white/60 mb-6 flex-1 line-clamp-3">
+                        <p className="text-foreground/60 mb-6 flex-1 line-clamp-3">
                           {language === "ar" ? project.descriptionAr : project.description}
                         </p>
                         <div className="flex flex-wrap gap-2 mt-auto">
                           {project.technologies.slice(0, 4).map(tech => (
-                            <span key={tech} className="text-xs text-white/50 bg-white/5 px-2 py-1 rounded">
+                            <span key={tech} className="text-xs text-foreground/50 bg-white/5 px-2 py-1 rounded">
                               {tech}
                             </span>
                           ))}
                           {project.technologies.length > 4 && (
-                            <span className="text-xs text-white/50 bg-white/5 px-2 py-1 rounded">
+                            <span className="text-xs text-foreground/50 bg-white/5 px-2 py-1 rounded">
                               +{project.technologies.length - 4}
                             </span>
                           )}

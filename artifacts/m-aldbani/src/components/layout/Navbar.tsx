@@ -9,44 +9,60 @@ export function Navbar() {
   const { user, logout } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full navbar-blur">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-3">
-          <img src={logoPath} alt="M-ALDBANI" className="h-10 w-10 object-contain" />
-          <span className="font-heading text-lg font-bold tracking-tight text-white hidden sm:block">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="h-10 w-10 rounded-xl overflow-hidden border border-primary/20 shadow-sm group-hover:shadow-primary/20 group-hover:border-primary/50 transition-all duration-300">
+            <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+          </div>
+          <span className="font-heading text-base font-bold tracking-tight text-foreground hidden sm:block">
             M-ALDBANI
           </span>
         </Link>
-        
+
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/about" className="text-sm font-medium text-white/70 hover:text-white transition-colors">{t("About", "من أنا")}</Link>
-          <Link href="/portfolio" className="text-sm font-medium text-white/70 hover:text-white transition-colors">{t("Portfolio", "الأعمال")}</Link>
-          <Link href="/services" className="text-sm font-medium text-white/70 hover:text-white transition-colors">{t("Services", "الخدمات")}</Link>
-          <Link href="/articles" className="text-sm font-medium text-white/70 hover:text-white transition-colors">{t("Articles", "المقالات")}</Link>
-          <Link href="/community" className="text-sm font-medium text-white/70 hover:text-white transition-colors">{t("Community", "المجتمع")}</Link>
-          <Link href="/contact" className="text-sm font-medium text-white/70 hover:text-white transition-colors">{t("Contact", "اتصل بي")}</Link>
+          {[
+            { href: "/about",     en: "About",     ar: "من أنا" },
+            { href: "/portfolio", en: "Portfolio",  ar: "الأعمال" },
+            { href: "/services",  en: "Services",   ar: "الخدمات" },
+            { href: "/articles",  en: "Articles",   ar: "المقالات" },
+            { href: "/community", en: "Community",  ar: "المجتمع" },
+            { href: "/contact",   en: "Contact",    ar: "اتصل بي" },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            >
+              {t(item.en, item.ar)}
+            </Link>
+          ))}
         </nav>
 
-        <div className="flex items-center gap-4">
-          <button 
+        <div className="flex items-center gap-3">
+          <button
             onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-            className="text-xs font-semibold px-2 py-1 rounded border border-white/20 hover:bg-white/10 transition-colors"
+            className="px-3 py-1.5 rounded-lg text-xs font-bold border border-border text-foreground hover:border-primary hover:text-primary transition-all"
+            aria-label="Toggle language"
           >
             {language === "en" ? "AR" : "EN"}
           </button>
-          
+
           {user ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <Link href={user.role === "admin" ? "/admin" : "/client"}>
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary/10">
-                  {t("Dashboard", "لوحة التحكم")}
+                <Button size="sm" className="bg-primary text-white hover:bg-primary/90 font-semibold text-xs">
+                  {user.role === "admin" ? t("Admin", "الإدارة") : t("Portal", "البوابة")}
                 </Button>
               </Link>
+              <Button size="sm" variant="ghost" onClick={logout} className="text-muted-foreground hover:text-destructive text-xs">
+                {t("Logout", "خروج")}
+              </Button>
             </div>
           ) : (
             <Link href="/auth/login">
-              <Button className="bg-primary text-white hover:bg-primary/90 hidden sm:flex">
-                {t("Client Login", "تسجيل الدخول")}
+              <Button size="sm" className="bg-primary text-white hover:bg-primary/90 font-semibold">
+                {t("Client Login", "دخول العملاء")}
               </Button>
             </Link>
           )}

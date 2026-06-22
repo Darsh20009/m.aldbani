@@ -19,8 +19,8 @@ export default function PortfolioDetail() {
     return (
       <RootLayout>
         <div className="container mx-auto px-4 py-24 animate-pulse">
-          <div className="h-12 bg-white/10 rounded w-1/2 mb-6"></div>
-          <div className="h-96 bg-white/10 rounded w-full mb-12"></div>
+          <div className="h-12 bg-primary/10 rounded w-1/2 mb-6"></div>
+          <div className="h-96 bg-primary/10 rounded w-full mb-12"></div>
         </div>
       </RootLayout>
     );
@@ -41,7 +41,7 @@ export default function PortfolioDetail() {
             </h1>
           </div>
 
-          <div className="aspect-video w-full rounded-2xl overflow-hidden mb-16 border border-white/10">
+          <div className="aspect-video w-full rounded-2xl overflow-hidden mb-16 border border-border">
             <img 
               src={project.image || "https://placehold.co/1200x675/0A0A0A/2563EB?text=Project"} 
               alt={language === "ar" ? project.titleAr : project.title}
@@ -64,12 +64,12 @@ export default function PortfolioDetail() {
 
             <div className="space-y-8">
               <div className="glass-card p-6 rounded-xl">
-                <h3 className="text-xl font-bold mb-4 border-b border-white/10 pb-4">
+                <h3 className="text-xl font-bold mb-4 border-b border-border pb-4">
                   {t("Technologies", "التقنيات المستخدمة")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {project.technologies.map(tech => (
-                    <span key={tech} className="text-sm text-white/80 bg-white/10 px-3 py-1.5 rounded-md">
+                    <span key={tech} className="text-sm text-white/80 bg-primary/10 px-3 py-1.5 rounded-md">
                       {tech}
                     </span>
                   ))}
