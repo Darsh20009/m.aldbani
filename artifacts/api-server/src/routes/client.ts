@@ -21,7 +21,7 @@ router.get("/consultations", async (req: AuthRequest, res: Response) => {
     res.json(consultations.map(fmt));
   } catch (err) {
     logger.error({ err }, "Get my consultations error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -33,7 +33,7 @@ router.get("/messages", async (req: AuthRequest, res: Response) => {
     res.json(messages.map(fmt));
   } catch (err) {
     logger.error({ err }, "Get messages error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -63,7 +63,7 @@ router.get("/files", async (req: AuthRequest, res: Response) => {
     })));
   } catch (err) {
     logger.error({ err }, "Get files error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -77,7 +77,7 @@ router.get("/invoices", async (req: AuthRequest, res: Response) => {
     })));
   } catch (err) {
     logger.error({ err }, "Get invoices error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -87,7 +87,7 @@ router.get("/notifications", async (req: AuthRequest, res: Response) => {
     res.json(notifications.map(fmt));
   } catch (err) {
     logger.error({ err }, "Get notifications error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 

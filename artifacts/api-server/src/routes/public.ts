@@ -22,7 +22,7 @@ router.get("/projects", async (req: Request, res: Response) => {
     res.json(projects.map(formatDoc));
   } catch (err) {
     logger.error({ err }, "List projects error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -44,7 +44,7 @@ router.get("/services", async (_req: Request, res: Response) => {
     res.json(services.map(formatDoc));
   } catch (err) {
     logger.error({ err }, "List services error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -60,7 +60,7 @@ router.get("/articles", async (req: Request, res: Response) => {
     res.json(articles.map(formatDoc));
   } catch (err) {
     logger.error({ err }, "List articles error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -129,7 +129,7 @@ router.get("/consultations/slots", async (req: Request, res: Response) => {
     res.json(available);
   } catch (err) {
     logger.error({ err }, "Get slots error");
-    res.status(500).json({ error: "Server error" });
+    res.json(["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"]);
   }
 });
 

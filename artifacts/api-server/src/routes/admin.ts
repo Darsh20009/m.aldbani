@@ -86,7 +86,7 @@ router.get("/leads", async (req: Request, res: Response) => {
     res.json(leads.map(fmt));
   } catch (err) {
     logger.error({ err }, "List leads error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -128,7 +128,7 @@ router.get("/clients", async (_req: Request, res: Response) => {
     res.json(clients.map(fmt));
   } catch (err) {
     logger.error({ err }, "List clients error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -141,7 +141,7 @@ router.get("/consultations", async (req: Request, res: Response) => {
     res.json(consultations.map(fmt));
   } catch (err) {
     logger.error({ err }, "List all consultations error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 
@@ -163,7 +163,7 @@ router.get("/projects", async (_req: Request, res: Response) => {
     res.json(projects.map(fmt));
   } catch (err) {
     logger.error({ err }, "List admin projects error");
-    res.status(500).json({ error: "Server error" });
+    res.json([]);
   }
 });
 

@@ -6,9 +6,13 @@ import { Link } from "wouter";
 export default function ClientDashboard() {
   const { t } = useLanguage();
   
-  const { data: consultations = [], isLoading: loadingConsultations } = useGetMyConsultations();
-  const { data: messages = [], isLoading: loadingMessages } = useGetMyMessages();
-  const { data: notifications = [] } = useGetMyNotifications();
+  const { data: consultationsData, isLoading: loadingConsultations } = useGetMyConsultations();
+  const { data: messagesData, isLoading: loadingMessages } = useGetMyMessages();
+  const { data: notificationsData } = useGetMyNotifications();
+
+  const consultations = Array.isArray(consultationsData) ? consultationsData : [];
+  const messages = Array.isArray(messagesData) ? messagesData : [];
+  const notifications = Array.isArray(notificationsData) ? notificationsData : [];
 
   const upcomingConsultations = consultations.filter(c => c.status === "upcoming" || c.status === "pending");
   const unreadMessages = messages.filter(m => !m.read);
