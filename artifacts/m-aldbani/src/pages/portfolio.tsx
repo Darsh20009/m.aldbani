@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 
 export default function Portfolio() {
   const { t, language } = useLanguage();
-  const { data: projects = [], isLoading } = useListProjects();
+  const { data: rawProjects, isLoading } = useListProjects();
+  const projects = Array.isArray(rawProjects) ? rawProjects : [];
 
   return (
     <RootLayout>

@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 
 export default function ClientConsultations() {
   const { t } = useLanguage();
-  const { data: consultations = [], isLoading } = useGetMyConsultations();
+  const { data: rawConsultations, isLoading } = useGetMyConsultations();
+  const consultations = Array.isArray(rawConsultations) ? rawConsultations : [];
 
   return (
     <ClientLayout>

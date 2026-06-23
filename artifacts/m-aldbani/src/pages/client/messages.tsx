@@ -10,7 +10,8 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function ClientMessages() {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const { data: messages = [], isLoading } = useGetMyMessages();
+  const { data: rawMessages, isLoading } = useGetMyMessages();
+  const messages = Array.isArray(rawMessages) ? rawMessages : [];
   const sendMessage = useSendMessage();
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");

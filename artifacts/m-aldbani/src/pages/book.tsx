@@ -31,7 +31,8 @@ export default function Book() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const bookConsultation = useBookConsultation();
-  const { data: services = [] } = useListServices();
+  const { data: rawServices } = useListServices();
+  const services = Array.isArray(rawServices) ? rawServices : [];
   
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -50,12 +51,13 @@ export default function Book() {
     }
   });
 
-  const { data: availableSlots = [] } = useGetAvailableSlots({ date: selectedDate }, {
+  const { data: rawSlots } = useGetAvailableSlots({ date: selectedDate }, {
     query: {
       enabled: !!selectedDate,
       queryKey: getGetAvailableSlotsQueryKey({ date: selectedDate })
     }
   });
+  const availableSlots = Array.isArray(rawSlots) ? rawSlots : [];
 
   const onSubmit = (data: FormValues) => {
     bookConsultation.mutate({ data }, {

@@ -7,7 +7,8 @@ import { motion } from "framer-motion";
 
 export default function Services() {
   const { t, language } = useLanguage();
-  const { data: services = [], isLoading } = useListServices();
+  const { data: rawServices, isLoading } = useListServices();
+  const services = Array.isArray(rawServices) ? rawServices : [];
 
   return (
     <RootLayout>

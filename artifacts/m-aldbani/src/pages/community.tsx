@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 
 export default function Community() {
   const { t, language } = useLanguage();
-  const { data: posts = [], isLoading } = useListCommunityPosts();
+  const { data: rawPosts, isLoading } = useListCommunityPosts();
+  const posts = Array.isArray(rawPosts) ? rawPosts : [];
   const reactToPost = useReactToPost();
 
   const handleReact = (postId: string, emoji: string) => {

@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export default function AdminLeads() {
-  const { data: leads = [], isLoading } = useListLeads();
+  const { data: rawLeads, isLoading } = useListLeads();
+  const leads = Array.isArray(rawLeads) ? rawLeads : [];
 
   return (
     <AdminLayout>

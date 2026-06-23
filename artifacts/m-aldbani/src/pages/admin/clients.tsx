@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
 export default function AdminClients() {
-  const { data: clients = [], isLoading } = useListClients();
+  const { data: rawClients, isLoading } = useListClients();
+  const clients = Array.isArray(rawClients) ? rawClients : [];
 
   return (
     <AdminLayout>

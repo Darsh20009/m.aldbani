@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export default function AdminConsultations() {
-  const { data: consultations = [], isLoading } = useListAllConsultations();
+  const { data: rawConsultations, isLoading } = useListAllConsultations();
+  const consultations = Array.isArray(rawConsultations) ? rawConsultations : [];
 
   return (
     <AdminLayout>

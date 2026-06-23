@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 
 export default function ClientInvoices() {
   const { t } = useLanguage();
-  const { data: invoices = [], isLoading } = useGetMyInvoices();
+  const { data: rawInvoices, isLoading } = useGetMyInvoices();
+  const invoices = Array.isArray(rawInvoices) ? rawInvoices : [];
 
   return (
     <ClientLayout>

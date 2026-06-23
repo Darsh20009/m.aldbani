@@ -4,7 +4,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 
 export default function AdminServices() {
-  const { data: services = [], isLoading } = useListServices();
+  const { data: rawServices, isLoading } = useListServices();
+  const services = Array.isArray(rawServices) ? rawServices : [];
 
   return (
     <AdminLayout>

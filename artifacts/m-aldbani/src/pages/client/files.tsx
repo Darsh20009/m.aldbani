@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 
 export default function ClientFiles() {
   const { t } = useLanguage();
-  const { data: files = [], isLoading } = useGetMyFiles();
+  const { data: rawFiles, isLoading } = useGetMyFiles();
+  const files = Array.isArray(rawFiles) ? rawFiles : [];
 
   return (
     <ClientLayout>

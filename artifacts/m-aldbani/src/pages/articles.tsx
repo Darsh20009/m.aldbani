@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 
 export default function Articles() {
   const { t, language } = useLanguage();
-  const { data: articles = [], isLoading } = useListArticles();
+  const { data: rawArticles, isLoading } = useListArticles();
+  const articles = Array.isArray(rawArticles) ? rawArticles : [];
 
   return (
     <RootLayout>

@@ -4,7 +4,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 
 export default function AdminProjects() {
-  const { data: projects = [], isLoading } = useListAdminProjects();
+  const { data: rawProjects, isLoading } = useListAdminProjects();
+  const projects = Array.isArray(rawProjects) ? rawProjects : [];
 
   return (
     <AdminLayout>
