@@ -1,6 +1,5 @@
 import {
-  motion, useInView, useScroll, useTransform,
-  useSpring, useMotionValue, AnimatePresence,
+  motion, useInView, useScroll, useTransform, useSpring, useMotionValue,
 } from "framer-motion";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { useLanguage } from "../hooks/use-language";
@@ -9,296 +8,306 @@ import { Link } from "wouter";
 import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782157376997.png";
 import photoPath from "@assets/Screenshot_2026-06-22_at_6.27.49_PM_1782231945642.png";
 
-/* ─────────────────────────────────────────────────────────
-   MAGNETIC BUTTON — cursor attraction on hover
-───────────────────────────────────────────────────────── */
-function MagneticBtn({
-  children, className, style, href, onClick,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-  href?: string;
-  onClick?: () => void;
+/* ── GOLD + CREAM PALETTE ──────────────────────────────── */
+const GOLD    = "#B8860B";
+const GOLD_LT = "#D4A017";
+const NAVY    = "#0A1628";
+const CREAM   = "#FAF6EF";
+const WARM    = "#F0E9DC";
+
+/* ── MAGNETIC BUTTON ───────────────────────────────────── */
+function MagBtn({ children, href, className, style }: {
+  children: React.ReactNode; href?: string;
+  className?: string; style?: React.CSSProperties;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
+  const mx = useMotionValue(0); const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 220, damping: 22 });
   const sy = useSpring(my, { stiffness: 220, damping: 22 });
-
   const onMove = useCallback((e: React.MouseEvent) => {
-    const el = ref.current!;
-    const { left, top, width, height } = el.getBoundingClientRect();
-    mx.set((e.clientX - left - width / 2) * 0.28);
-    my.set((e.clientY - top - height / 2) * 0.28);
+    const r = ref.current!.getBoundingClientRect();
+    mx.set((e.clientX - r.left - r.width / 2) * 0.28);
+    my.set((e.clientY - r.top - r.height / 2) * 0.28);
   }, [mx, my]);
   const onLeave = useCallback(() => { mx.set(0); my.set(0); }, [mx, my]);
-
   const btn = (
-    <motion.button
-      ref={ref}
-      style={{ x: sx, y: sy, ...style }}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      onClick={onClick}
-      className={className}
-    >
+    <motion.button ref={ref} style={{ x: sx, y: sy, ...style }}
+      onMouseMove={onMove} onMouseLeave={onLeave} className={className}>
       {children}
     </motion.button>
   );
-
   return href ? <Link href={href}>{btn}</Link> : btn;
 }
 
-/* ─────────────────────────────────────────────────────────
-   FADE IN ON SCROLL
-───────────────────────────────────────────────────────── */
-function FadeIn({
-  children, delay = 0, className = "", dir = "up",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-  dir?: "up" | "left" | "right";
-}) {
-  const initial =
-    dir === "left" ? { opacity: 0, x: -28 }
-    : dir === "right" ? { opacity: 0, x: 28 }
-    : { opacity: 0, y: 22 };
+/* ── FADE IN ───────────────────────────────────────────── */
+function Reveal({ children, delay = 0, className = "", dir = "up" as "up"|"left"|"right" }) {
+  const init = dir === "left" ? { opacity: 0, x: -32 }
+             : dir === "right" ? { opacity: 0, x: 32 }
+             : { opacity: 0, y: 28 };
   return (
-    <motion.div
-      initial={initial}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
+    <motion.div initial={init} whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
+      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}>
       {children}
     </motion.div>
   );
 }
 
-/* ─────────────────────────────────────────────────────────
-   ANIMATED COUNTER
-───────────────────────────────────────────────────────── */
+/* ── COUNTER ───────────────────────────────────────────── */
 function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
-  const [val, setVal] = useState(0);
+  const [v, setV] = useState(0);
   useEffect(() => {
     if (!inView) return;
-    const start = Date.now();
-    const tick = () => {
-      const p = Math.min((Date.now() - start) / 1500, 1);
-      setVal(Math.round((1 - Math.pow(1 - p, 3)) * to));
-      if (p < 1) requestAnimationFrame(tick);
+    const s = Date.now();
+    const t = () => {
+      const p = Math.min((Date.now() - s) / 1600, 1);
+      setV(Math.round((1 - Math.pow(1 - p, 3)) * to));
+      if (p < 1) requestAnimationFrame(t);
     };
-    requestAnimationFrame(tick);
+    requestAnimationFrame(t);
   }, [inView, to]);
-  return <span ref={ref}>{val}{suffix}</span>;
+  return <span ref={ref}>{v}{suffix}</span>;
 }
 
-/* ─────────────────────────────────────────────────────────
-   SKILL BAR — animated fill on scroll entry
-───────────────────────────────────────────────────────── */
-function SkillBar({ label, pct, color }: { label: string; pct: number; color: string }) {
+/* ── SKILL BAR ─────────────────────────────────────────── */
+function SkillBar({ label, pct, color = GOLD }: { label: string; pct: number; color?: string }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   return (
-    <div ref={ref} className="group">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-semibold text-slate-700">{label}</span>
+    <div ref={ref}>
+      <div className="flex justify-between mb-1.5">
+        <span className="text-sm font-semibold" style={{ color: "#3D2B0F" }}>{label}</span>
         <span className="text-xs font-bold font-mono" style={{ color }}>{pct}%</span>
       </div>
-      <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+      <div className="h-1.5 w-full rounded-full" style={{ background: "#E8DDD0" }}>
         <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: inView ? `${pct}%` : 0 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          initial={{ width: 0 }} animate={{ width: inView ? `${pct}%` : 0 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
           className="h-full rounded-full"
-          style={{ background: color }}
-        />
+          style={{ background: `linear-gradient(90deg, ${color}, ${GOLD_LT})` }} />
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────────────────
-   SECTION LABEL
-───────────────────────────────────────────────────────── */
-function Label({ children }: { children: React.ReactNode }) {
+/* ── GEOMETRIC DIVIDER SVG ─────────────────────────────── */
+function GeoDivider({ flip = false }) {
   return (
-    <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-blue-700 mb-3">
-      {children}
-    </p>
+    <svg width="100%" height="32" viewBox="0 0 1200 32" preserveAspectRatio="none"
+      style={{ transform: flip ? "rotate(180deg)" : "none" }}>
+      {/* a row of small diamonds */}
+      {Array.from({ length: 30 }, (_, i) => (
+        <polygon key={i}
+          points={`${40 * i + 20},4 ${40 * i + 40},16 ${40 * i + 20},28 ${40 * i},16`}
+          fill="none" stroke={GOLD} strokeWidth="0.6" opacity="0.35" />
+      ))}
+    </svg>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    PAGE
-═══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════ */
 export default function Home() {
   const { t } = useLanguage();
 
-  /* Parallax on hero photo */
   const heroRef = useRef(null);
-  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const photoY = useTransform(heroScroll, [0, 1], [0, -80]);
-  const textY  = useTransform(heroScroll, [0, 1], [0, 40]);
+  const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const photoY = useTransform(heroP, [0, 1], [0, -70]);
+  const textY  = useTransform(heroP, [0, 1], [0,  38]);
 
   return (
     <RootLayout>
 
-      {/* ══════════════════════════════════════════════
-          HERO
-      ══════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative overflow-hidden" style={{ background: "#0B1437", minHeight: "90vh" }}>
-        {/* subtle dot grid */}
-        <div className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: "radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)",
-            backgroundSize: "36px 36px",
-          }} />
-        {/* glow accent */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none"
-          style={{ background: "radial-gradient(circle at 100% 0%, rgba(37,99,235,0.16) 0%, transparent 55%)" }} />
-        <div className="absolute bottom-0 left-1/4 w-64 h-64 pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 65%)" }} />
+      {/* ════════════════════════════════════════════
+          HERO — full dark navy, warm Arab identity
+      ════════════════════════════════════════════ */}
+      <section ref={heroRef} className="relative overflow-hidden"
+        style={{ background: NAVY, minHeight: "92vh" }}>
 
-        <div className="container mx-auto px-8 lg:px-16 h-full">
-          <div className="grid lg:grid-cols-2 items-center gap-0" style={{ minHeight: "90vh" }}>
+        {/* Arabic watermark — design element, NOT text */}
+        <div className="absolute inset-y-0 right-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+          style={{ width: "55%" }}>
+          <span className="font-heading font-black leading-none"
+            style={{
+              fontFamily: "'IBM Plex Sans Arabic', sans-serif",
+              fontSize: "clamp(220px, 32vw, 380px)",
+              color: GOLD,
+              opacity: 0.04,
+              letterSpacing: "-10px",
+              userSelect: "none",
+            }}>
+            الدباني
+          </span>
+        </div>
+
+        {/* top gold line */}
+        <div className="absolute top-0 left-0 right-0 h-[3px]"
+          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+
+        {/* glow */}
+        <div className="absolute top-0 right-0 w-[40%] h-full pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at 100% 30%, rgba(184,134,11,0.08) 0%, transparent 60%)` }} />
+
+        <div className="container mx-auto px-8 lg:px-16">
+          <div className="grid lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] items-center gap-0"
+            style={{ minHeight: "92vh" }}>
 
             {/* TEXT */}
-            <motion.div style={{ y: textY }} className="py-20 lg:py-0 lg:pr-16 order-2 lg:order-1">
+            <motion.div style={{ y: textY }} className="py-20 lg:py-0 lg:pr-16 order-2 lg:order-1 relative z-10">
 
-              {/* logo — white container on dark bg */}
+              {/* logo */}
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
                 className="mb-10 inline-flex rounded-xl bg-white px-3 py-2"
-                style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.2)" }}>
+                style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.3)" }}>
                 <img src={logoPath} alt="m-aldbani" className="h-8 w-auto object-contain"
                   style={{ mixBlendMode: "multiply" }} />
               </motion.div>
 
-              <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.12, duration: 0.5 }}
-                className="text-[10px] font-bold uppercase tracking-[0.35em] mb-5"
-                style={{ color: "rgba(148,163,255,0.75)" }}>
-                {t("Brand Manager · Business Development · F&B", "مدير علامة تجارية · تطوير أعمال · F&B")}
-              </motion.p>
+              {/* label */}
+              <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1, duration: 0.55 }}
+                className="flex items-center gap-3 mb-6">
+                <div className="h-px w-8 flex-shrink-0" style={{ background: GOLD }} />
+                <p className="text-[10px] font-bold uppercase tracking-[0.35em]"
+                  style={{ color: GOLD }}>
+                  {t("Brand Manager · Business Development", "مدير علامة تجارية · تطوير أعمال")}
+                </p>
+              </motion.div>
 
-              <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-                className="font-heading font-black text-white leading-[0.95] tracking-tight mb-5"
-                style={{ fontSize: "clamp(48px, 7vw, 88px)" }}>
-                {t("Mohammed\nAl-Dabbani", "محمد\nالدباني")}
-              </motion.h1>
+              {/* Big name — English + Arabic stacked */}
+              <div className="mb-6">
+                <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className="font-heading font-black text-white leading-[0.92] tracking-tight"
+                  style={{ fontSize: "clamp(52px, 7.5vw, 92px)" }}>
+                  {t("Mohammed\nAl-Dabbani", "محمد\nالدباني")}
+                </motion.h1>
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  transition={{ delay: 0.45 }}
+                  className="font-heading font-bold mt-3"
+                  style={{
+                    fontSize: "clamp(18px, 2.5vw, 28px)",
+                    color: GOLD, opacity: 1,
+                    fontFamily: "'IBM Plex Sans Arabic', sans-serif",
+                    letterSpacing: "0.02em",
+                  }}>
+                  {t("محمد الدباني", "Mohammed Al-Dabbani")}
+                </motion.p>
+              </div>
 
+              {/* gold separator */}
               <motion.div initial={{ scaleX: 0, originX: 0 }} animate={{ scaleX: 1 }}
-                transition={{ delay: 0.44, duration: 0.55 }}
-                className="h-[3px] w-14 rounded-full mb-7"
-                style={{ background: "linear-gradient(90deg,#3b82f6,#7c3aed)" }} />
+                transition={{ delay: 0.52, duration: 0.6 }}
+                className="h-[2px] w-16 rounded-full mb-7"
+                style={{ background: `linear-gradient(90deg, ${GOLD}, ${GOLD_LT}, transparent)` }} />
 
               <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.52, duration: 0.6 }}
-                className="leading-relaxed mb-9 max-w-[420px] text-base"
-                style={{ color: "rgba(203,213,225,0.7)" }}>
+                transition={{ delay: 0.58, duration: 0.6 }}
+                className="leading-relaxed mb-9 max-w-[400px] text-base"
+                style={{ color: "rgba(240,220,180,0.65)" }}>
                 {t(
-                  "8+ years leading brands and operations in Saudi Arabia's F&B sector — from strategy and identity to full commercial execution.",
-                  "أكثر من 8 سنوات في قيادة العلامات والعمليات بقطاع الأغذية في المملكة — من الاستراتيجية والهوية إلى التنفيذ التجاري الكامل."
+                  "8+ years leading F&B brands and operations across the Kingdom — from vision to full commercial execution.",
+                  "أكثر من 8 سنوات في قيادة علامات F&B والعمليات في المملكة — من الرؤية إلى التنفيذ التجاري الكامل."
                 )}
               </motion.p>
 
-              {/* Stats strip */}
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.62, duration: 0.6 }}
-                className="grid grid-cols-4 divide-x rounded-xl overflow-hidden border mb-9"
-                style={{
-                  borderColor: "rgba(255,255,255,0.09)",
-                  background: "rgba(255,255,255,0.04)",
-                  divideColor: "rgba(255,255,255,0.06)",
-                }}>
+              {/* Stats — gold accent */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.65, duration: 0.6 }}
+                className="grid grid-cols-4 mb-9 overflow-hidden rounded-xl border"
+                style={{ borderColor: `${GOLD}25`, background: `${GOLD}08` }}>
                 {[
                   { n: 8,  s: "+", en: "Years",     ar: "سنوات" },
                   { n: 50, s: "+", en: "Brands",     ar: "علامة" },
                   { n: 2,  s: "M+",en: "Customers",  ar: "عميل" },
                   { n: 3,  s: "",  en: "Industries", ar: "قطاعات" },
                 ].map((st, i) => (
-                  <div key={i} className="flex flex-col items-center py-4 px-2"
-                    style={{ borderColor: "rgba(255,255,255,0.07)" }}>
-                    <span className="text-2xl font-black font-heading text-white">
+                  <div key={i} className="flex flex-col items-center py-4 px-1"
+                    style={{ borderRight: i < 3 ? `1px solid ${GOLD}20` : "none" }}>
+                    <span className="text-2xl font-black font-heading" style={{ color: GOLD_LT }}>
                       <CountUp to={st.n} suffix={st.s} />
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5"
-                      style={{ color: "rgba(148,163,255,0.55)" }}>
+                      style={{ color: "rgba(212,160,23,0.5)" }}>
                       {t(st.en, st.ar)}
                     </span>
                   </div>
                 ))}
               </motion.div>
 
-              {/* CTA — magnetic */}
+              {/* CTA */}
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.74, duration: 0.55 }}
+                transition={{ delay: 0.76, duration: 0.55 }}
                 className="flex flex-wrap gap-3 mb-9">
-                <MagneticBtn
-                  href="/book"
-                  className="h-13 px-8 rounded-lg font-bold text-sm text-white hover:opacity-90 transition-opacity cursor-pointer"
-                  style={{ background: "linear-gradient(135deg,#2563eb,#7c3aed)", height: "52px" }}
-                >
+                <MagBtn href="/book"
+                  className="font-bold text-sm cursor-pointer rounded-xl px-8 transition-opacity hover:opacity-90"
+                  style={{ height: 52, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LT})`, color: NAVY }}>
                   {t("Book a Consultation", "احجز استشارة")}
-                </MagneticBtn>
-                <MagneticBtn
-                  href="/about"
-                  className="h-13 px-8 rounded-lg font-bold text-sm transition-all hover:bg-white/10 cursor-pointer border"
-                  style={{ height: "52px", color: "rgba(203,213,225,0.85)", borderColor: "rgba(255,255,255,0.14)" }}
-                >
+                </MagBtn>
+                <MagBtn href="/about"
+                  className="font-bold text-sm cursor-pointer rounded-xl px-8 border transition-colors hover:border-amber-400 hover:text-amber-300"
+                  style={{ height: 52, borderColor: `${GOLD}40`, color: "rgba(240,220,180,0.75)" }}>
                   {t("My Profile", "ملفي الشخصي")}
-                </MagneticBtn>
+                </MagBtn>
               </motion.div>
 
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
                 className="flex items-center gap-2 text-xs"
-                style={{ color: "rgba(148,163,255,0.45)" }}>
+                style={{ color: `${GOLD}60` }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-                {t("Available for projects · Riyadh, KSA 🇸🇦", "متاح للمشاريع · الرياض، المملكة العربية السعودية 🇸🇦")}
+                {t("Available · Riyadh, Saudi Arabia 🇸🇦", "متاح · الرياض، المملكة العربية السعودية 🇸🇦")}
               </motion.div>
             </motion.div>
 
-            {/* PHOTO — parallax + float badge */}
-            <motion.div
-              style={{ y: photoY }}
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.95, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="hidden lg:flex items-end justify-center order-1 lg:order-2 pt-16"
-            >
-              <div className="relative w-full max-w-[380px]">
-                <div className="relative overflow-hidden"
-                  style={{ borderRadius: "18px 18px 0 0", aspectRatio: "3/4" }}>
+            {/* PHOTO — edge-to-edge */}
+            <motion.div style={{ y: photoY }}
+              initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden lg:flex flex-col items-end justify-end order-1 lg:order-2 h-full relative"
+              style={{ alignSelf: "stretch" }}>
+
+              <div className="relative w-full h-full flex flex-col justify-end" style={{ minHeight: "92vh" }}>
+                {/* full-height photo */}
+                <div className="absolute inset-0 overflow-hidden">
                   <img src={photoPath} alt="Mohammed Al-Dabbani"
                     className="w-full h-full object-cover object-top" />
-                  <div className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
-                    style={{ background: "linear-gradient(to top, #0B1437 0%, transparent 100%)" }} />
-                </div>
-                <div className="border border-t-0 rounded-b-2xl px-5 py-4"
-                  style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}>
-                  <p className="font-bold text-white text-sm">{t("Mohammed Al-Dabbani", "محمد الدباني")}</p>
-                  <p className="text-xs mt-0.5" style={{ color: "rgba(148,163,255,0.55)" }}>
-                    {t("Brand Manager · F&B Sector", "مدير العلامة التجارية · قطاع F&B")}
-                  </p>
+                  {/* gradient overlay — left fade into navy */}
+                  <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: `linear-gradient(to right, ${NAVY} 0%, ${NAVY}80 15%, transparent 45%)` }} />
+                  {/* gradient overlay — bottom */}
+                  <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: `linear-gradient(to top, ${NAVY} 0%, ${NAVY}40 20%, transparent 50%)` }} />
+                  {/* gold tint overlay */}
+                  <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: `radial-gradient(ellipse at center, rgba(184,134,11,0.06) 0%, transparent 70%)` }} />
                 </div>
 
-                {/* floating project badge */}
-                <motion.div
-                  animate={{ y: [-5, 5, -5] }}
+                {/* name plate at bottom */}
+                <div className="relative z-10 p-8 pb-10">
+                  <div className="inline-flex flex-col border-l-2 pl-4"
+                    style={{ borderColor: GOLD }}>
+                    <span className="font-bold text-white text-base leading-tight">
+                      {t("Mohammed Al-Dabbani", "محمد الدباني")}
+                    </span>
+                    <span className="text-xs mt-1" style={{ color: `${GOLD_LT}90` }}>
+                      {t("Brand Manager · F&B Sector", "مدير العلامة التجارية · قطاع F&B")}
+                    </span>
+                  </div>
+                </div>
+
+                {/* floating Matcha badge */}
+                <motion.div animate={{ y: [-5, 5, -5] }}
                   transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute top-10 -left-12 rounded-2xl px-4 py-3 border"
+                  className="absolute top-12 right-4 z-20 rounded-2xl px-4 py-3 border"
                   style={{
-                    background: "rgba(10,14,48,0.92)",
-                    borderColor: "rgba(255,255,255,0.12)",
+                    background: "rgba(10,22,40,0.92)",
+                    borderColor: `${GOLD}30`,
                     backdropFilter: "blur(12px)",
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                    boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px ${GOLD}15`,
                   }}>
                   <div className="flex items-center gap-2.5">
                     <span className="text-xl">🍵</span>
@@ -306,36 +315,10 @@ export default function Home() {
                       <p className="text-xs font-bold text-white leading-tight">
                         {t("Matcha Power", "ماتشا باور")}
                       </p>
-                      <p className="text-[10px] mt-0.5" style={{ color: "rgba(148,163,255,0.6)" }}>
+                      <p className="text-[10px] mt-0.5" style={{ color: `${GOLD}80` }}>
                         {t("Founder & CEO", "مؤسس ورئيس تنفيذي")}
                       </p>
                     </div>
-                  </div>
-                </motion.div>
-
-                {/* floating KPI badge */}
-                <motion.div
-                  animate={{ y: [5, -5, 5] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
-                  className="absolute bottom-24 -right-10 rounded-2xl px-4 py-3 border"
-                  style={{
-                    background: "rgba(10,14,48,0.92)",
-                    borderColor: "rgba(255,255,255,0.12)",
-                    backdropFilter: "blur(12px)",
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-                  }}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest mb-1"
-                    style={{ color: "rgba(148,163,255,0.5)" }}>
-                    {t("Current Role", "الدور الحالي")}
-                  </p>
-                  <p className="text-xs font-bold text-white whitespace-nowrap">
-                    {t("Brand Manager", "مدير العلامة")}
-                  </p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[10px]" style={{ color: "#34d399" }}>
-                      {t("Active", "نشط")}
-                    </span>
                   </div>
                 </motion.div>
               </div>
@@ -343,17 +326,25 @@ export default function Home() {
 
           </div>
         </div>
+
+        {/* bottom gold line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px]"
+          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}50, transparent)` }} />
       </section>
 
-      {/* ══════════════════════════════════════════════
-          TICKER MARQUEE
-      ══════════════════════════════════════════════ */}
-      <div className="border-y border-slate-100 bg-white overflow-hidden py-3.5">
-        <motion.div
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
-          className="flex gap-10 whitespace-nowrap w-max"
-        >
+      {/* GEOMETRIC DIVIDER */}
+      <div style={{ background: CREAM, paddingTop: 8, paddingBottom: 8 }}>
+        <GeoDivider />
+      </div>
+
+      {/* ════════════════════════════════════════════
+          MARQUEE — warm cream bg
+      ════════════════════════════════════════════ */}
+      <div style={{ background: CREAM, borderBottom: `1px solid ${GOLD}25` }}
+        className="overflow-hidden py-3.5">
+        <motion.div animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+          className="flex gap-12 whitespace-nowrap w-max">
           {[...Array(2)].map((_, rep) =>
             [
               t("Brand Strategy", "استراتيجية العلامة"),
@@ -366,261 +357,299 @@ export default function Home() {
               t("Entrepreneurship", "ريادة الأعمال"),
             ].map((item, i) => (
               <span key={`${rep}-${i}`}
-                className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-300 flex items-center gap-10">
+                className="text-[11px] font-bold uppercase tracking-[0.28em] flex items-center gap-12"
+                style={{ color: `${GOLD}70` }}>
                 {item}
-                <span className="text-blue-300/35">◆</span>
+                <span style={{ color: `${GOLD}40` }}>◇</span>
               </span>
             ))
           )}
         </motion.div>
       </div>
 
-      {/* ══════════════════════════════════════════════
-          EXPERTISE + SKILLS
-      ══════════════════════════════════════════════ */}
-      <section className="py-24 bg-white">
+      {/* ════════════════════════════════════════════
+          EXPERTISE + SKILLS — warm cream
+      ════════════════════════════════════════════ */}
+      <section className="py-24" style={{ background: CREAM }}>
         <div className="container mx-auto px-8 lg:px-16">
           <div className="grid lg:grid-cols-2 gap-20 items-start">
 
-            {/* Left: expertise cards */}
+            {/* Expertise */}
             <div>
-              <FadeIn>
-                <Label>{t("Core Expertise", "التخصصات الأساسية")}</Label>
-                <h2 className="text-3xl md:text-[44px] font-black font-heading text-slate-900 leading-tight mb-10">
+              <Reveal>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-px w-8" style={{ background: GOLD }} />
+                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                    {t("Core Expertise", "التخصصات الأساسية")}
+                  </p>
+                </div>
+                <h2 className="text-3xl md:text-[44px] font-black font-heading leading-tight mb-10"
+                  style={{ color: NAVY }}>
                   {t("What I bring\nto every project", "ما أحضره\nلكل مشروع")}
                 </h2>
-              </FadeIn>
+              </Reveal>
 
               <div className="space-y-4">
                 {[
                   {
-                    n: "01", color: "#2563eb",
+                    num: "01", icon: "📈",
                     en: "Business Development",   ar: "تطوير الأعمال",
-                    dEn: "From zero to commercial launch — business models, market entry, partnerships, and revenue strategy built to scale.",
-                    dAr: "من الصفر إلى الإطلاق — نماذج أعمال ودخول السوق وشراكات واستراتيجية إيرادات.",
-                    icon: "📈",
+                    dEn: "Business models, market entry, partnerships, and revenue strategy built to scale.",
+                    dAr: "نماذج أعمال ودخول السوق وشراكات واستراتيجية إيرادات قابلة للتوسع.",
                   },
                   {
-                    n: "02", color: "#7c3aed",
-                    en: "Operations Management",   ar: "إدارة العمليات",
-                    dEn: "KPI frameworks, staff development, quality systems, and operational discipline at scale.",
-                    dAr: "مؤشرات أداء وتطوير كوادر وأنظمة جودة وانضباط تشغيلي على نطاق واسع.",
-                    icon: "⚙️",
+                    num: "02", icon: "⚙️",
+                    en: "Operations Management",  ar: "إدارة العمليات",
+                    dEn: "KPI frameworks, staff development, quality systems, and operational discipline.",
+                    dAr: "مؤشرات أداء وتطوير كوادر وأنظمة جودة وانضباط تشغيلي.",
                   },
                   {
-                    n: "03", color: "#0ea5e9",
-                    en: "Brand Strategy",          ar: "استراتيجية العلامة",
-                    dEn: "Identity, positioning, customer loyalty systems, and differentiated experiences that outlast campaigns.",
-                    dAr: "هوية وتموضع وأنظمة ولاء وتجارب متميزة تستمر أبعد من الحملات.",
-                    icon: "🎯",
+                    num: "03", icon: "🎯",
+                    en: "Brand Strategy",         ar: "استراتيجية العلامة",
+                    dEn: "Identity, positioning, loyalty systems, and experiences that outlast campaigns.",
+                    dAr: "هوية وتموضع وأنظمة ولاء وتجارب تستمر أبعد من الحملات.",
                   },
                 ].map((p, i) => (
-                  <FadeIn key={i} delay={i * 0.08}>
-                    <div
-                      className="group flex gap-5 p-6 border border-slate-100 rounded-2xl bg-white
-                                 hover:border-transparent hover:shadow-xl transition-all duration-350 cursor-default"
-                      onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 16px 48px ${p.color}1a`)}
-                      onMouseLeave={e => (e.currentTarget.style.boxShadow = "")}
-                    >
+                  <Reveal key={i} delay={i * 0.08}>
+                    <motion.div
+                      whileHover={{ x: 6 }}
+                      transition={{ type: "spring", stiffness: 280, damping: 26 }}
+                      className="group flex gap-5 p-6 rounded-2xl border cursor-default transition-all duration-300"
+                      style={{ background: "white", borderColor: `${GOLD}20` }}
+                      onMouseEnter={e => {
+                        (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}60`;
+                        (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px ${GOLD}15`;
+                      }}
+                      onMouseLeave={e => {
+                        (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}20`;
+                        (e.currentTarget as HTMLElement).style.boxShadow = "";
+                      }}>
                       <div className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl"
-                        style={{ background: `${p.color}12` }}>
+                        style={{ background: `${GOLD}12` }}>
                         {p.icon}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1.5">
-                          <h3 className="font-bold text-slate-900 text-base group-hover:text-[var(--c)] transition-colors"
-                            style={{ "--c": p.color } as React.CSSProperties}>
+                          <h3 className="font-bold text-base" style={{ color: NAVY }}>
                             {t(p.en, p.ar)}
                           </h3>
-                          <span className="text-[10px] font-mono font-bold" style={{ color: p.color, opacity: 0.4 }}>
-                            {p.n}
+                          <span className="text-[10px] font-mono font-bold" style={{ color: `${GOLD}50` }}>
+                            {p.num}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-500 leading-relaxed">{t(p.dEn, p.dAr)}</p>
+                        <p className="text-sm leading-relaxed" style={{ color: "#6B5A3E" }}>
+                          {t(p.dEn, p.dAr)}
+                        </p>
                         <div className="mt-3 h-[2px] w-0 group-hover:w-full rounded-full transition-all duration-500"
-                          style={{ background: `linear-gradient(90deg,${p.color},transparent)` }} />
+                          style={{ background: `linear-gradient(90deg, ${GOLD}, transparent)` }} />
                       </div>
-                    </div>
-                  </FadeIn>
+                    </motion.div>
+                  </Reveal>
                 ))}
               </div>
             </div>
 
-            {/* Right: skill bars */}
+            {/* Skills */}
             <div>
-              <FadeIn dir="right">
-                <Label>{t("Skill Proficiency", "مستوى المهارات")}</Label>
-                <h2 className="text-3xl md:text-[44px] font-black font-heading text-slate-900 leading-tight mb-10">
+              <Reveal dir="right">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-px w-8" style={{ background: GOLD }} />
+                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                    {t("Skill Proficiency", "مستوى المهارات")}
+                  </p>
+                </div>
+                <h2 className="text-3xl md:text-[44px] font-black font-heading leading-tight mb-10"
+                  style={{ color: NAVY }}>
                   {t("Technical\nCompetencies", "الكفاءات\nالتقنية")}
                 </h2>
-              </FadeIn>
+              </Reveal>
 
-              <FadeIn dir="right" delay={0.1}>
-                <div className="space-y-6">
+              <Reveal dir="right" delay={0.1}>
+                <div className="space-y-5">
                   {[
-                    { label: t("Brand Strategy", "استراتيجية العلامة") as string,  pct: 95, color: "#2563eb" },
-                    { label: t("Business Development", "تطوير الأعمال") as string, pct: 90, color: "#7c3aed" },
-                    { label: t("Operations Management", "إدارة العمليات") as string, pct: 88, color: "#0ea5e9" },
-                    { label: t("Team Leadership", "قيادة الفرق") as string,         pct: 92, color: "#10b981" },
-                    { label: t("Market Analysis", "تحليل السوق") as string,         pct: 82, color: "#f59e0b" },
-                    { label: t("Customer Experience", "تجربة العميل") as string,   pct: 87, color: "#ec4899" },
-                  ].map((sk, i) => (
-                    <SkillBar key={i} {...sk} />
-                  ))}
+                    { label: t("Brand Strategy", "استراتيجية العلامة") as string,     pct: 95 },
+                    { label: t("Business Development", "تطوير الأعمال") as string,    pct: 90 },
+                    { label: t("Operations Management", "إدارة العمليات") as string,  pct: 88 },
+                    { label: t("Team Leadership", "قيادة الفرق") as string,            pct: 92 },
+                    { label: t("Market Analysis", "تحليل السوق") as string,            pct: 82 },
+                    { label: t("Customer Experience", "تجربة العميل") as string,      pct: 87 },
+                  ].map((sk, i) => <SkillBar key={i} {...sk} />)}
                 </div>
-              </FadeIn>
+              </Reveal>
 
-              {/* Certifications */}
-              <FadeIn dir="right" delay={0.2} className="mt-10">
-                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6">
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
-                    {t("Certifications", "الشهادات")}
+              <Reveal dir="right" delay={0.2} className="mt-10">
+                <div className="rounded-2xl border p-6"
+                  style={{ background: "white", borderColor: `${GOLD}20` }}>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-5"
+                    style={{ color: `${GOLD}80` }}>
+                    {t("Certifications & Courses", "الشهادات والدورات")}
                   </p>
                   <div className="space-y-3">
                     {[
-                      { icon: "🏆", en: "Brand Management — Coursera",          ar: "إدارة العلامات — Coursera" },
-                      { icon: "📊", en: "Digital Marketing — Google",            ar: "التسويق الرقمي — Google" },
-                      { icon: "🧠", en: "Strategic Management — LinkedIn",       ar: "الإدارة الاستراتيجية — LinkedIn" },
+                      { icon: "🏆", en: "Brand Management — Coursera",    ar: "إدارة العلامات — Coursera" },
+                      { icon: "📊", en: "Digital Marketing — Google",      ar: "التسويق الرقمي — Google" },
+                      { icon: "🧠", en: "Strategic Management — LinkedIn", ar: "الإدارة الاستراتيجية — LinkedIn" },
+                      { icon: "🌱", en: "Entrepreneurship — MIT OpenCourseWare", ar: "ريادة الأعمال — MIT" },
                     ].map((c, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <span className="text-base">{c.icon}</span>
-                        <span className="text-sm font-medium text-slate-700">{t(c.en, c.ar)}</span>
+                        <span className="text-base w-6 text-center">{c.icon}</span>
+                        <span className="text-sm font-medium" style={{ color: "#3D2B0F" }}>
+                          {t(c.en, c.ar)}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
-              </FadeIn>
+              </Reveal>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════
-          CAREER — dark
-      ══════════════════════════════════════════════ */}
-      <section className="py-24 relative overflow-hidden" style={{ background: "#0B1437" }}>
-        <div className="absolute top-0 left-0 w-[350px] h-[350px] pointer-events-none"
-          style={{ background: "radial-gradient(circle at 0% 0%, rgba(37,99,235,0.12), transparent 60%)" }} />
-        <div className="absolute bottom-0 right-0 w-[300px] h-[300px] pointer-events-none"
-          style={{ background: "radial-gradient(circle at 100% 100%, rgba(124,58,237,0.1), transparent 60%)" }} />
+      {/* GEOMETRIC DIVIDER (flipped) */}
+      <div style={{ background: NAVY, paddingTop: 8, paddingBottom: 8 }}>
+        <GeoDivider flip />
+      </div>
+
+      {/* ════════════════════════════════════════════
+          CAREER — dark navy + gold timeline
+      ════════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden" style={{ background: NAVY }}>
+        <div className="absolute top-0 left-0 w-[400px] h-[400px] pointer-events-none"
+          style={{ background: `radial-gradient(circle at 0% 0%, ${GOLD}0a, transparent 60%)` }} />
 
         <div className="container mx-auto px-8 lg:px-16 relative z-10">
           <div className="grid lg:grid-cols-[280px_1fr] gap-16 items-start">
-            <FadeIn dir="left">
-              <Label>
-                <span style={{ color: "rgba(148,163,255,0.7)" }}>
+            <Reveal dir="left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-8" style={{ background: GOLD }} />
+                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
                   {t("Professional History", "التاريخ المهني")}
-                </span>
-              </Label>
+                </p>
+              </div>
               <h2 className="text-3xl md:text-4xl font-black font-heading text-white mb-5 leading-tight">
                 {t("8 Years of\nLeadership", "8 سنوات\nمن القيادة")}
               </h2>
-              <p className="text-sm leading-relaxed mb-8" style={{ color: "rgba(203,213,225,0.5)" }}>
+              <p className="text-sm leading-relaxed mb-8"
+                style={{ color: "rgba(240,220,180,0.45)" }}>
                 {t(
-                  "A steady progression through operations and brand leadership across Saudi Arabia's F&B industry.",
-                  "تقدم متواصل في قيادة العمليات والعلامة في صناعة الأغذية السعودية."
+                  "A steady progression through operations and brand leadership across the Kingdom.",
+                  "تقدم متواصل في العمليات وقيادة العلامات في المملكة."
                 )}
               </p>
               <Link href="/about">
-                <motion.button
-                  whileHover={{ x: 4 }}
-                  className="text-sm font-bold"
-                  style={{ color: "#60a5fa" }}>
+                <motion.button whileHover={{ x: 5 }}
+                  className="text-sm font-bold" style={{ color: GOLD_LT }}>
                   {t("Full Biography →", "السيرة الكاملة ←")}
                 </motion.button>
               </Link>
-            </FadeIn>
+            </Reveal>
 
-            <div className="space-y-3">
-              {[
-                { yr: "2025 – Present", en: "Brand Manager", ar: "مدير العلامة التجارية", org: "Thamarat Al-Khayr — Fuji Cafe", current: true },
-                { yr: "2024 – 2025", en: "Operations & BD Manager", ar: "مدير العمليات والتطوير", org: "Thamarat Al-Khayr — Fuji Cafe", current: false },
-                { yr: "2022 – 2024", en: "Branch Manager", ar: "مدير فرع", org: "Namq for Beverages Co.", current: false },
-                { yr: "2018 – 2022", en: "Branch Manager", ar: "مدير فرع", org: "Al-Awaji Commercial Markets", current: false },
-              ].map((item, i) => (
-                <FadeIn key={i} delay={i * 0.08}>
-                  <motion.div
-                    whileHover={{ x: 6 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 28 }}
-                    className="flex items-start gap-5 p-5 rounded-xl border transition-colors duration-300 cursor-default"
-                    style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}
-                    onMouseEnter={e => {
-                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)";
-                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
-                    }}
-                    onMouseLeave={e => {
-                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
-                    }}
-                  >
-                    <div className="flex-shrink-0 w-[108px] pt-0.5">
-                      <span className="text-xs font-mono" style={{ color: "rgba(148,163,255,0.45)" }}>
-                        {item.yr}
-                      </span>
+            <div className="relative pl-6">
+              {/* vertical gold timeline line */}
+              <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full"
+                style={{ background: `linear-gradient(to bottom, ${GOLD}, ${GOLD}30)` }} />
+
+              <div className="space-y-4">
+                {[
+                  { yr: "2025 – Present", en: "Brand Manager", ar: "مدير العلامة التجارية", org: "Thamarat Al-Khayr — Fuji Cafe", current: true },
+                  { yr: "2024 – 2025", en: "Operations & BD Manager", ar: "مدير العمليات والتطوير", org: "Thamarat Al-Khayr — Fuji Cafe", current: false },
+                  { yr: "2022 – 2024", en: "Branch Manager", ar: "مدير فرع", org: "Namq for Beverages Co.", current: false },
+                  { yr: "2018 – 2022", en: "Branch Manager", ar: "مدير فرع", org: "Al-Awaji Commercial Markets", current: false },
+                ].map((item, i) => (
+                  <Reveal key={i} delay={i * 0.09}>
+                    <div className="relative flex items-start gap-5">
+                      {/* gold dot */}
+                      <div className="absolute -left-[27px] top-4 w-3 h-3 rounded-full border-2"
+                        style={{
+                          background: item.current ? GOLD_LT : NAVY,
+                          borderColor: item.current ? GOLD_LT : `${GOLD}50`,
+                        }} />
+                      <motion.div whileHover={{ x: 6 }}
+                        transition={{ type: "spring", stiffness: 280, damping: 26 }}
+                        className="flex-1 p-5 rounded-xl border cursor-default transition-all duration-300"
+                        style={{ background: `${GOLD}06`, borderColor: `${GOLD}18` }}
+                        onMouseEnter={e => {
+                          (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}40`;
+                          (e.currentTarget as HTMLElement).style.background = `${GOLD}0e`;
+                        }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}18`;
+                          (e.currentTarget as HTMLElement).style.background = `${GOLD}06`;
+                        }}>
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                          <p className="font-bold text-white text-sm">{t(item.en, item.ar)}</p>
+                          <span className="text-xs font-mono" style={{ color: `${GOLD}60` }}>{item.yr}</span>
+                        </div>
+                        <p className="text-xs" style={{ color: `${GOLD}55` }}>{item.org}</p>
+                        {item.current && (
+                          <span className="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full"
+                            style={{ background: `${GOLD}15`, color: GOLD_LT, border: `1px solid ${GOLD}30` }}>
+                            <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: GOLD_LT }} />
+                            {t("Current Position", "المنصب الحالي")}
+                          </span>
+                        )}
+                      </motion.div>
                     </div>
-                    <div className="flex-shrink-0 mt-2">
-                      <div className={`w-2.5 h-2.5 rounded-full ${item.current ? "bg-emerald-400" : "bg-slate-600"}`} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-white text-sm">{t(item.en, item.ar)}</p>
-                      <p className="text-xs mt-0.5" style={{ color: "rgba(148,163,255,0.45)" }}>{item.org}</p>
-                      {item.current && (
-                        <span className="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full"
-                          style={{ background: "rgba(16,185,129,0.12)", color: "#34d399", border: "1px solid rgba(16,185,129,0.2)" }}>
-                          <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
-                          {t("Current Position", "المنصب الحالي")}
-                        </span>
-                      )}
-                    </div>
-                  </motion.div>
-                </FadeIn>
-              ))}
+                  </Reveal>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════
-          FEATURED PROJECT
-      ══════════════════════════════════════════════ */}
-      <section className="py-24 bg-slate-50 border-y border-slate-100">
+      {/* GEOMETRIC DIVIDER */}
+      <div style={{ background: CREAM, paddingTop: 8, paddingBottom: 8 }}>
+        <GeoDivider />
+      </div>
+
+      {/* ════════════════════════════════════════════
+          FEATURED PROJECT — warm cream
+      ════════════════════════════════════════════ */}
+      <section className="py-24" style={{ background: CREAM }}>
         <div className="container mx-auto px-8 lg:px-16">
-          <FadeIn className="mb-12">
-            <Label>{t("Featured Project", "مشروع مميز")}</Label>
-            <h2 className="text-3xl md:text-[44px] font-black font-heading text-slate-900 leading-tight">
+          <Reveal className="mb-12">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-px w-8" style={{ background: GOLD }} />
+              <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                {t("Featured Project", "مشروع مميز")}
+              </p>
+            </div>
+            <h2 className="text-3xl md:text-[44px] font-black font-heading leading-tight" style={{ color: NAVY }}>
               {t("Entrepreneurial Venture", "المشروع الريادي")}
             </h2>
-          </FadeIn>
+          </Reveal>
 
-          <FadeIn delay={0.1}>
-            <motion.div
-              whileHover={{ y: -4 }}
-              transition={{ type: "spring", stiffness: 200, damping: 24 }}
-              className="bg-white border border-slate-200 rounded-2xl overflow-hidden cursor-default"
-              style={{ boxShadow: "0 4px 32px rgba(0,0,0,0.06)" }}
-            >
+          <Reveal delay={0.1}>
+            <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 200, damping: 24 }}
+              className="rounded-2xl overflow-hidden border cursor-default"
+              style={{
+                background: "white",
+                borderColor: `${GOLD}25`,
+                boxShadow: `0 4px 40px ${GOLD}10`,
+              }}>
               <div className="grid md:grid-cols-[6px_1fr_auto]">
                 <div className="hidden md:block"
-                  style={{ background: "linear-gradient(to bottom, #2563eb, #7c3aed)" }} />
+                  style={{ background: `linear-gradient(to bottom, ${GOLD}, ${GOLD_LT})` }} />
                 <div className="p-8 md:p-10">
                   <div className="flex flex-wrap items-center gap-3 mb-5">
-                    <span className="flex items-center gap-2">
-                      <span className="text-2xl">🍵</span>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                        {t("Founder & CEO", "مؤسس ورئيس تنفيذي")}
-                      </span>
+                    <span className="text-2xl">🍵</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border"
+                      style={{ color: GOLD, background: `${GOLD}10`, borderColor: `${GOLD}30` }}>
+                      {t("Founder & CEO", "مؤسس ورئيس تنفيذي")}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs font-mono" style={{ color: "#A0856A" }}>
                       {t("May 2025 – May 2026", "مايو 2025 – مايو 2026")}
                     </span>
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-black font-heading text-slate-900 mb-3">
+                  <h3 className="text-2xl md:text-3xl font-black font-heading mb-3" style={{ color: NAVY }}>
                     {t("Matcha Power", "ماتشا باور")}
                   </h3>
-                  <p className="text-slate-500 leading-relaxed text-sm max-w-xl mb-6">
+                  <p className="leading-relaxed text-sm max-w-xl mb-6" style={{ color: "#6B5A3E" }}>
                     {t(
                       "Founded and led from concept to full operational launch — brand identity, business model, market research, team building, and commercial rollout.",
-                      "تأسيس وقيادة من المفهوم إلى الإطلاق التشغيلي الكامل — هوية العلامة ونموذج العمل وبحث السوق وبناء الفريق والإطلاق التجاري."
+                      "تأسيس وقيادة من المفهوم إلى الإطلاق الكامل — هوية العلامة ونموذج العمل وبحث السوق وبناء الفريق والإطلاق التجاري."
                     )}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -628,38 +657,57 @@ export default function Home() {
                       ["Brand Identity", "Business Model", "Market Research", "Operations", "Team Leadership"],
                       ["هوية العلامة", "نموذج العمل", "بحث السوق", "العمليات", "قيادة الفريق"]
                     ) as string[]).map(tag => (
-                      <span key={tag} className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-600">
+                      <span key={tag} className="text-xs font-semibold px-3 py-1 rounded-full border"
+                        style={{ background: `${GOLD}08`, borderColor: `${GOLD}25`, color: "#6B4E2A" }}>
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center justify-center p-8 border-t md:border-t-0 md:border-l border-slate-100">
-                  <MagneticBtn
-                    href="/portfolio"
-                    className="h-11 px-7 rounded-xl font-bold text-sm border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 whitespace-nowrap cursor-pointer"
-                  >
+                <div className="flex items-center justify-center p-8 border-t md:border-t-0 md:border-l"
+                  style={{ borderColor: `${GOLD}15` }}>
+                  <MagBtn href="/portfolio"
+                    className="h-11 px-7 rounded-xl font-bold text-sm border-2 cursor-pointer transition-all duration-300 whitespace-nowrap hover:text-white"
+                    style={{ borderColor: GOLD, color: GOLD }}
+                    onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      (e.currentTarget as HTMLButtonElement).style.background = GOLD;
+                      (e.currentTarget as HTMLButtonElement).style.color = NAVY;
+                    }}
+                    onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      (e.currentTarget as HTMLButtonElement).style.background = "";
+                      (e.currentTarget as HTMLButtonElement).style.color = GOLD;
+                    }}>
                     {t("View Work →", "عرض الأعمال ←")}
-                  </MagneticBtn>
+                  </MagBtn>
                 </div>
               </div>
             </motion.div>
-          </FadeIn>
+          </Reveal>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════
-          CONTACT CTA
-      ══════════════════════════════════════════════ */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-8 lg:px-16 max-w-5xl">
+      {/* ════════════════════════════════════════════
+          CONTACT CTA — dark navy close
+      ════════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden" style={{ background: NAVY }}>
+        <div className="absolute bottom-0 left-0 right-0 h-[2px]"
+          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}40, transparent)` }} />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at 50% 100%, ${GOLD}08, transparent 65%)` }} />
+
+        <div className="container mx-auto px-8 lg:px-16 max-w-5xl relative z-10">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <FadeIn dir="left">
-              <Label>{t("Let's Work Together", "لنتعاون معاً")}</Label>
-              <h2 className="text-3xl md:text-[44px] font-black font-heading text-slate-900 leading-tight mb-5">
+            <Reveal dir="left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-8" style={{ background: GOLD }} />
+                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                  {t("Let's Work Together", "لنتعاون معاً")}
+                </p>
+              </div>
+              <h2 className="text-3xl md:text-[44px] font-black font-heading text-white leading-tight mb-5">
                 {t("Ready to elevate\nyour brand?", "هل أنت مستعد\nللارتقاء بعلامتك؟")}
               </h2>
-              <p className="text-slate-500 text-sm leading-relaxed mb-8">
+              <p className="text-sm leading-relaxed mb-8" style={{ color: "rgba(240,220,180,0.5)" }}>
                 {t(
                   "Strategic consulting, brand development, and operational leadership — available for serious engagements.",
                   "استشارة استراتيجية وتطوير علامة وقيادة تشغيلية — متاح للتعاونات الجادة."
@@ -668,65 +716,67 @@ export default function Home() {
               <div className="space-y-4 text-sm">
                 {[
                   { icon: "📧", text: "Moh.aldbani@gmail.com", href: "mailto:Moh.aldbani@gmail.com" },
-                  { icon: "📱", text: "+966 552 469 643", href: "tel:+966552469643" },
+                  { icon: "📱", text: "+966 552 469 643",      href: "tel:+966552469643" },
                   { icon: "📍", text: t("Riyadh, Saudi Arabia", "الرياض، المملكة العربية السعودية") as string, href: null },
                 ].map((c, i) => (
                   <div key={i}>
                     {c.href ? (
                       <a href={c.href} className="flex items-center gap-4 group">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 border border-slate-200 group-hover:bg-blue-50 group-hover:border-blue-200 transition-all text-base flex-shrink-0">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border transition-all duration-300 group-hover:border-amber-500"
+                          style={{ background: `${GOLD}10`, borderColor: `${GOLD}25` }}>
                           {c.icon}
                         </span>
-                        <span className="font-medium text-slate-700 group-hover:text-blue-700 transition-colors">{c.text}</span>
+                        <span className="font-medium text-white/70 group-hover:text-amber-300 transition-colors">{c.text}</span>
                       </a>
                     ) : (
                       <div className="flex items-center gap-4">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-base flex-shrink-0">{c.icon}</span>
-                        <span className="font-medium text-slate-500">{c.text}</span>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border"
+                          style={{ background: `${GOLD}10`, borderColor: `${GOLD}25` }}>
+                          {c.icon}
+                        </span>
+                        <span className="font-medium" style={{ color: "rgba(240,220,180,0.45)" }}>{c.text}</span>
                       </div>
                     )}
                   </div>
                 ))}
               </div>
-            </FadeIn>
+            </Reveal>
 
-            <FadeIn dir="right" delay={0.12}>
-              <div className="rounded-2xl overflow-hidden border border-slate-200"
-                style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.07)" }}>
-                <div className="px-8 py-6" style={{ background: "#0B1437" }}>
+            <Reveal dir="right" delay={0.12}>
+              <div className="rounded-2xl overflow-hidden border"
+                style={{ borderColor: `${GOLD}25`, boxShadow: `0 8px 40px rgba(0,0,0,0.3)` }}>
+                <div className="px-8 py-6" style={{ background: `${GOLD}12`, borderBottom: `1px solid ${GOLD}20` }}>
                   <div className="inline-flex rounded-lg bg-white px-3 py-2">
                     <img src={logoPath} alt="md" className="h-8 w-auto object-contain"
                       style={{ mixBlendMode: "multiply" }} />
                   </div>
                 </div>
-                <div className="bg-white px-8 py-8">
-                  <p className="text-slate-500 text-sm leading-relaxed mb-2 italic">
+                <div className="px-8 py-8" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <p className="text-sm leading-relaxed mb-2 italic"
+                    style={{ color: "rgba(240,220,180,0.6)" }}>
                     {t(
                       "\"Experience, innovation, and impact — the standard I hold every project to.\"",
                       "«الخبرة والابتكار والأثر — المعيار الذي أحكم به على كل مشروع.»"
                     )}
                   </p>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-8" style={{ color: `${GOLD}55` }}>
                     — {t("Mohammed Al-Dabbani", "محمد الدباني")}
                   </p>
                   <div className="flex flex-col gap-3">
-                    <MagneticBtn
-                      href="/book"
-                      className="w-full h-12 rounded-xl font-bold text-sm text-white hover:opacity-90 transition-all cursor-pointer"
-                      style={{ background: "linear-gradient(135deg,#2563eb,#7c3aed)" }}
-                    >
+                    <MagBtn href="/book"
+                      className="w-full font-bold text-sm cursor-pointer rounded-xl hover:opacity-90 transition-opacity"
+                      style={{ height: 48, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LT})`, color: NAVY }}>
                       {t("Book a Consultation", "احجز استشارة")}
-                    </MagneticBtn>
-                    <MagneticBtn
-                      href="/contact"
-                      className="w-full h-12 rounded-xl font-bold text-sm text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-all cursor-pointer"
-                    >
+                    </MagBtn>
+                    <MagBtn href="/contact"
+                      className="w-full font-bold text-sm cursor-pointer rounded-xl border transition-colors hover:border-amber-400"
+                      style={{ height: 48, borderColor: `${GOLD}30`, color: "rgba(240,220,180,0.7)" }}>
                       {t("Send a Message", "أرسل رسالة")}
-                    </MagneticBtn>
+                    </MagBtn>
                   </div>
                 </div>
               </div>
-            </FadeIn>
+            </Reveal>
           </div>
         </div>
       </section>
