@@ -5,235 +5,451 @@ import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782157376997.png";
+import photoPath from "@assets/Screenshot_2026-06-22_at_6.27.49_PM_1782231945642.png";
 
-function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
+/* ─── animated counter ───────────────────────────────── */
+function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
-  const motionVal = useMotionValue(0);
-  const spring = useSpring(motionVal, { stiffness: 50, damping: 15 });
-  useEffect(() => { if (inView) motionVal.set(target); }, [inView, target, motionVal]);
-  useEffect(() => spring.on("change", (v) => { if (ref.current) ref.current.textContent = Math.round(v) + suffix; }), [spring, suffix]);
+  const raw = useMotionValue(0);
+  const val = useSpring(raw, { stiffness: 45, damping: 14 });
+  useEffect(() => { if (inView) raw.set(to); }, [inView, to, raw]);
+  useEffect(() => val.on("change", (v) => { if (ref.current) ref.current.textContent = Math.round(v) + suffix; }), [val, suffix]);
   return <span ref={ref}>0{suffix}</span>;
 }
 
+/* ─── scroll reveal ──────────────────────────────────── */
+const rise = { hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] } } };
+const cascade = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
+
 export default function Home() {
-  const { t } = useLanguage();
-
-  const stats = [
-    { target: 8,  suffix: "+", en: "Years Experience",  ar: "سنوات خبرة" },
-    { target: 50, suffix: "+", en: "Brands Launched",   ar: "علامة أُطلقت" },
-    { target: 2,  suffix: "M+",en: "Customers Served",  ar: "عميل خُدم" },
-    { target: 3,  suffix: "",  en: "Industries",        ar: "قطاعات" },
-  ];
-
-  const pillars = [
-    { num: "01", en: "Business Development", ar: "تطوير الأعمال", descEn: "From concept to full commercial launch — strategy, execution, and scale.", descAr: "من الفكرة إلى الإطلاق التجاري الكامل — استراتيجية وتنفيذ وتوسع." },
-    { num: "02", en: "Operations Management", ar: "إدارة العمليات", descEn: "Operational excellence through KPIs, team leadership, and quality systems.", descAr: "التميز التشغيلي عبر مؤشرات الأداء وقيادة الفرق وأنظمة الجودة." },
-    { num: "03", en: "Brand Strategy", ar: "استراتيجية العلامة", descEn: "Build brands that resonate — identity, positioning, and market differentiation.", descAr: "بناء علامات تجارية مؤثرة — هوية وتموضع وتميز في السوق." },
-  ];
+  const { t, language } = useLanguage();
+  const isAr = language === "ar";
 
   return (
     <RootLayout>
 
-      {/* ── HERO : full-screen dark ──────────────────────────── */}
-      <section
-        className="relative min-h-screen flex flex-col items-center justify-center text-white overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #0d1034 0%, #111827 55%, #1a0a2e 100%)" }}
-      >
-        {/* subtle grid overlay */}
-        <div className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
-        {/* glow blobs */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-20"
-          style={{ background: "radial-gradient(circle, #3b5bdb 0%, transparent 70%)" }} />
-        <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)" }} />
+      {/* ════════════════════════════════════════════════════
+          HERO — split layout, photo + text
+      ════════════════════════════════════════════════════ */}
+      <section className="relative min-h-screen bg-white flex items-center overflow-hidden">
+        {/* subtle top-right glow */}
+        <div className="absolute top-0 right-0 w-[700px] h-[700px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse at top right, rgba(37,99,235,0.07) 0%, transparent 65%)" }} />
 
-        <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto">
-          {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-10"
-          >
-            <div className="relative inline-block">
-              <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30"
-                style={{ background: "linear-gradient(135deg, #3b5bdb, #7c3aed)" }} />
-              <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-5 border border-white/10">
-                <img src={logoPath} alt="m-aldbani" className="h-28 w-auto object-contain" />
-              </div>
-            </div>
-          </motion.div>
+        <div className="container mx-auto px-8 lg:px-16 py-24 w-full">
+          <div className={`grid lg:grid-cols-[1fr_440px] xl:grid-cols-[1fr_500px] gap-16 xl:gap-24 items-center ${isAr ? "lg:grid-cols-[440px_1fr] xl:grid-cols-[500px_1fr]" : ""}`}>
 
-          {/* badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-white/15 text-white/60 text-xs font-bold tracking-[0.2em] uppercase"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            {t("Available for Consulting — Riyadh, KSA", "متاح للاستشارات — الرياض، المملكة العربية السعودية")}
-          </motion.div>
-
-          {/* heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold font-heading leading-none tracking-tight mb-6"
-          >
-            {t("Mohammed", "محمد")}
-            <br />
-            <span style={{ background: "linear-gradient(90deg, #60a5fa, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              {t("Al-Dabbani", "الدباني")}
-            </span>
-          </motion.h1>
-
-          {/* sub */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="text-white/50 text-base md:text-lg max-w-xl mb-4 leading-relaxed"
-          >
-            {t(
-              "Brand Manager & Business Development Specialist with 8+ years in the F&B sector.",
-              "مدير علامة تجارية ومتخصص تطوير أعمال بخبرة تزيد عن 8 سنوات في قطاع الأغذية والمشروبات."
-            )}
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="text-white/25 text-xs tracking-[0.35em] uppercase mb-10"
-          >
-            EXPERIENCE · INNOVATION · IMPACT
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4"
-          >
-            <Link href="/book">
-              <Button size="lg" className="h-14 px-10 font-bold text-sm rounded-xl border-0 text-white"
-                style={{ background: "linear-gradient(135deg, #3b5bdb, #7c3aed)", boxShadow: "0 8px 32px rgba(99,102,241,.4)" }}>
-                {t("Book Consultation", "احجز استشارة")}
-              </Button>
-            </Link>
-            <Link href="/about">
-              <Button size="lg" variant="outline" className="h-14 px-10 font-bold text-sm rounded-xl border-white/20 text-white hover:bg-white/10 hover:border-white/40 bg-transparent">
-                {t("My Story", "قصتي")}
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32"
-          style={{ background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.04))" }} />
-
-        {/* scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 1.8, repeat: Infinity }}
-            className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
-            <div className="w-1 h-2 rounded-full bg-white/30" />
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ── STATS ──────────────────────────────────────────── */}
-      <section className="py-0 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 border-b border-l border-border">
-            {stats.map((s, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="border-t border-r border-border py-12 px-8 group hover:bg-slate-50 transition-colors"
-              >
-                <p className="text-4xl md:text-5xl font-bold font-heading mb-2"
-                  style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  <CountUp target={s.target} suffix={s.suffix} />
-                </p>
-                <p className="text-xs text-muted-foreground font-semibold tracking-wide uppercase">
-                  {t(s.en, s.ar)}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PILLARS ─────────────────────────────────────────── */}
-      <section className="py-28 bg-white">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16 max-w-xl"
-          >
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-blue-600 mb-4">
-              {t("What I Do", "ماذا أقدم")}
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold font-heading leading-tight">
-              {t("Three Areas of Expertise", "ثلاثة محاور للتخصص")}
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-2xl overflow-hidden">
-            {pillars.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
-                className="bg-white p-10 flex flex-col gap-6 group hover:bg-slate-50 transition-colors"
-              >
-                <span className="text-6xl font-bold font-mono leading-none"
-                  style={{ background: "linear-gradient(135deg, #e0e7ff, #ede9fe)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  {p.num}
+            {/* ── LEFT: text ──────────────────────────────── */}
+            <motion.div
+              variants={cascade}
+              initial="hidden"
+              animate="show"
+              className={`order-2 lg:order-1 ${isAr ? "text-right" : ""}`}
+            >
+              {/* label */}
+              <motion.div variants={rise} className={`flex items-center gap-3 mb-8 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
+                <div className="h-px w-10 rounded-full"
+                  style={{ background: "linear-gradient(90deg,#2563eb,#7c3aed)" }} />
+                <span className="text-[11px] font-extrabold tracking-[0.3em] uppercase"
+                  style={{ background: "linear-gradient(90deg,#2563eb,#7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  {t("Brand Manager · Business Development · F&B", "مدير علامة تجارية · تطوير أعمال · F&B")}
                 </span>
-                <div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-blue-600 transition-colors">
-                    {t(p.en, p.ar)}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t(p.descEn, p.descAr)}
+              </motion.div>
+
+              {/* name */}
+              <motion.h1
+                variants={rise}
+                className="font-heading font-black leading-[0.92] tracking-tight mb-8"
+                style={{ fontSize: "clamp(52px,8vw,96px)" }}
+              >
+                {t("Mohammed", "محمد")}
+                <br />
+                <span style={{
+                  background: "linear-gradient(135deg,#1d4ed8 0%,#7c3aed 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}>
+                  {t("Al-Dabbani", "الدباني")}
+                </span>
+              </motion.h1>
+
+              {/* tagline */}
+              <motion.p variants={rise}
+                className="text-lg text-foreground/50 max-w-md leading-relaxed mb-10">
+                {t(
+                  "8+ years building F&B brands from the ground up — from strategy and identity to full commercial launch.",
+                  "أكثر من 8 سنوات في بناء علامات F&B من الصفر — من الاستراتيجية والهوية إلى الإطلاق التجاري الكامل."
+                )}
+              </motion.p>
+
+              {/* inline stats */}
+              <motion.div variants={rise}
+                className="grid grid-cols-3 gap-0 border border-border rounded-2xl overflow-hidden mb-10">
+                {[
+                  { n: 8,  s: "+", en: "Years",    ar: "سنوات" },
+                  { n: 50, s: "+", en: "Brands",    ar: "علامة" },
+                  { n: 2,  s: "M+",en: "Customers", ar: "عميل" },
+                ].map((st, i) => (
+                  <div key={i}
+                    className={`flex flex-col items-center py-5 px-4 ${i < 2 ? "border-r border-border" : ""}`}>
+                    <span className="text-3xl font-black font-heading leading-none"
+                      style={{ background: "linear-gradient(135deg,#2563eb,#7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                      <CountUp to={st.n} suffix={st.s} />
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-semibold mt-1 uppercase tracking-wide">
+                      {t(st.en, st.ar)}
+                    </span>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* CTAs */}
+              <motion.div variants={rise} className="flex flex-wrap gap-4">
+                <Link href="/book">
+                  <button className="group relative h-14 px-8 rounded-xl font-bold text-sm text-white overflow-hidden shadow-lg"
+                    style={{ background: "linear-gradient(135deg,#2563eb,#7c3aed)", boxShadow: "0 8px 30px rgba(37,99,235,.35)" }}>
+                    <span className="relative z-10">{t("Book Consultation", "احجز استشارة")}</span>
+                    <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
+                  </button>
+                </Link>
+                <Link href="/about">
+                  <button className="h-14 px-8 rounded-xl font-bold text-sm border-2 border-slate-200 text-foreground hover:border-blue-500 hover:text-blue-600 transition-all duration-300">
+                    {t("My Story →", "قصتي ←")}
+                  </button>
+                </Link>
+              </motion.div>
+
+              {/* motto */}
+              <motion.p variants={rise}
+                className="mt-8 text-[10px] tracking-[0.35em] uppercase text-foreground/25 font-bold">
+                EXPERIENCE · INNOVATION · IMPACT
+              </motion.p>
+            </motion.div>
+
+            {/* ── RIGHT: photo ──────────────────────────────── */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, x: 40 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+              className="order-1 lg:order-2 relative flex justify-center"
+            >
+              {/* decorative backing */}
+              <div className="absolute bottom-0 right-0 w-[88%] h-[92%] rounded-3xl"
+                style={{
+                  background: "linear-gradient(145deg,#1d4ed8,#7c3aed)",
+                  transform: "translate(14px, 14px)",
+                  opacity: 0.15,
+                }} />
+              <div className="absolute bottom-0 right-0 w-[88%] h-[92%] rounded-3xl"
+                style={{
+                  background: "linear-gradient(145deg,#1d4ed8,#7c3aed)",
+                  transform: "translate(7px, 7px)",
+                  opacity: 0.08,
+                }} />
+
+              {/* photo frame */}
+              <div className="relative w-full max-w-[440px] rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/15 border border-white"
+                style={{ aspectRatio: "3/4" }}>
+                {/* bg for contrast */}
+                <div className="absolute inset-0"
+                  style={{ background: "linear-gradient(180deg, #e8edf8 0%, #d1d9f0 100%)" }} />
+                <img
+                  src={photoPath}
+                  alt="Mohammed Al-Dabbani"
+                  className="relative z-10 w-full h-full object-cover object-top"
+                />
+                {/* bottom gradient overlay */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 z-20"
+                  style={{ background: "linear-gradient(to top, rgba(13,16,52,0.5), transparent)" }} />
+                {/* name chip at bottom */}
+                <div className="absolute bottom-5 left-5 right-5 z-30">
+                  <p className="text-white text-sm font-bold">
+                    {t("Mohammed Al-Dabbani", "محمد الدباني")}
+                  </p>
+                  <p className="text-white/60 text-xs">
+                    {t("Brand Manager — Riyadh, KSA", "مدير علامة تجارية — الرياض، المملكة العربية السعودية")}
                   </p>
                 </div>
-                <div className="mt-auto">
-                  <div className="h-0.5 w-0 group-hover:w-12 transition-all duration-500 rounded-full"
-                    style={{ background: "linear-gradient(90deg, #3b5bdb, #7c3aed)" }} />
-                </div>
+              </div>
+
+              {/* floating logo card */}
+              <motion.div
+                animate={{ y: [-4, 4, -4] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className={`absolute top-10 ${isAr ? "-right-5" : "-left-5"} bg-white rounded-2xl shadow-xl border border-slate-100 p-3`}
+              >
+                <img src={logoPath} alt="m-aldbani" className="h-10 w-auto object-contain" />
+              </motion.div>
+
+              {/* status badge */}
+              <motion.div
+                animate={{ y: [4, -4, 4] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                className={`absolute bottom-24 ${isAr ? "-right-6" : "-left-6"} bg-white rounded-xl shadow-lg border border-slate-100 px-4 py-2.5 flex items-center gap-2`}
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                <span className="text-xs font-bold text-slate-700 whitespace-nowrap">
+                  {t("Available · Riyadh 🇸🇦", "متاح · الرياض 🇸🇦")}
+                </span>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════
+          MARQUEE STRIP
+      ════════════════════════════════════════════════════ */}
+      <div className="border-y border-border overflow-hidden py-4 bg-slate-50">
+        <motion.div
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+          className="flex gap-10 whitespace-nowrap w-max"
+        >
+          {[...Array(2)].map((_, rep) =>
+            [
+              t("Brand Strategy", "استراتيجية العلامة"),
+              t("Business Development", "تطوير الأعمال"),
+              t("Operations Management", "إدارة العمليات"),
+              t("F&B Sector", "قطاع الأغذية والمشروبات"),
+              t("Market Analysis", "تحليل السوق"),
+              t("Team Leadership", "قيادة الفرق"),
+              t("Customer Experience", "تجربة العميل"),
+              t("Growth Strategy", "استراتيجية النمو"),
+            ].map((item, i) => (
+              <span key={`${rep}-${i}`} className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-10">
+                {item}
+                <span className="text-primary">✦</span>
+              </span>
+            ))
+          )}
+        </motion.div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+          EXPERTISE — numbered cards
+      ════════════════════════════════════════════════════ */}
+      <section className="py-28 bg-white">
+        <div className="container mx-auto px-8 lg:px-16">
+          <motion.div
+            initial="hidden" whileInView="show" viewport={{ once: true }} variants={cascade}
+            className="mb-16"
+          >
+            <motion.p variants={rise}
+              className="text-[11px] font-extrabold tracking-[0.3em] uppercase mb-3"
+              style={{ color: "#2563eb" }}>
+              {t("Core Expertise", "التخصصات الأساسية")}
+            </motion.p>
+            <motion.h2 variants={rise} className="text-4xl md:text-5xl font-black font-heading leading-tight max-w-lg">
+              {t("What I bring to the table", "ماذا أقدم لك")}
+            </motion.h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                num: "01",
+                en: "Business Development",
+                ar: "تطوير الأعمال",
+                dEn: "From zero to full commercial launch. I design the strategy, build the model, and execute the growth plan.",
+                dAr: "من الصفر إلى الإطلاق التجاري الكامل. أصمم الاستراتيجية وأبني النموذج وأنفذ خطة النمو.",
+                color: "#2563eb",
+              },
+              {
+                num: "02",
+                en: "Operations Management",
+                ar: "إدارة العمليات",
+                dEn: "Build systems that scale. KPI frameworks, team development, quality standards, and daily operational excellence.",
+                dAr: "بناء أنظمة قابلة للتوسع. مؤشرات أداء، تطوير فرق، معايير جودة، وتميز تشغيلي يومي.",
+                color: "#7c3aed",
+              },
+              {
+                num: "03",
+                en: "Brand Strategy",
+                ar: "استراتيجية العلامة",
+                dEn: "Craft brands that resonate. Visual identity, market positioning, customer experience, and loyalty ecosystems.",
+                dAr: "بناء علامات تؤثر. هوية بصرية، تموضع في السوق، تجربة عملاء، ومنظومة ولاء.",
+                color: "#0ea5e9",
+              },
+            ].map((p, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -4 }}
+                className="group relative border border-border rounded-2xl p-8 bg-white hover:shadow-xl transition-all duration-500 overflow-hidden cursor-default"
+              >
+                {/* hover fill */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ background: `radial-gradient(ellipse at top right, ${p.color}08, transparent 70%)` }} />
+
+                <span className="block font-black font-heading text-[56px] leading-none mb-6"
+                  style={{ color: p.color, opacity: 0.12 }}>
+                  {p.num}
+                </span>
+                <h3 className="text-xl font-bold mb-4 group-hover:text-blue-600 transition-colors duration-300">
+                  {t(p.en, p.ar)}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t(p.dEn, p.dAr)}
+                </p>
+                <div className="mt-8 h-0.5 w-0 group-hover:w-full rounded-full transition-all duration-700"
+                  style={{ background: `linear-gradient(90deg, ${p.color}, transparent)` }} />
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── ABOUT STRIP ─────────────────────────────────────── */}
-      <section className="py-24" style={{ background: "#f8faff" }}>
-        <div className="container mx-auto px-6">
+      {/* ════════════════════════════════════════════════════
+          EXPERIENCE — horizontal timeline
+      ════════════════════════════════════════════════════ */}
+      <section className="py-24 border-t border-border bg-slate-50">
+        <div className="container mx-auto px-8 lg:px-16">
+          <motion.div
+            initial="hidden" whileInView="show" viewport={{ once: true }} variants={cascade}
+            className="mb-14 flex flex-col md:flex-row md:items-end md:justify-between gap-6"
+          >
+            <div>
+              <motion.p variants={rise}
+                className="text-[11px] font-extrabold tracking-[0.3em] uppercase mb-3 text-blue-600">
+                {t("Career Journey", "المسيرة المهنية")}
+              </motion.p>
+              <motion.h2 variants={rise} className="text-4xl md:text-5xl font-black font-heading">
+                {t("8 Years of Growth", "8 سنوات من التطور")}
+              </motion.h2>
+            </div>
+            <motion.div variants={rise}>
+              <Link href="/about">
+                <button className="h-11 px-6 rounded-xl font-bold text-sm border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-all">
+                  {t("Full Biography →", "السيرة الكاملة ←")}
+                </button>
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          <div className="space-y-3">
+            {[
+              { yr: "2025 – Now",      en: "Brand Manager",           ar: "مدير العلامة التجارية",      org: "Thamarat Al-Khayr — Fuji Cafe",     tag: t("Current", "حالياً"),   c: "#2563eb" },
+              { yr: "2024 – 2025",     en: "Operations & BD Manager", ar: "مدير العمليات والتطوير",     org: "Thamarat Al-Khayr — Fuji Cafe",     tag: "1 yr",  c: "#7c3aed" },
+              { yr: "2022 – 2024",     en: "Branch Manager",          ar: "مدير فرع",                   org: "Namq for Beverages",                tag: "2 yrs", c: "#0ea5e9" },
+              { yr: "2018 – 2022",     en: "Branch Manager",          ar: "مدير فرع",                   org: "Al-Awaji Commercial Markets",       tag: "4 yrs", c: "#10b981" },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.55 }}
+                className="group flex items-center gap-6 p-5 bg-white rounded-2xl border border-border hover:border-blue-200 hover:shadow-md transition-all duration-300"
+              >
+                <div className="w-1.5 h-10 rounded-full flex-shrink-0"
+                  style={{ background: item.c }} />
+                <div className="w-28 flex-shrink-0 hidden md:block">
+                  <span className="text-xs font-mono text-muted-foreground font-semibold">{item.yr}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm group-hover:text-blue-600 transition-colors">
+                    {t(item.en, item.ar)}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.org}</p>
+                </div>
+                <span className="text-xs font-bold px-3 py-1 rounded-full flex-shrink-0"
+                  style={{ background: `${item.c}14`, color: item.c }}>
+                  {item.tag}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════
+          FEATURED PROJECT — Matcha Power
+      ════════════════════════════════════════════════════ */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-8 lg:px-16">
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-[11px] font-extrabold tracking-[0.3em] uppercase mb-12 text-blue-600 text-center">
+            {t("Featured Project", "مشروع مميز")}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            className="relative rounded-3xl overflow-hidden border border-slate-800"
+            style={{ background: "linear-gradient(135deg, #0a0e27 0%, #0f1123 50%, #150d2a 100%)" }}
+          >
+            {/* glows */}
+            <div className="absolute top-0 right-1/4 w-80 h-80 rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(124,58,237,.25), transparent 70%)" }} />
+            <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(37,99,235,.15), transparent 70%)" }} />
+
+            <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row gap-10 items-start md:items-center">
+              {/* icon */}
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 border border-white/10"
+                style={{ background: "rgba(255,255,255,0.06)" }}>
+                🍵
+              </div>
+
+              {/* content */}
+              <div className="flex-1 text-white">
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <span className="text-[10px] font-bold uppercase tracking-widest border border-violet-500/40 text-violet-300 px-3 py-1 rounded-full bg-violet-500/10">
+                    {t("Founder & Developer", "مؤسس ومطور")}
+                  </span>
+                  <span className="text-xs text-white/35 font-mono">
+                    {t("May 2025 – May 2026", "مايو 2025 – مايو 2026")}
+                  </span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-black font-heading mb-4">
+                  {t("Matcha Power", "ماتشا باور")}
+                </h3>
+                <p className="text-white/45 leading-relaxed max-w-xl text-sm">
+                  {t(
+                    "Founded from idea to full operational launch. Built the complete brand vision, business model, customer experience, and growth strategy from scratch.",
+                    "تأسيس من الفكرة وحتى الإطلاق التشغيلي الكامل. بناء رؤية العلامة ونموذج العمل وتجربة العميل واستراتيجية النمو من الصفر."
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-6">
+                  {(t(
+                    ["Brand Identity", "Business Model", "Market Research", "Growth Strategy", "Customer Experience"],
+                    ["هوية العلامة", "نموذج العمل", "بحث السوق", "استراتيجية النمو", "تجربة العميل"]
+                  ) as string[]).map(tag => (
+                    <span key={tag} className="text-[11px] font-semibold px-3 py-1.5 rounded-lg border border-white/10 text-white/50"
+                      style={{ background: "rgba(255,255,255,0.05)" }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* cta */}
+              <Link href="/portfolio" className="flex-shrink-0">
+                <button className="h-12 px-7 rounded-xl font-bold text-sm text-white border border-white/20 hover:border-white/50 transition-all whitespace-nowrap"
+                  style={{ background: "rgba(255,255,255,0.08)" }}>
+                  {t("View Portfolio", "استعرض الأعمال")}
+                </button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════
+          CTA — final
+      ════════════════════════════════════════════════════ */}
+      <section className="py-28 border-t border-border bg-white">
+        <div className="container mx-auto px-8 lg:px-16">
           <div className="grid md:grid-cols-2 gap-16 items-center max-w-5xl mx-auto">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -241,23 +457,33 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="text-xs font-bold uppercase tracking-[0.25em] text-blue-600 mb-4">
-                {t("Who I Am", "من أنا")}
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold font-heading mb-6 leading-tight">
-                {t("Turning ideas into real businesses", "تحويل الأفكار إلى أعمال حقيقية")}
+              <img src={logoPath} alt="m-aldbani" className="h-14 w-auto object-contain mb-8 opacity-90" />
+              <h2 className="text-4xl md:text-5xl font-black font-heading leading-tight mb-4">
+                {t("Ready to build something", "هل أنت مستعد")}
+                <br />
+                <span style={{ background: "linear-gradient(135deg,#2563eb,#7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  {t("extraordinary?", "لبناء شيء استثنائي؟")}
+                </span>
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-6">
+              <p className="text-foreground/45 mb-8 leading-relaxed">
                 {t(
-                  "I specialize in building brands and operations in the F&B sector from the ground up. From founding Matcha Power to managing Fuji Cafe's brand — my work spans strategy, identity, and execution.",
-                  "أتخصص في بناء العلامات التجارية والعمليات في قطاع الأغذية والمشروبات من الصفر. من تأسيس ماتشا باور إلى إدارة علامة فوجي كافية — يمتد عملي من الاستراتيجية إلى الهوية والتنفيذ."
+                  "Let's discuss how I can help grow your brand and transform your operations.",
+                  "دعنا نتحدث عن كيفية مساعدتي في تنمية علامتك التجارية وتحويل عملياتك."
                 )}
               </p>
-              <Link href="/about">
-                <Button variant="outline" className="border-2 border-slate-200 font-bold hover:border-blue-500 hover:text-blue-600 transition-all">
-                  {t("Full Biography →", "السيرة الكاملة ←")}
-                </Button>
-              </Link>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/book">
+                  <button className="h-13 px-8 py-3.5 rounded-xl font-bold text-sm text-white"
+                    style={{ background: "linear-gradient(135deg,#2563eb,#7c3aed)", boxShadow: "0 8px 30px rgba(37,99,235,.3)" }}>
+                    {t("Book Free Consultation", "احجز استشارة مجانية")}
+                  </button>
+                </Link>
+                <Link href="/contact">
+                  <button className="h-13 px-8 py-3.5 rounded-xl font-bold text-sm border-2 border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-all">
+                    {t("Get in Touch", "تواصل معي")}
+                  </button>
+                </Link>
+              </div>
             </motion.div>
 
             <motion.div
@@ -265,132 +491,18 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="space-y-4"
+              className="relative hidden md:block"
             >
-              {[
-                { yr: "2025 – Now",      en: "Brand Manager",            ar: "مدير العلامة التجارية",        org: "Fuji Cafe" },
-                { yr: "2024 – 2025",     en: "Operations & BD Manager",  ar: "مدير العمليات والتطوير",      org: "Fuji Cafe" },
-                { yr: "2022 – 2024",     en: "Branch Manager",           ar: "مدير فرع",                    org: "Namq Beverages" },
-                { yr: "2018 – 2022",     en: "Branch Manager",           ar: "مدير فرع",                    org: "Al-Awaji Markets" },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className="flex items-center gap-4 p-4 bg-white rounded-xl border border-border hover:border-blue-200 hover:shadow-sm transition-all group"
-                >
-                  <span className="text-xs font-mono text-muted-foreground w-24 flex-shrink-0">{item.yr}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm group-hover:text-blue-600 transition-colors truncate">
-                      {t(item.en, item.ar)}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{item.org}</p>
-                  </div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </motion.div>
-              ))}
+              <div className="rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/10 border border-slate-100"
+                style={{ aspectRatio: "4/3" }}>
+                <div className="absolute inset-0" style={{ background: "linear-gradient(145deg,#e8edf8,#d1d9f0)" }} />
+                <img src={photoPath} alt="Mohammed Al-Dabbani"
+                  className="relative z-10 w-full h-full object-cover object-top" />
+                <div className="absolute inset-0 z-20 pointer-events-none"
+                  style={{ background: "linear-gradient(to right, rgba(255,255,255,0.4), transparent 40%)" }} />
+              </div>
             </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* ── PROJECT HIGHLIGHT ───────────────────────────────── */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-blue-600 mb-12 text-center">
-              {t("Featured Project", "مشروع مميز")}
-            </p>
-            <div className="relative rounded-3xl overflow-hidden border border-slate-100 shadow-xl shadow-slate-100">
-              <div className="absolute inset-0"
-                style={{ background: "linear-gradient(135deg, #0d1034 0%, #1e1b4b 100%)" }} />
-              <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20"
-                style={{ background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)" }} />
-              <div className="relative z-10 p-10 md:p-14 text-white">
-                <div className="flex flex-col md:flex-row md:items-center gap-8">
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
-                    style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                    🍵
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <span className="text-xs font-bold uppercase tracking-widest text-blue-300 border border-blue-400/30 px-3 py-1 rounded-full bg-blue-500/10">
-                        {t("Founder", "مؤسس")}
-                      </span>
-                      <span className="text-xs text-white/40 font-mono">
-                        {t("May 2025 – May 2026", "مايو 2025 – مايو 2026")}
-                      </span>
-                    </div>
-                    <h3 className="text-3xl font-bold font-heading mb-3">
-                      {t("Matcha Power", "ماتشا باور")}
-                    </h3>
-                    <p className="text-white/55 leading-relaxed max-w-lg text-sm">
-                      {t(
-                        "Founded from idea to full operational launch. Built the complete brand vision, business model, and customer experience.",
-                        "تأسيس من الفكرة وحتى الإطلاق التشغيلي الكامل. بناء رؤية العلامة ونموذج العمل وتجربة العميل بالكامل."
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <Link href="/portfolio">
-                      <Button className="h-12 px-7 font-bold text-sm rounded-xl border-0 text-white"
-                        style={{ background: "linear-gradient(135deg, #3b5bdb, #7c3aed)" }}>
-                        {t("View Work", "استعرض الأعمال")}
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── CTA ─────────────────────────────────────────────── */}
-      <section className="py-28 bg-white border-t border-border">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="text-center max-w-2xl mx-auto"
-          >
-            <img src={logoPath} alt="m-aldbani" className="h-16 w-auto object-contain mx-auto mb-8 opacity-90" />
-            <h2 className="text-4xl md:text-5xl font-bold font-heading mb-5 leading-tight">
-              {t("Let's build", "لنبني")}
-              {" "}
-              <span style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                {t("together.", "معاً.")}
-              </span>
-            </h2>
-            <p className="text-muted-foreground mb-10 text-lg">
-              {t(
-                "Ready to elevate your brand and operations? Let's talk.",
-                "هل أنت مستعد للارتقاء بعلامتك التجارية وعملياتك؟ لنتحدث."
-              )}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/book">
-                <Button size="lg" className="h-14 px-10 font-bold text-sm rounded-xl border-0 text-white"
-                  style={{ background: "linear-gradient(135deg, #3b5bdb, #7c3aed)", boxShadow: "0 8px 32px rgba(99,102,241,.25)" }}>
-                  {t("Book Free Consultation", "احجز استشارة مجانية")}
-                </Button>
-              </Link>
-              <Link href="/contact">
-                <Button size="lg" variant="outline" className="h-14 px-10 font-bold text-sm rounded-xl border-2 border-slate-200 hover:border-blue-400 hover:text-blue-600">
-                  {t("Get in Touch", "تواصل معي")}
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
         </div>
       </section>
 
