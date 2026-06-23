@@ -1,9 +1,13 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import path from "path";
+import { fileURLToPath } from "url";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { connectMongoDB } from "./lib/mongodb";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app: Express = express();
 
@@ -36,5 +40,14 @@ connectMongoDB().catch((err) => {
 });
 
 app.use("/api", router);
+
+// Serve frontend static files in production
+if (process.env.NODE_ENV === "production") {
+  const frontendDist = path.resolve(__dirname, "../../m-aldbani/dist/public");
+  app.use(express.static(frontendDist));
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+}
 
 export default app;

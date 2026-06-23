@@ -1,0 +1,10 @@
+node_modules
+**/node_modules
+**/.cache
+.local
+.git
+*.log
+**/dist
+**/*.map
+.replit
+.replitignore
