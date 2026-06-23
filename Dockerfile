@@ -28,7 +28,7 @@ RUN PORT=3000 BASE_PATH=/ NODE_ENV=production \
     pnpm --filter @workspace/m-aldbani run build
 
 
-FROM node:20-alpine AS runner
+FROM node:20 AS runner
 
 WORKDIR /app
 
