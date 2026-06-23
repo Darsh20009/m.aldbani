@@ -1,0 +1,205 @@
+m-aldbani.site
+
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 24, 2026 at 1:40 AM
+failed
+60aef1f
+Add a safety check for data fetched from the API Implement `Array.isArray` checks for all API data fetches across 15 files to prevent runtime errors when unexpected data types are returned. Replit-Commit-Author: Agent Replit-Commit-Session-Id: 46e9eba1-a63c-4999-b53c-e44af49322bb Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: 689855b0-a589-4a67-b726-9531e8afe54c Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/8461c03e-6f62-4443-b091-f9adcc4f07d5/46e9eba1-a63c-4999-b53c-e44af49322bb/aSU1neK Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 1 while building your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search logs
+
+Jun 24, 1:39 AM - 1:41 AM
+GMT+3
+
+
+
+==> Cloning from https://github.com/Darsh20009/m.aldbani
+==> Checking out commit 60aef1fa25908644e125abc6f9ada9e4643dbb58 in branch main
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.25kB done
+#1 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 ...
+#3 [auth] library/node:pull render-prod/docker-mirror-repository/library/node:pull token for us-west1-docker.pkg.dev
+#3 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.6s
+#4 [internal] load .dockerignore
+#4 transferring context: 136B done
+#4 DONE 0.0s
+#5 importing cache manifest
+#5 ERROR: failed to configure registry cache importer: image-registry-v2.aws-us-west-2-7.internal.render.com/srv-d8sl5sugvqtc738cqs9g:buildcache: not found
+#6 [builder  1/19] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+#6 resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 0.0s done
+#6 DONE 0.1s
+#7 [internal] load build context
+#7 transferring context: 8.49MB 0.1s done
+#7 DONE 0.1s
+#6 [builder  1/19] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+#6 extracting sha256:6a0ac1617861a677b045b7ff88545213ec31c0ff08763195a70a4a5adda577bb 0.1s done
+#6 extracting sha256:4feea04c154301db6f4a496efa397b3db96603b1c009c797cfdde77bea8b3287
+#6 extracting sha256:4feea04c154301db6f4a496efa397b3db96603b1c009c797cfdde77bea8b3287 1.4s done
+#6 DONE 2.1s
+#6 [builder  1/19] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+#6 extracting sha256:b2cbbfe903b0821005780971ddc5892edcc4ce74c5a48d82e1d2b382edac3122 0.1s done
+#6 extracting sha256:fff4e2c1b189bf87d63ad8bd07f7f4eb288d6f2b6a07a8bb44c60e8c075d2096 0.0s done
+#6 DONE 2.2s
+#8 [runner 2/4] WORKDIR /app
+#8 DONE 0.0s
+#9 [builder  2/19] RUN corepack enable && corepack prepare pnpm@10 --activate
+#9 0.563 Preparing pnpm@10 for immediate activation...
+#9 DONE 1.5s
+#10 [builder  3/19] WORKDIR /app
+#10 DONE 0.0s
+#11 [builder  4/19] COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+#11 DONE 0.0s
+#12 [builder  5/19] COPY package.json ./
+#12 DONE 0.0s
+#13 [builder  6/19] COPY tsconfig.json tsconfig.base.json ./
+#13 DONE 0.0s
+#14 [builder  7/19] COPY lib/api-zod/package.json ./lib/api-zod/
+#14 DONE 0.0s
+#15 [builder  8/19] COPY lib/api-client-react/package.json ./lib/api-client-react/
+#15 DONE 0.0s
+#16 [builder  9/19] COPY lib/api-spec/package.json ./lib/api-spec/
+#16 DONE 0.0s
+#17 [builder 10/19] COPY lib/db/package.json ./lib/db/
+#17 DONE 0.0s
+#18 [builder 11/19] COPY artifacts/api-server/package.json ./artifacts/api-server/
+#18 DONE 0.0s
+#19 [builder 12/19] COPY artifacts/m-aldbani/package.json ./artifacts/m-aldbani/
+#19 DONE 0.0s
+#20 [builder 13/19] RUN pnpm install --frozen-lockfile
+#20 0.661 Scope: all 7 workspace projects
+#20 0.830 Lockfile is up to date, resolution step is skipped
+#20 0.934 Progress: resolved 1, reused 0, downloaded 0, added 0
+#20 1.483 Packages: +774
+#20 1.483 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#20 1.954 Progress: resolved 774, reused 0, downloaded 35, added 0
+#20 2.954 Progress: resolved 774, reused 0, downloaded 303, added 76
+#20 3.956 Progress: resolved 774, reused 0, downloaded 398, added 97
+#20 4.969 Progress: resolved 774, reused 0, downloaded 597, added 138
+#20 5.384 
+#20 5.384    ╭──────────────────────────────────────────────╮
+#20 5.384    │                                              │
+#20 5.384    │     Update available! 10.34.4 → 11.9.0.      │
+#20 5.384    │     Changelog: https://pnpm.io/v/11.9.0      │
+#20 5.384    │   To update, run: corepack use pnpm@11.9.0   │
+#20 5.384    │                                              │
+#20 5.384    ╰──────────────────────────────────────────────╯
+#20 5.384 
+#20 5.970 Progress: resolved 774, reused 0, downloaded 739, added 166
+#20 6.851 Progress: resolved 774, reused 0, downloaded 774, added 774, done
+#20 7.252 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+#20 7.336 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+#20 7.625 
+#20 7.625 devDependencies:
+#20 7.625 + prettier 3.8.3
+#20 7.625 + typescript 5.9.3
+#20 7.625 
+#20 7.641 . preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+#20 7.660 . preinstall: Done
+#20 7.913 Done in 7.7s using pnpm v10.34.4
+#20 DONE 14.7s
+#21 [builder 14/19] COPY lib/ ./lib/
+#21 DONE 0.9s
+#22 [builder 15/19] COPY artifacts/api-server/ ./artifacts/api-server/
+#22 DONE 0.0s
+#23 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#23 DONE 0.1s
+#24 [builder 17/19] COPY attached_assets/ ./attached_assets/
+#24 DONE 0.0s
+#25 [builder 18/19] RUN pnpm --filter @workspace/api-server run build
+#25 0.556 
+#25 0.556 > @workspace/api-server@0.0.0 build /app/artifacts/api-server
+#25 0.556 > node ./build.mjs
+#25 0.556 
+#25 1.021 
+#25 1.021   dist/index.mjs                       4.3mb ⚠️
+#25 1.021   dist/pino-worker.mjs               153.4kb
+#25 1.021   dist/pino-file.mjs                 142.0kb
+#25 1.021   dist/pino-pretty.mjs               114.6kb
+#25 1.021   dist/thread-stream-worker.mjs        7.3kb
+#25 1.021   dist/index.mjs.map                   7.8mb
+#25 1.021   dist/pino-worker.mjs.map           256.9kb
+#25 1.021   dist/pino-file.mjs.map             229.0kb
+#25 1.021   dist/pino-pretty.mjs.map           204.0kb
+#25 1.021   dist/thread-stream-worker.mjs.map   12.0kb
+#25 1.021 
+#25 1.021 ⚡ Done in 375ms
+#25 DONE 1.2s
+#26 [builder 19/19] RUN PORT=3000 BASE_PATH=/ NODE_ENV=production     pnpm --filter @workspace/m-aldbani run build
+#26 0.628 
+#26 0.628 > @workspace/m-aldbani@0.0.0 build /app/artifacts/m-aldbani
+#26 0.628 > vite build --config vite.config.ts
+#26 0.628 
+#26 0.803 /app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js:115
+#26 0.803 		throw new Error(
+#26 0.803 		      ^
+#26 0.803 
+#26 0.803 Error: Cannot find module @rollup/rollup-linux-x64-musl. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+#26 0.803     at requireWithFriendlyError (/app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js:115:9)
+#26 0.803     at Object.<anonymous> (/app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js:124:76)
+#26 0.803     ... 3 lines matching cause stack trace ...
+#26 0.803     at Module._load (node:internal/modules/cjs/loader:1091:12)
+#26 0.803     at cjsLoader (node:internal/modules/esm/translators:298:15)
+#26 0.803     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+#26 0.803     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+#26 0.803     at async ModuleLoader.import (node:internal/modules/esm/loader:606:24) {
+#26 0.803   [cause]: Error: Cannot find module '@rollup/rollup-linux-x64-musl'
+#26 0.803   Require stack:
+#26 0.803   - /app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js
+#26 0.803       at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+#26 0.803       at Module._load (node:internal/modules/cjs/loader:1038:27)
+#26 0.803       at Module.require (node:internal/modules/cjs/loader:1289:19)
+#26 0.803       at require (node:internal/modules/helpers:182:18)
+#26 0.803       at requireWithFriendlyError (/app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js:97:10)
+#26 0.803       at Object.<anonymous> (/app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js:124:76)
+#26 0.803       at Module._compile (node:internal/modules/cjs/loader:1521:14)
+#26 0.803       at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+#26 0.803       at Module.load (node:internal/modules/cjs/loader:1266:32)
+#26 0.803       at Module._load (node:internal/modules/cjs/loader:1091:12) {
+#26 0.803     code: 'MODULE_NOT_FOUND',
+#26 0.803     requireStack: [
+#26 0.803       '/app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js'
+#26 0.803     ]
+#26 0.803   }
+#26 0.803 }
+#26 0.803 
+#26 0.803 Node.js v20.20.2
+#26 0.844 /app/artifacts/m-aldbani:
+#26 0.844  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/m-aldbani@0.0.0 build: `vite build --config vite.config.ts`
+#26 0.844 Exit status 1
+#26 ERROR: process "/bin/sh -c PORT=3000 BASE_PATH=/ NODE_ENV=production     pnpm --filter @workspace/m-aldbani run build" did not complete successfully: exit code: 1
+------
+ > importing cache manifest
+------
+------
+ > [builder 19/19] RUN PORT=3000 BASE_PATH=/ NODE_ENV=production     pnpm --filter @workspace/m-aldbani run build:
+0.803     requireStack: [
+0.803       '/app/node_modules/.pnpm/rollup@4.60.3/node_modules/rollup/dist/native.js'
+0.803     ]
+0.803   }
+0.803 }
+0.803 
+0.803 Node.js v20.20.2
+0.844 /app/artifacts/m-aldbani:
+0.844  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/m-aldbani@0.0.0 build: `vite build --config vite.config.ts`
+0.844 Exit status 1
+------
+Dockerfile:27
+--------------------
+  26 |     
+  27 | >>> RUN PORT=3000 BASE_PATH=/ NODE_ENV=production \
+  28 | >>>     pnpm --filter @workspace/m-aldbani run build
+  29 |     
+--------------------
+error: failed to solve: process "/bin/sh -c PORT=3000 BASE_PATH=/ NODE_ENV=production     pnpm --filter @workspace/m-aldbani run build" did not complete successfully: exit code: 1
+error: exit status 1
