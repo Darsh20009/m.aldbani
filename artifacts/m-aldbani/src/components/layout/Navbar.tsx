@@ -23,11 +23,14 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-100"
       style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}>
       <div className="container mx-auto flex h-[68px] items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2 group">
+
+        {/* Logo — mix-blend-mode:multiply removes white bg on white surfaces */}
+        <Link href="/" className="flex items-center group">
           <img
             src={logoPath}
             alt="m-aldbani"
-            className="h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-11 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+            style={{ mixBlendMode: "multiply" }}
           />
         </Link>
 
@@ -36,7 +39,10 @@ export function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors relative after:absolute after:bottom-[-3px] after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-gradient-to-r after:from-blue-600 after:to-violet-600 after:transition-all after:duration-300 hover:after:w-full"
+              className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors relative
+                after:absolute after:bottom-[-3px] after:left-0 after:h-[2px] after:w-0
+                after:rounded-full after:bg-gradient-to-r after:from-blue-600 after:to-violet-600
+                after:transition-all after:duration-300 hover:after:w-full"
             >
               {t(item.en, item.ar)}
             </Link>
