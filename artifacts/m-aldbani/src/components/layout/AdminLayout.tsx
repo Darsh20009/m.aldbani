@@ -72,7 +72,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3 mb-3 px-2">
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
-              {user.name.charAt(0)}
+              {(user.name ?? "?").charAt(0)}
             </div>
             <div className="overflow-hidden">
               <p className="text-sm font-bold truncate text-foreground">{user.name}</p>

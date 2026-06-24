@@ -86,7 +86,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 overflow-auto bg-background">
         <header className="h-16 border-b border-border px-6 md:px-8 flex items-center justify-between bg-card shadow-sm">
           <h1 className="text-lg font-bold font-heading">
-            {t("Welcome back", "مرحباً بعودتك")}, {user.name.split(" ")[0]}
+            {t("Welcome back", "مرحباً بعودتك")}, {(user.name ?? "").split(" ")[0]}
           </h1>
           <Button variant="ghost" size="sm" onClick={() => setLocation("/")} className="text-muted-foreground hover:text-primary text-xs">
             {t("← Website", "← الموقع")}
