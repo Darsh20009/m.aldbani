@@ -1,0 +1,228 @@
+srv-d8sl5sugvqtc738cqs9g
+
+Darsh20009 / m.aldbani
+main
+m-aldbani.site
+
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+June 24, 2026 at 7:35 PM
+failed
+043b791
+Update base image for application runtime environment Change the Dockerfile runner stage base image from `node:20-alpine` to `node:20` to resolve native dependency issues and ensure compatibility. Replit-Commit-Author: Agent Replit-Commit-Session-Id: 46e9eba1-a63c-4999-b53c-e44af49322bb Replit-Commit-Checkpoint-Type: full_checkpoint Replit-Commit-Event-Id: 2953d59f-e5d6-4b17-91f1-7e82b8dd7889 Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/8461c03e-6f62-4443-b091-f9adcc4f07d5/46e9eba1-a63c-4999-b53c-e44af49322bb/aSU1neK Replit-Helium-Checkpoint-Created: true
+
+Rollback
+Exited with status 1 while running your code.
+Read our docs for common ways to troubleshoot your deploy.
+
+All logs
+Search
+Search logs
+
+Live tail
+
+
+
+==> Cloning from https://github.com/Darsh20009/m.aldbani
+==> Checking out commit 043b791ee7e0c9e84fd9953b1f884c9e2f3699d3 in branch main
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.23kB done
+#1 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:20
+#2 ...
+#3 [auth] library/node:pull render-prod/docker-mirror-repository/library/node:pull token for us-west1-docker.pkg.dev
+#3 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:20
+#2 DONE 0.6s
+#4 [internal] load .dockerignore
+#4 transferring context: 136B done
+#4 DONE 0.0s
+#5 [internal] load build context
+#5 DONE 0.0s
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 resolve docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5 0.0s done
+#6 DONE 0.0s
+#7 importing cache manifest
+#7 inferred cache manifest type: application/vnd.oci.image.manifest.v1+json done
+#7 DONE 0.1s
+#5 [internal] load build context
+#5 transferring context: 8.51MB 0.1s done
+#5 DONE 0.1s
+#8 [builder  3/19] WORKDIR /app
+#8 CACHED
+#9 [builder 12/19] COPY artifacts/m-aldbani/package.json ./artifacts/m-aldbani/
+#9 CACHED
+#10 [builder 13/19] RUN pnpm install --frozen-lockfile
+#10 CACHED
+#11 [builder 15/19] COPY artifacts/api-server/ ./artifacts/api-server/
+#11 CACHED
+#12 [builder  2/19] RUN corepack enable && corepack prepare pnpm@10 --activate
+#12 CACHED
+#13 [builder  5/19] COPY package.json ./
+#13 CACHED
+#14 [builder  6/19] COPY tsconfig.json tsconfig.base.json ./
+#14 CACHED
+#15 [builder 10/19] COPY lib/db/package.json ./lib/db/
+#15 CACHED
+#16 [builder 14/19] COPY lib/ ./lib/
+#16 CACHED
+#17 [builder  7/19] COPY lib/api-zod/package.json ./lib/api-zod/
+#17 CACHED
+#18 [builder  8/19] COPY lib/api-client-react/package.json ./lib/api-client-react/
+#18 CACHED
+#19 [builder 11/19] COPY artifacts/api-server/package.json ./artifacts/api-server/
+#19 CACHED
+#20 [builder  9/19] COPY lib/api-spec/package.json ./lib/api-spec/
+#20 CACHED
+#21 [builder  4/19] COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+#21 CACHED
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 ...
+#22 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#22 CACHED
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 extracting sha256:db53381ee51f9e43304e236099ba097ae1b33ae41a8007e0b6319992eb55fd00
+#6 ...
+#22 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#22 DONE 3.6s
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 extracting sha256:db53381ee51f9e43304e236099ba097ae1b33ae41a8007e0b6319992eb55fd00 2.3s done
+#6 extracting sha256:e5203b2bfeff92b72e816dc6cbb1f16856f0cd592e521e3c0cfa195a78fe180e
+#6 extracting sha256:e5203b2bfeff92b72e816dc6cbb1f16856f0cd592e521e3c0cfa195a78fe180e 1.6s done
+#6 DONE 5.4s
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 extracting sha256:8fcda2b4d7993820b00c5488d173051e76d01ba6b85620617ba77001b0f9e2fa
+#6 extracting sha256:8fcda2b4d7993820b00c5488d173051e76d01ba6b85620617ba77001b0f9e2fa 2.2s done
+#6 DONE 7.6s
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 extracting sha256:2933ecab0f11302fd71f29aa83ad2904683246f7a8320ad0dc3a60b23f05fee9
+#6 extracting sha256:2933ecab0f11302fd71f29aa83ad2904683246f7a8320ad0dc3a60b23f05fee9 7.9s done
+#6 DONE 15.4s
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 extracting sha256:c83419f4430962505175b565eb8a24aafeaa4d441c0b22234e94c6e8160848ba 0.0s done
+#6 extracting sha256:76e6b8204a89d20e7915fdc9a98ff33cb65fd7ce44ecf5a84b6cfca4bdb3d6d0
+#6 extracting sha256:76e6b8204a89d20e7915fdc9a98ff33cb65fd7ce44ecf5a84b6cfca4bdb3d6d0 1.9s done
+#6 DONE 17.3s
+#6 [builder  1/19] FROM docker.io/library/node:20@sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+#6 extracting sha256:2f2ab6e4eb4619f7b8506c38dc79c8adf77acffb7622bc15ceeabb0fbc73b8a1 0.0s done
+#6 extracting sha256:0b22ec2d9b1a1a0e906e301b5ef08efe7774d5fc001b9cfa08e4e980152a0357 0.0s done
+#6 DONE 17.4s
+#23 [runner 2/4] WORKDIR /app
+#23 DONE 0.0s
+#22 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#22 extracting sha256:1a20aea02c93456079204a30aaeedc247061ebef44987c6a76b40af136167ce5
+#22 extracting sha256:1a20aea02c93456079204a30aaeedc247061ebef44987c6a76b40af136167ce5 0.4s done
+#22 DONE 4.0s
+#22 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#22 extracting sha256:22d386eeafa582528920bb50c43e063df7a22b134ea73c2b3b0d85381c9c05d0 0.0s done
+#22 extracting sha256:bdf267c428eca91d78afbde9ef4541d4cdeabea7a1e9279763301ba39118b7c4 0.0s done
+#22 extracting sha256:f4c5668c3f0f0e95b71248fded816d970771c7584e610d8a06b893fd7060e8e0 0.0s done
+#22 extracting sha256:a50597e0ea2ae9be9d506069be2e0678a38625001b94f056eafb6850b73623ae 0.0s done
+#22 extracting sha256:f8a96f0d813eeef9138f223248ee44576a3ec2e81fabbcbf964f0140b5ab6816 0.0s done
+#22 extracting sha256:849a08b57becf09c8f1f629d350e940c1c3ac202d01bee55402e59abb4180187 0.0s done
+#22 extracting sha256:7e3ba13e80d4695c6a8f3eabb43f72ba7a2e4ee4dfe8a58b1bd08c03032deb67 0.0s done
+#22 DONE 4.1s
+#22 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#22 extracting sha256:f7ba1dd23c80ec94257738aeccccc6b858ea57140eadf760c4739a073cda5397 0.0s done
+#22 extracting sha256:934702ca646b9cfba3fe43b7aba460896677c21bf6031041aeb6092c09e964ac 0.0s done
+#22 extracting sha256:a13da81267deb07645b0f01c35bc788bdb30d8d4f0cc1b01aa84b91cb7920e6c 0.0s done
+#22 extracting sha256:0a923a63e7f2b4f84f848bc3344184c48b30c38cae0d9e941f1ed484fb255fa4
+#22 extracting sha256:0a923a63e7f2b4f84f848bc3344184c48b30c38cae0d9e941f1ed484fb255fa4 27.4s done
+#22 DONE 31.5s
+#22 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#22 extracting sha256:2e2a51231bd9b8a8879660d905eb3568a4ea1e2648290e25db885ebbcf1483ce 0.1s done
+#22 extracting sha256:0d832b9103a9fa5ac24ea5f28545017f777d5ab2cd1ef7533646000af5ebdf62 0.0s done
+#22 DONE 31.6s
+#22 [builder 16/19] COPY artifacts/m-aldbani/ ./artifacts/m-aldbani/
+#22 extracting sha256:ee6597bfdf1e19e318e0e0bc4b3543dfec3071bf7beb81c86055301f657078a0 0.1s done
+#22 DONE 31.7s
+#24 [builder 17/19] COPY attached_assets/ ./attached_assets/
+#24 DONE 0.0s
+#25 [builder 18/19] RUN pnpm --filter @workspace/api-server run build
+#25 0.452 
+#25 0.452 > @workspace/api-server@0.0.0 build /app/artifacts/api-server
+#25 0.452 > node ./build.mjs
+#25 0.452 
+#25 0.894 
+#25 0.894   dist/index.mjs                       4.3mb ⚠️
+#25 0.894   dist/pino-worker.mjs               153.4kb
+#25 0.894   dist/pino-file.mjs                 142.0kb
+#25 0.894   dist/pino-pretty.mjs               114.6kb
+#25 0.894   dist/thread-stream-worker.mjs        7.3kb
+#25 0.894   dist/index.mjs.map                   7.8mb
+#25 0.894   dist/pino-worker.mjs.map           256.9kb
+#25 0.894   dist/pino-file.mjs.map             229.0kb
+#25 0.894   dist/pino-pretty.mjs.map           204.0kb
+#25 0.894   dist/thread-stream-worker.mjs.map   12.0kb
+#25 0.894 
+#25 0.894 ⚡ Done in 377ms
+#25 DONE 1.0s
+#26 [builder 19/19] RUN PORT=3000 BASE_PATH=/ NODE_ENV=production     pnpm --filter @workspace/m-aldbani run build
+#26 0.450 
+#26 0.450 > @workspace/m-aldbani@0.0.0 build /app/artifacts/m-aldbani
+#26 0.450 > vite build --config vite.config.ts
+#26 0.450 
+#26 0.759 vite v7.3.3 building client environment for production...
+#26 0.832 transforming...
+#26 1.258 [plugin vite:esbuild] src/pages/home.tsx: Duplicate "style" attribute in JSX element
+#26 1.258 269 |                transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+#26 1.258 270 |                className="hidden lg:flex flex-col items-end justify-end order-1 lg:order-2 h-full relative"
+#26 1.258 271 |                style={{ alignSelf: "stretch" }}>
+#26 1.258     |                ^
+#26 1.258 272 |  
+#26 1.258 273 |                <div className="relative w-full h-full flex flex-col justify-end" style={{ minHeight: "92vh" }}>
+#26 1.258 
+#26 1.311 src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+#26 1.687 src/components/ui/avatar.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+#26 1.695 src/components/ui/select.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+#26 2.358 src/components/ui/label.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+#26 6.664 ✓ 3193 modules transformed.
+#26 7.699 rendering chunks...
+#26 7.795 computing gzip size...
+#26 7.830 dist/public/index.html                                                                 2.89 kB │ gzip:   1.07 kB
+#26 7.830 dist/public/assets/Screenshot_2026-06-22_at_6.27.49_PM_1782231945642-CYEo3dph.png    337.32 kB
+#26 7.830 dist/public/assets/Screenshot_2026-06-22_at_8.55.58_PM_1782151064834-CKcSbrcL.png  1,409.39 kB
+#26 7.830 dist/public/assets/index-DHee-5k_.css                                                135.30 kB │ gzip:  21.25 kB
+#26 7.830 dist/public/assets/index-C7MSgF4Y.js                                               1,171.91 kB │ gzip: 339.09 kB
+#26 7.830 
+#26 7.830 (!) Some chunks are larger than 500 kB after minification. Consider:
+#26 7.830 - Using dynamic import() to code-split the application
+#26 7.830 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+#26 7.830 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#26 7.830 ✓ built in 7.04s
+#26 DONE 8.8s
+#27 [runner 3/4] COPY --from=builder /app/artifacts/api-server/dist/ ./artifacts/api-server/dist/
+#27 DONE 0.2s
+#28 [runner 4/4] COPY --from=builder /app/artifacts/m-aldbani/dist/ ./artifacts/m-aldbani/dist/
+#28 DONE 0.1s
+#29 exporting to image
+#29 exporting layers 0.1s done
+#29 pushing layers
+#29 pushing layers 0.9s done
+#29 DONE 1.2s
+#30 exporting cache to registry
+#30 preparing build cache for export
+#30 sending cache export
+#30 sending cache export 2.2s done
+#30 DONE 5.0s
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+/app/node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/src/index.ts:218
+          throw new PathError(`Missing parameter name at index ${index}`, str);
+                ^
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at consumeUntil (/app/node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/src/index.ts:218:17)
+    at parse (/app/node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/src/index.ts:262:24)
+    at process (/app/node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/src/index.ts:466:52)
+    at pathToRegexp (/app/node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/src/index.ts:478:3)
+    at Object.match (/app/node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/src/index.ts:416:28)
+    at matcher (/app/node_modules/.pnpm/router@2.2.0/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/app/node_modules/.pnpm/router@2.2.0/node_modules/router/lib/layer.js:93:62)
+    at Function.route (/app/node_modules/.pnpm/router@2.2.0/node_modules/router/index.js:428:17)
+    at Function.route (/app/node_modules/.pnpm/express@5.2.1/node_modules/express/lib/application.js:257:22)
+    at Function.app2.<computed> (/app/node_modules/.pnpm/express@5.2.1/node_modules/express/lib/application.js:478:22) {
+  originalPath: '*'
+}
+Node.js v20.20.2
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
