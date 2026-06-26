@@ -2,8 +2,13 @@ import { RootLayout } from "../components/layout/RootLayout";
 import { useLanguage } from "../hooks/use-language";
 import { motion } from "framer-motion";
 
+const GOLD  = "#B8860B";
+const GOLD2 = "#D4A017";
+const NAVY  = "#0A1628";
+
 export default function About() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isAr = language === "ar";
 
   const experience = [
     {
@@ -13,6 +18,8 @@ export default function About() {
       titleAr: "مدير العلامة التجارية",
       orgEn: "Thamarat Al-Khayr — Fuji Cafe",
       orgAr: "ثمار الخير لخدمات الإعاشة — فوجي كافية",
+      current: true,
+      icon: "🏆",
       pointsEn: [
         "Develop and execute growth and expansion strategy",
         "Analyze market and identify new business opportunities",
@@ -35,6 +42,8 @@ export default function About() {
       titleAr: "مدير العمليات وتطوير الأعمال",
       orgEn: "Thamarat Al-Khayr — Fuji Cafe",
       orgAr: "ثمار الخير لخدمات الإعاشة — فوجي كافية",
+      current: false,
+      icon: "📈",
       pointsEn: [
         "Led the founding of the project from zero to full commercial launch",
         "Developed and executed strategic and operational growth plans",
@@ -55,8 +64,10 @@ export default function About() {
       yearAr: "2022 – أكتوبر 2024",
       titleEn: "Branch Manager / Assistant Branch Manager",
       titleAr: "مدير فرع / مساعد مدير فرع",
-      orgEn: "Namq for Beverages",
+      orgEn: "Namq for Beverages Co.",
       orgAr: "شركة نمق لتقديم المشروبات",
+      current: false,
+      icon: "☕",
       pointsEn: [
         "Managed daily branch operations",
         "Led teams and developed performance to achieve operational targets",
@@ -77,6 +88,8 @@ export default function About() {
       titleAr: "مدير فرع / مساعد / خدمة عملاء",
       orgEn: "Al-Awaji Commercial Markets & Centers",
       orgAr: "أسواق ومراكز العواجي التجارية",
+      current: false,
+      icon: "🏪",
       pointsEn: [
         "Managed daily branch operations and achieved operational targets",
         "Managed inventory, purchasing, and availability monitoring",
@@ -93,197 +106,444 @@ export default function About() {
   ];
 
   const skills = [
-    { en: "Brand Building & Positioning",       ar: "بناء البراندات والتموضع التجاري" },
-    { en: "Business Development Strategy",       ar: "استراتيجية تطوير الأعمال" },
-    { en: "Operations Management",               ar: "إدارة العمليات التشغيلية" },
-    { en: "Market Analysis & Opportunity",       ar: "تحليل السوق واكتشاف الفرص" },
-    { en: "Customer Experience Design",          ar: "تصميم تجربة العميل" },
-    { en: "Team Leadership & Development",       ar: "قيادة وبناء الفرق" },
-    { en: "Idea-to-Project Execution",           ar: "تحويل الأفكار إلى مشاريع" },
-    { en: "Creativity + Profitability Linking",  ar: "ربط الإبداع بالربحية" },
+    { en: "Brand Building & Positioning",       ar: "بناء البراندات والتموضع التجاري",      icon: "🎯" },
+    { en: "Business Development Strategy",       ar: "استراتيجية تطوير الأعمال",              icon: "📊" },
+    { en: "Operations Management",               ar: "إدارة العمليات التشغيلية",              icon: "⚙️" },
+    { en: "Market Analysis & Opportunity",       ar: "تحليل السوق واكتشاف الفرص",            icon: "🔍" },
+    { en: "Customer Experience Design",          ar: "تصميم تجربة العميل",                   icon: "✨" },
+    { en: "Team Leadership & Development",       ar: "قيادة وبناء الفرق",                    icon: "👥" },
+    { en: "Idea-to-Project Execution",           ar: "تحويل الأفكار إلى مشاريع",             icon: "🚀" },
+    { en: "Creativity + Profitability Linking",  ar: "ربط الإبداع بالربحية",                 icon: "💡" },
   ];
 
   const courses = [
-    { en: "Inventory & Procurement Management", ar: "إدارة المخزون والمشتريات", org: "Exclusive Technology Training Center / مركز التقنية الحصرية" },
-    { en: "Advanced Restaurant & Café Management", ar: "إدارة وتشغيل المطاعم والمقاهي (المتقدمة)", org: "Mohammed Al-Tabshi / محمد الطبشي" },
-    { en: "Barista Profession", ar: "مهنة البريستا", org: "Banan Training Center / مركز التدريب بنان" },
-    { en: "Professional Operations Course", ar: "دورة التشغيل الاحترافي", org: "BCI Institute / معهد بي سي ايه" },
-    { en: "Business Operations Management", ar: "إدارة عمليات الأعمال", org: "Idarek Platform / منصة إدارك" },
+    { en: "Inventory & Procurement Management",        ar: "إدارة المخزون والمشتريات",                          org: "مركز التقنية الحصرية" },
+    { en: "Advanced Restaurant & Café Management",     ar: "إدارة وتشغيل المطاعم والمقاهي (المتقدمة)",         org: "محمد الطبشي" },
+    { en: "Barista Profession",                        ar: "مهنة البريستا",                                    org: "مركز التدريب بنان" },
+    { en: "Professional Operations Course",            ar: "دورة التشغيل الاحترافي",                           org: "معهد BCI" },
+    { en: "Business Operations Management",            ar: "إدارة عمليات الأعمال",                             org: "منصة إدارك" },
   ];
 
   return (
     <RootLayout>
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-background z-0" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px] z-0" />
+      {/* ── Hero Banner ── */}
+      <section
+        className="relative overflow-hidden py-28 flex items-center"
+        style={{ background: `linear-gradient(135deg, ${NAVY} 0%, #0d1f3c 60%, #112240 100%)` }}
+      >
+        {/* geometric accent */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-[2px]"
+            style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full opacity-[0.06]"
+            style={{ background: `radial-gradient(circle, ${GOLD}, transparent 70%)` }} />
+          <div className="absolute bottom-0 left-0 right-0 h-[1px]"
+            style={{ background: `linear-gradient(90deg, transparent, ${GOLD}40, transparent)` }} />
+          {/* Arabic watermark */}
+          <div className="absolute inset-0 flex items-center justify-end pr-16 overflow-hidden select-none pointer-events-none">
+            <span className="font-black leading-none opacity-[0.04] text-white"
+              style={{ fontFamily: "'IBM Plex Sans Arabic',sans-serif", fontSize: 220 }}>
+              من أنا
+            </span>
+          </div>
+        </div>
 
-        <div className="container relative z-10 mx-auto px-4">
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto"
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Header */}
-            <div className="mb-12">
-              <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
-                {t("About Me", "من أنا")}
-              </p>
-              <h1 className="text-4xl md:text-5xl font-bold font-heading mb-4">
-                {t("Mohammed Ali Al-Dabbani", "محمد بن علي الدباني")}
-              </h1>
-              <h2 className="text-xl text-primary font-semibold mb-6">
-                {t(
-                  "Brand Manager & Business Development Specialist — F&B Sector",
-                  "مدير علامة تجارية ومتخصص تطوير أعمال — قطاع الأغذية والمشروبات"
-                )}
-              </h2>
-              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8">
-                <span className="flex items-center gap-1.5">📍 {t("Riyadh, Saudi Arabia", "الرياض، المملكة العربية السعودية")}</span>
-                <span className="flex items-center gap-1.5">✉️ Moh.aldbani@gmail.com</span>
-                <span className="flex items-center gap-1.5">📞 0552469643</span>
-              </div>
-              <div className="prose prose-lg text-foreground/70 max-w-none">
-                <p>
-                  {t(
-                    "I seek a leadership position in business development and operations in the F&B sector, contributing to brand building through strategy development, operational plan execution, and continuous performance improvement. I innovate solutions that support growth and profitability.",
-                    "أسعى لتولي منصب قيادي في مجال تطوير الأعمال والتشغيل بقطاع الأغذية والمشروبات، أساهم في بناء العلامة التجارية عبر تطوير الاستراتيجيات وتنفيذ الخطط التشغيلية بكفاءة، وتحسين جودة الأداء والمنتجات وابتكار حلول تدعم النمو والربحية."
-                  )}
-                </p>
-              </div>
+            {/* eyebrow */}
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-10" style={{ background: GOLD }} />
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                {t("About Me", "نبذة عني")}
+              </span>
             </div>
 
-            {/* Experience */}
-            <h3 className="text-2xl font-bold font-heading mb-8 border-b border-border pb-4">
-              {t("Professional Experience", "المسيرة المهنية")}
-            </h3>
+            <h1 className="text-4xl md:text-6xl font-black font-heading text-white mb-4 leading-tight">
+              {t("Mohammed Ali", "محمد بن علي")}
+              <br />
+              <span style={{ color: GOLD }}>
+                {t("Al-Dabbani", "الدباني")}
+              </span>
+            </h1>
 
-            <div className="space-y-6 mb-16">
-              {experience.map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className="flex flex-col md:flex-row gap-4 md:gap-8 group"
-                >
-                  <div className="md:w-48 flex-shrink-0 text-primary font-mono text-sm pt-1">
-                    {t(item.yearEn, item.yearAr)}
-                  </div>
-                  <div className="glass-card p-6 rounded-xl flex-1 relative overflow-hidden">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
-                    <h4 className="text-lg font-bold mb-1">{t(item.titleEn, item.titleAr)}</h4>
-                    <p className="text-primary/80 font-medium text-sm mb-4">{t(item.orgEn, item.orgAr)}</p>
-                    <ul className="space-y-1.5">
-                      {(t(item.pointsEn, item.pointsAr) as string[]).map((point, j) => (
-                        <li key={j} className="text-foreground/60 text-sm flex items-start gap-2">
-                          <span className="text-primary mt-0.5 flex-shrink-0">•</span>
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            <p className="text-lg font-medium mb-8 max-w-xl leading-relaxed"
+              style={{ color: "rgba(240,220,170,0.75)" }}>
+              {t(
+                "Brand Manager & Business Development Specialist — F&B Sector",
+                "مدير علامة تجارية ومتخصص تطوير أعمال — قطاع الأغذية والمشروبات"
+              )}
+            </p>
 
-            {/* Projects */}
-            <h3 className="text-2xl font-bold font-heading mb-8 border-b border-border pb-4">
-              {t("Projects", "المشاريع")}
-            </h3>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="glass-card p-8 rounded-xl mb-16 relative overflow-hidden"
-            >
-              <div className="absolute right-8 top-8 text-5xl opacity-10">🍵</div>
-              <div className="flex justify-between items-start flex-wrap gap-2 mb-3">
-                <h4 className="text-xl font-bold">{t("Matcha Power", "ماتشا باور")}</h4>
-                <span className="text-primary font-mono text-sm">{t("May 2025 – May 2026", "مايو 2025 – مايو 2026")}</span>
-              </div>
-              <p className="text-primary font-medium text-sm mb-4">{t("Founder & Project Developer", "مؤسس ومطور المشروع")}</p>
-              <ul className="space-y-1.5">
-                {(t(
-                  [
-                    "Founded the project from idea to operational launch",
-                    "Formulated the brand's vision, mission, and core values",
-                    "Developed the business model and growth plan",
-                    "Conducted market studies and competitor analysis",
-                    "Built brand identity and customer experience",
-                  ],
-                  [
-                    "تأسيس المشروع من الفكرة وحتى الإطلاق التشغيلي",
-                    "صياغة الرؤية والرسالة والقيم الأساسية للعلامة",
-                    "إعداد نموذج العمل وخطة النمو والتوسع",
-                    "تنفيذ دراسات السوق وتحليل المنافسين والجمهور المستهدف",
-                    "بناء الهوية التجارية وتجربة العلامة التجارية",
-                  ]
-                ) as string[]).map((point, j) => (
-                  <li key={j} className="text-foreground/60 text-sm flex items-start gap-2">
-                    <span className="text-primary mt-0.5 flex-shrink-0">•</span>
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* Skills */}
-            <h3 className="text-2xl font-bold font-heading mb-8 border-b border-border pb-4">
-              {t("Skills", "المهارات")}
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-16">
-              {skills.map((skill, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="glass-card px-5 py-3 rounded-xl flex items-center gap-3"
-                >
-                  <span className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                  <span className="text-sm font-medium">{t(skill.en, skill.ar)}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Courses */}
-            <h3 className="text-2xl font-bold font-heading mb-8 border-b border-border pb-4">
-              {t("Training & Courses", "الدورات التدريبية")}
-            </h3>
-            <div className="space-y-3 mb-16">
-              {courses.map((course, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className="glass-card px-6 py-4 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
-                >
-                  <span className="font-semibold text-sm">{t(course.en, course.ar)}</span>
-                  <span className="text-muted-foreground text-xs">{course.org}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Languages */}
-            <h3 className="text-2xl font-bold font-heading mb-8 border-b border-border pb-4">
-              {t("Languages", "اللغات")}
-            </h3>
-            <div className="flex gap-4">
+            {/* contact chips */}
+            <div className="flex flex-wrap gap-3 text-sm">
               {[
-                { lang: "العربية", level: "Arabic — Native" },
-                { lang: "English", level: "الإنجليزية" },
-              ].map((l, i) => (
-                <div key={i} className="glass-card px-6 py-4 rounded-xl flex items-center gap-3">
-                  <span className="h-2 w-2 rounded-full bg-primary" />
-                  <span className="font-semibold text-sm">{l.lang} / {l.level}</span>
-                </div>
+                { icon: "📍", text: t("Riyadh, Saudi Arabia", "الرياض، المملكة العربية السعودية") },
+                { icon: "✉️", text: "Moh.aldbani@gmail.com" },
+                { icon: "📞", text: "0552469643" },
+              ].map((c, i) => (
+                <span key={i}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium"
+                  style={{ background: "rgba(255,255,255,0.07)", border: `1px solid ${GOLD}30`, color: "rgba(240,220,170,0.8)" }}>
+                  {c.icon} {c.text}
+                </span>
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ── Summary ── */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl p-8 md:p-10 relative overflow-hidden"
+            style={{
+              background: `linear-gradient(135deg, rgba(184,134,11,0.06) 0%, transparent 60%)`,
+              border: `1px solid ${GOLD}20`,
+            }}
+          >
+            <div className="absolute top-0 left-0 w-1 h-full rounded-l-2xl"
+              style={{ background: `linear-gradient(180deg, ${GOLD}, ${GOLD2}50, transparent)` }} />
+            <p className="text-foreground/70 text-lg leading-relaxed" style={{ direction: isAr ? "rtl" : "ltr" }}>
+              {t(
+                "I seek a leadership position in business development and operations in the F&B sector, contributing to brand building through strategy development, operational plan execution, and continuous performance improvement. I innovate solutions that support growth and profitability.",
+                "أسعى لتولي منصب قيادي في مجال تطوير الأعمال والتشغيل بقطاع الأغذية والمشروبات، أساهم في بناء العلامة التجارية عبر تطوير الاستراتيجيات وتنفيذ الخطط التشغيلية بكفاءة، وتحسين جودة الأداء والمنتجات وابتكار حلول تدعم النمو والربحية."
+              )}
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Timeline ── */}
+      <section className="py-20" style={{ background: "hsl(var(--muted)/0.3)" }}>
+        <div className="container mx-auto px-6 max-w-4xl">
+          {/* section title */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-14"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-px w-8" style={{ background: GOLD }} />
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                {t("Career Path", "المسيرة المهنية")}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black font-heading">
+              {t("Professional Experience", "الخبرة المهنية")}
+            </h2>
+          </motion.div>
+
+          {/* vertical timeline */}
+          <div className="relative">
+            {/* spine line */}
+            <div className={`absolute top-0 bottom-0 w-px ${isAr ? "right-6 md:right-[200px]" : "left-6 md:left-[200px]"}`}
+              style={{ background: `linear-gradient(180deg, ${GOLD}, ${GOLD}40, transparent)` }} />
+
+            <div className="space-y-10">
+              {experience.map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className={`flex items-start gap-6 md:gap-10 ${isAr ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  {/* year column */}
+                  <div className={`hidden md:flex flex-col items-${isAr ? "start" : "end"} w-44 flex-shrink-0 pt-5`}>
+                    <span className="text-sm font-bold leading-tight text-right"
+                      style={{ color: item.current ? GOLD : "hsl(var(--muted-foreground))", direction: "ltr" }}>
+                      {isAr ? item.yearAr : item.yearEn}
+                    </span>
+                  </div>
+
+                  {/* dot */}
+                  <div className="flex flex-col items-center flex-shrink-0 relative z-10">
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-lg"
+                      style={{
+                        background: item.current
+                          ? `linear-gradient(135deg, ${GOLD}, ${GOLD2})`
+                          : "hsl(var(--card))",
+                        border: `2px solid ${item.current ? GOLD : GOLD + "40"}`,
+                        boxShadow: item.current ? `0 0 20px ${GOLD}50` : "none",
+                      }}
+                    >
+                      {item.icon}
+                    </div>
+                    {i < experience.length - 1 && (
+                      <div className="w-px flex-1 mt-2 min-h-[20px]"
+                        style={{ background: `${GOLD}20` }} />
+                    )}
+                  </div>
+
+                  {/* card */}
+                  <div className="flex-1 pb-2">
+                    {/* mobile year */}
+                    <div className="md:hidden mb-2">
+                      <span className="text-xs font-bold" style={{ color: item.current ? GOLD : "hsl(var(--muted-foreground))" }}>
+                        {isAr ? item.yearAr : item.yearEn}
+                      </span>
+                    </div>
+
+                    <div
+                      className="rounded-2xl p-6 md:p-7 relative overflow-hidden group transition-all duration-300 hover:-translate-y-1"
+                      style={{
+                        background: "hsl(var(--card))",
+                        border: `1px solid ${item.current ? GOLD + "40" : "hsl(var(--border))"}`,
+                        boxShadow: item.current ? `0 4px 30px ${GOLD}12` : "0 2px 12px rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      {/* glow top border for current */}
+                      {item.current && (
+                        <div className="absolute top-0 left-6 right-6 h-[1px]"
+                          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+                      )}
+
+                      {/* current badge */}
+                      {item.current && (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold mb-4"
+                          style={{ background: `${GOLD}18`, color: GOLD, border: `1px solid ${GOLD}30` }}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                          {t("Current Position", "المنصب الحالي")}
+                        </div>
+                      )}
+
+                      <h4 className="text-lg font-black font-heading mb-1 leading-snug">
+                        {t(item.titleEn, item.titleAr)}
+                      </h4>
+                      <p className="text-sm font-semibold mb-5" style={{ color: GOLD }}>
+                        {t(item.orgEn, item.orgAr)}
+                      </p>
+
+                      <ul className="space-y-2.5">
+                        {(t(item.pointsEn, item.pointsAr) as string[]).map((point, j) => (
+                          <li key={j} className="flex items-start gap-3 text-sm text-foreground/65 leading-relaxed">
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                              style={{ background: GOLD }} />
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Project ── */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-10"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-px w-8" style={{ background: GOLD }} />
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                {t("My Projects", "مشاريعي")}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black font-heading">{t("Projects", "المشاريع")}</h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl p-8 md:p-10 relative overflow-hidden"
+            style={{
+              background: `linear-gradient(135deg, ${NAVY} 0%, #0f1e36 100%)`,
+              border: `1px solid ${GOLD}30`,
+            }}
+          >
+            <div className="absolute top-0 left-0 right-0 h-[1px]"
+              style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+            <div className="absolute -bottom-16 -right-16 text-[160px] opacity-[0.06] select-none pointer-events-none">🍵</div>
+
+            <div className="flex flex-wrap justify-between items-start gap-4 mb-2">
+              <h4 className="text-2xl font-black text-white">{t("Matcha Power", "ماتشا باور")}</h4>
+              <span className="px-3 py-1 rounded-full text-[11px] font-bold"
+                style={{ background: `${GOLD}20`, color: GOLD, border: `1px solid ${GOLD}30` }}>
+                {t("May 2025 – May 2026", "مايو 2025 – مايو 2026")}
+              </span>
+            </div>
+            <p className="text-sm font-semibold mb-6" style={{ color: GOLD }}>
+              {t("Founder & Project Developer", "مؤسس ومطور المشروع")}
+            </p>
+
+            <ul className="space-y-3">
+              {(t(
+                [
+                  "Founded the project from idea to operational launch",
+                  "Formulated the brand's vision, mission, and core values",
+                  "Developed the business model and growth plan",
+                  "Conducted market studies and competitor analysis",
+                  "Built brand identity and customer experience",
+                ],
+                [
+                  "تأسيس المشروع من الفكرة وحتى الإطلاق التشغيلي",
+                  "صياغة الرؤية والرسالة والقيم الأساسية للعلامة",
+                  "إعداد نموذج العمل وخطة النمو والتوسع",
+                  "تنفيذ دراسات السوق وتحليل المنافسين والجمهور المستهدف",
+                  "بناء الهوية التجارية وتجربة العلامة التجارية",
+                ]
+              ) as string[]).map((point, j) => (
+                <li key={j} className="flex items-start gap-3 text-sm leading-relaxed"
+                  style={{ color: "rgba(240,220,170,0.75)" }}>
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: GOLD }} />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Skills ── */}
+      <section className="py-20" style={{ background: "hsl(var(--muted)/0.3)" }}>
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-10"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-px w-8" style={{ background: GOLD }} />
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                {t("Expertise", "الكفاءات")}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black font-heading">{t("Skills", "المهارات")}</h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {skills.map((skill, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="group flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: "hsl(var(--card))",
+                  border: `1px solid hsl(var(--border))`,
+                }}
+              >
+                <span className="text-2xl">{skill.icon}</span>
+                <span className="text-sm font-semibold">{t(skill.en, skill.ar)}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Courses ── */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-10"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-px w-8" style={{ background: GOLD }} />
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                {t("Education", "التطوير المهني")}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black font-heading">{t("Training & Courses", "الدورات التدريبية")}</h2>
+          </motion.div>
+
+          <div className="space-y-3">
+            {courses.map((course, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+                className="flex items-center justify-between gap-4 px-6 py-5 rounded-xl group hover:-translate-y-0.5 transition-all duration-200"
+                style={{
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black text-white flex-shrink-0"
+                    style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})` }}>
+                    {i + 1}
+                  </span>
+                  <span className="font-semibold text-sm">{t(course.en, course.ar)}</span>
+                </div>
+                <span className="text-xs text-muted-foreground flex-shrink-0 hidden sm:block">{course.org}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Languages ── */}
+      <section className="py-16" style={{ background: "hsl(var(--muted)/0.3)" }}>
+        <div className="container mx-auto px-6 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-px w-8" style={{ background: GOLD }} />
+              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                {t("Communication", "التواصل")}
+              </span>
+            </div>
+            <h2 className="text-3xl font-black font-heading">{t("Languages", "اللغات")}</h2>
+          </motion.div>
+
+          <div className="flex flex-wrap gap-4">
+            {[
+              { flag: "🇸🇦", name: "العربية", level: t("Native", "اللغة الأم") },
+              { flag: "🇬🇧", name: "English", level: t("Intermediate", "متوسط") },
+            ].map((l, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-4 px-6 py-5 rounded-xl"
+                style={{
+                  background: "hsl(var(--card))",
+                  border: `1px solid ${GOLD}20`,
+                  minWidth: 180,
+                }}
+              >
+                <span className="text-3xl">{l.flag}</span>
+                <div>
+                  <p className="font-bold text-sm">{l.name}</p>
+                  <p className="text-xs text-muted-foreground">{l.level}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
     </RootLayout>
