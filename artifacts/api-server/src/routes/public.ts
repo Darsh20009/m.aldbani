@@ -4,6 +4,7 @@ import { Service } from "../models/Service";
 import { Article } from "../models/Article";
 import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
+import { SiteSettings } from "../models/SiteSettings";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -130,6 +131,19 @@ router.get("/consultations/slots", async (req: Request, res: Response) => {
   } catch (err) {
     logger.error({ err }, "Get slots error");
     res.json(["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"]);
+  }
+});
+
+// Public site settings (no auth required)
+router.get("/settings", async (_req: Request, res: Response) => {
+  try {
+    let settings = await SiteSettings.findOne();
+    if (!settings) settings = await SiteSettings.create({});
+    const obj = settings.toObject();
+    res.json({ ...obj, _id: undefined, __v: undefined });
+  } catch (err) {
+    logger.error({ err }, "Get public settings error");
+    res.json({});
   }
 });
 

@@ -3,6 +3,7 @@ import {
 } from "framer-motion";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { useLanguage } from "../hooks/use-language";
+import { useSiteSettings } from "../hooks/use-site-settings";
 import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
 import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782157376997.png";
@@ -113,6 +114,14 @@ function GeoDivider({ flip = false }) {
 ══════════════════════════════════════════════════════════ */
 export default function Home() {
   const { t } = useLanguage();
+  const settings = useSiteSettings();
+
+  const heroBg    = settings.heroBgColor        || NAVY;
+  const heroGold  = settings.heroAccentColor     || GOLD;
+  const heroGoldLt = settings.heroAccentLightColor || GOLD_LT;
+  const heroShowPhoto  = settings.heroShowPhoto !== false;
+  const heroPhotoSrc   = settings.heroPhotoUrl  || photoPath;
+  const heroShowBadge  = settings.heroShowFloatingBadge !== false;
 
   const heroRef = useRef(null);
   const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -126,7 +135,7 @@ export default function Home() {
           HERO — full dark navy, warm Arab identity
       ════════════════════════════════════════════ */}
       <section ref={heroRef} className="relative overflow-hidden"
-        style={{ background: NAVY, minHeight: "92vh" }}>
+        style={{ background: heroBg, minHeight: "92vh" }}>
 
         {/* Arabic watermark — design element, NOT text */}
         <div className="absolute inset-y-0 right-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
@@ -135,7 +144,7 @@ export default function Home() {
             style={{
               fontFamily: "'IBM Plex Sans Arabic', sans-serif",
               fontSize: "clamp(220px, 32vw, 380px)",
-              color: GOLD,
+              color: heroGold,
               opacity: 0.04,
               letterSpacing: "-10px",
               userSelect: "none",
@@ -146,7 +155,7 @@ export default function Home() {
 
         {/* top gold line */}
         <div className="absolute top-0 left-0 right-0 h-[3px]"
-          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+          style={{ background: `linear-gradient(90deg, transparent, ${heroGold}, transparent)` }} />
 
         {/* glow */}
         <div className="absolute top-0 right-0 w-[40%] h-full pointer-events-none"
@@ -171,10 +180,10 @@ export default function Home() {
               <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1, duration: 0.55 }}
                 className="flex items-center gap-3 mb-6">
-                <div className="h-px w-8 flex-shrink-0" style={{ background: GOLD }} />
+                <div className="h-px w-8 flex-shrink-0" style={{ background: heroGold }} />
                 <p className="text-[10px] font-bold uppercase tracking-[0.35em]"
-                  style={{ color: GOLD }}>
-                  {t("Brand Manager · Business Development", "مدير علامة تجارية · تطوير أعمال")}
+                  style={{ color: heroGold }}>
+                  {t(settings.heroBadgeEn, settings.heroBadgeAr)}
                 </p>
               </motion.div>
 
@@ -184,18 +193,18 @@ export default function Home() {
                   transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                   className="font-heading font-black text-white leading-[0.92] tracking-tight"
                   style={{ fontSize: "clamp(52px, 7.5vw, 92px)" }}>
-                  {t("Mohammed\nAl-Dabbani", "محمد\nالدباني")}
+                  {t(settings.heroTitleEn, settings.heroTitleAr)}
                 </motion.h1>
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   transition={{ delay: 0.45 }}
                   className="font-heading font-bold mt-3"
                   style={{
                     fontSize: "clamp(18px, 2.5vw, 28px)",
-                    color: GOLD, opacity: 1,
+                    color: heroGold, opacity: 1,
                     fontFamily: "'IBM Plex Sans Arabic', sans-serif",
                     letterSpacing: "0.02em",
                   }}>
-                  {t("محمد الدباني", "Mohammed Al-Dabbani")}
+                  {t(settings.heroTitleAr, settings.heroTitleEn)}
                 </motion.p>
               </div>
 
@@ -203,37 +212,34 @@ export default function Home() {
               <motion.div initial={{ scaleX: 0, originX: 0 }} animate={{ scaleX: 1 }}
                 transition={{ delay: 0.52, duration: 0.6 }}
                 className="h-[2px] w-16 rounded-full mb-7"
-                style={{ background: `linear-gradient(90deg, ${GOLD}, ${GOLD_LT}, transparent)` }} />
+                style={{ background: `linear-gradient(90deg, ${heroGold}, ${heroGoldLt}, transparent)` }} />
 
               <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.58, duration: 0.6 }}
                 className="leading-relaxed mb-9 max-w-[400px] text-base"
                 style={{ color: "rgba(240,220,180,0.65)" }}>
-                {t(
-                  "8+ years leading F&B brands and operations across the Kingdom — from vision to full commercial execution.",
-                  "أكثر من 8 سنوات في قيادة علامات F&B والعمليات في المملكة — من الرؤية إلى التنفيذ التجاري الكامل."
-                )}
+                {t(settings.heroSubtitleEn, settings.heroSubtitleAr)}
               </motion.p>
 
               {/* Stats — gold accent */}
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.65, duration: 0.6 }}
-                className="grid grid-cols-4 mb-9 overflow-hidden rounded-xl border"
-                style={{ borderColor: `${GOLD}25`, background: `${GOLD}08` }}>
-                {[
-                  { n: 8,  s: "+", en: "Years",     ar: "سنوات" },
-                  { n: 50, s: "+", en: "Brands",     ar: "علامة" },
-                  { n: 2,  s: "M+",en: "Customers",  ar: "عميل" },
-                  { n: 3,  s: "",  en: "Industries", ar: "قطاعات" },
-                ].map((st, i) => (
+                className="mb-9 overflow-hidden rounded-xl border"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${settings.heroStats.length}, 1fr)`,
+                  borderColor: `${heroGold}25`,
+                  background: `${heroGold}08`,
+                }}>
+                {settings.heroStats.map((st, i) => (
                   <div key={i} className="flex flex-col items-center py-4 px-1"
-                    style={{ borderRight: i < 3 ? `1px solid ${GOLD}20` : "none" }}>
-                    <span className="text-2xl font-black font-heading" style={{ color: GOLD_LT }}>
-                      <CountUp to={st.n} suffix={st.s} />
+                    style={{ borderRight: i < settings.heroStats.length - 1 ? `1px solid ${heroGold}20` : "none" }}>
+                    <span className="text-2xl font-black font-heading" style={{ color: heroGoldLt }}>
+                      {st.value}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5"
-                      style={{ color: "rgba(212,160,23,0.5)" }}>
-                      {t(st.en, st.ar)}
+                      style={{ color: `${heroGold}70` }}>
+                      {t(st.labelEn, st.labelAr)}
                     </span>
                   </div>
                 ))}
@@ -245,91 +251,94 @@ export default function Home() {
                 className="flex flex-wrap gap-3 mb-9">
                 <MagBtn href="/book"
                   className="font-bold text-sm cursor-pointer rounded-xl px-8 transition-opacity hover:opacity-90"
-                  style={{ height: 52, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LT})`, color: NAVY }}>
+                  style={{ height: 52, background: `linear-gradient(135deg, ${heroGold}, ${heroGoldLt})`, color: heroBg }}>
                   {t("Book a Consultation", "احجز استشارة")}
                 </MagBtn>
                 <MagBtn href="/about"
                   className="font-bold text-sm cursor-pointer rounded-xl px-8 border transition-colors hover:border-amber-400 hover:text-amber-300"
-                  style={{ height: 52, borderColor: `${GOLD}40`, color: "rgba(240,220,180,0.75)" }}>
+                  style={{ height: 52, borderColor: `${heroGold}40`, color: "rgba(240,220,180,0.75)" }}>
                   {t("My Profile", "ملفي الشخصي")}
                 </MagBtn>
               </motion.div>
 
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
                 className="flex items-center gap-2 text-xs"
-                style={{ color: `${GOLD}60` }}>
+                style={{ color: `${heroGold}60` }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
                 {t("Available · Riyadh, Saudi Arabia 🇸🇦", "متاح · الرياض، المملكة العربية السعودية 🇸🇦")}
               </motion.div>
             </motion.div>
 
-            {/* PHOTO — edge-to-edge */}
-            <motion.div style={{ y: photoY }}
-              initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-              className="hidden lg:flex flex-col items-end justify-end order-1 lg:order-2 h-full relative"
-              style={{ alignSelf: "stretch" }}>
+            {/* PHOTO — edge-to-edge (togglable) */}
+            {heroShowPhoto && (
+              <motion.div style={{ y: photoY, alignSelf: "stretch" }}
+                initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+                className="hidden lg:flex flex-col items-end justify-end order-1 lg:order-2 h-full relative">
 
-              <div className="relative w-full h-full flex flex-col justify-end" style={{ minHeight: "92vh" }}>
-                {/* full-height photo */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <img src={photoPath} alt="Mohammed Al-Dabbani"
-                    className="w-full h-full object-cover object-top" />
-                  {/* gradient overlay — left fade into navy */}
-                  <div className="absolute inset-0 pointer-events-none"
-                    style={{ background: `linear-gradient(to right, ${NAVY} 0%, ${NAVY}80 15%, transparent 45%)` }} />
-                  {/* gradient overlay — bottom */}
-                  <div className="absolute inset-0 pointer-events-none"
-                    style={{ background: `linear-gradient(to top, ${NAVY} 0%, ${NAVY}40 20%, transparent 50%)` }} />
-                  {/* gold tint overlay */}
-                  <div className="absolute inset-0 pointer-events-none"
-                    style={{ background: `radial-gradient(ellipse at center, rgba(184,134,11,0.06) 0%, transparent 70%)` }} />
-                </div>
-
-                {/* name plate at bottom */}
-                <div className="relative z-10 p-8 pb-10">
-                  <div className="inline-flex flex-col border-l-2 pl-4"
-                    style={{ borderColor: GOLD }}>
-                    <span className="font-bold text-white text-base leading-tight">
-                      {t("Mohammed Al-Dabbani", "محمد الدباني")}
-                    </span>
-                    <span className="text-xs mt-1" style={{ color: `${GOLD_LT}90` }}>
-                      {t("Brand Manager · F&B Sector", "مدير العلامة التجارية · قطاع F&B")}
-                    </span>
+                <div className="relative w-full h-full flex flex-col justify-end" style={{ minHeight: "92vh" }}>
+                  {/* full-height photo */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <img src={heroPhotoSrc} alt="Mohammed Al-Dabbani"
+                      className="w-full h-full object-cover object-top" />
+                    {/* gradient overlay — left fade */}
+                    <div className="absolute inset-0 pointer-events-none"
+                      style={{ background: `linear-gradient(to right, ${heroBg} 0%, ${heroBg}80 15%, transparent 45%)` }} />
+                    {/* gradient overlay — bottom */}
+                    <div className="absolute inset-0 pointer-events-none"
+                      style={{ background: `linear-gradient(to top, ${heroBg} 0%, ${heroBg}40 20%, transparent 50%)` }} />
+                    {/* gold tint overlay */}
+                    <div className="absolute inset-0 pointer-events-none"
+                      style={{ background: `radial-gradient(ellipse at center, rgba(184,134,11,0.06) 0%, transparent 70%)` }} />
                   </div>
-                </div>
 
-                {/* floating Matcha badge */}
-                <motion.div animate={{ y: [-5, 5, -5] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute top-12 right-4 z-20 rounded-2xl px-4 py-3 border"
-                  style={{
-                    background: "rgba(10,22,40,0.92)",
-                    borderColor: `${GOLD}30`,
-                    backdropFilter: "blur(12px)",
-                    boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px ${GOLD}15`,
-                  }}>
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-xl">🍵</span>
-                    <div>
-                      <p className="text-xs font-bold text-white leading-tight">
-                        {t("Matcha Power", "ماتشا باور")}
-                      </p>
-                      <p className="text-[10px] mt-0.5" style={{ color: `${GOLD}80` }}>
-                        {t("Founder & CEO", "مؤسس ورئيس تنفيذي")}
-                      </p>
+                  {/* name plate at bottom */}
+                  <div className="relative z-10 p-8 pb-10">
+                    <div className="inline-flex flex-col border-l-2 pl-4"
+                      style={{ borderColor: heroGold }}>
+                      <span className="font-bold text-white text-base leading-tight">
+                        {t(settings.heroTitleEn, settings.heroTitleAr)}
+                      </span>
+                      <span className="text-xs mt-1" style={{ color: `${heroGoldLt}90` }}>
+                        {t(settings.heroBadgeEn, settings.heroBadgeAr)}
+                      </span>
                     </div>
                   </div>
-                </motion.div>
-              </div>
-            </motion.div>
+
+                  {/* floating badge (togglable) */}
+                  {heroShowBadge && (
+                    <motion.div animate={{ y: [-5, 5, -5] }}
+                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute top-12 right-4 z-20 rounded-2xl px-4 py-3 border"
+                      style={{
+                        background: "rgba(10,22,40,0.92)",
+                        borderColor: `${heroGold}30`,
+                        backdropFilter: "blur(12px)",
+                        boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px ${heroGold}15`,
+                      }}>
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl">{settings.heroFloatingBadgeEmoji}</span>
+                        <div>
+                          <p className="text-xs font-bold text-white leading-tight">
+                            {t(settings.heroFloatingBadgeTitleEn, settings.heroFloatingBadgeTitleAr)}
+                          </p>
+                          <p className="text-[10px] mt-0.5" style={{ color: `${heroGold}80` }}>
+                            {t(settings.heroFloatingBadgeSubtitleEn, settings.heroFloatingBadgeSubtitleAr)}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
           </div>
         </div>
 
         {/* bottom gold line */}
         <div className="absolute bottom-0 left-0 right-0 h-[2px]"
-          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}50, transparent)` }} />
+          style={{ background: `linear-gradient(90deg, transparent, ${heroGold}50, transparent)` }} />
       </section>
 
       {/* GEOMETRIC DIVIDER */}
