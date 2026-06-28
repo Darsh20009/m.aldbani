@@ -5,6 +5,10 @@ export interface ISiteSettings extends Document {
   darkSectionBgColor: string;
   accentGoldColor: string;
   accentGoldLightColor: string;
+  marqueeItems: { en: string; ar: string }[];
+  expertiseItems: { icon: string; titleEn: string; titleAr: string; descEn: string; descAr: string }[];
+  skillItems: { labelEn: string; labelAr: string; pct: number }[];
+  careerItems: { year: string; titleEn: string; titleAr: string; org: string; current: boolean }[];
   heroTitleEn: string;
   heroTitleAr: string;
   heroSubtitleEn: string;
@@ -48,6 +52,53 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     darkSectionBgColor:   { type: String, default: "#0A1628" },
     accentGoldColor:      { type: String, default: "#B8860B" },
     accentGoldLightColor: { type: String, default: "#D4A017" },
+    marqueeItems: {
+      type: [{ en: String, ar: String }],
+      default: [
+        { en: "Brand Strategy",        ar: "استراتيجية العلامة" },
+        { en: "Business Development",  ar: "تطوير الأعمال" },
+        { en: "Operations Management", ar: "إدارة العمليات" },
+        { en: "F&B Sector",            ar: "قطاع F&B" },
+        { en: "Market Analysis",       ar: "تحليل السوق" },
+        { en: "Team Leadership",       ar: "قيادة الفرق" },
+        { en: "Customer Experience",   ar: "تجربة العميل" },
+        { en: "Entrepreneurship",      ar: "ريادة الأعمال" },
+      ],
+    },
+    expertiseItems: {
+      type: [{ icon: String, titleEn: String, titleAr: String, descEn: String, descAr: String }],
+      default: [
+        { icon: "📈", titleEn: "Business Development", titleAr: "تطوير الأعمال",
+          descEn: "Business models, market entry, partnerships, and revenue strategy built to scale.",
+          descAr: "نماذج أعمال ودخول السوق وشراكات واستراتيجية إيرادات قابلة للتوسع." },
+        { icon: "⚙️", titleEn: "Operations Management", titleAr: "إدارة العمليات",
+          descEn: "KPI frameworks, staff development, quality systems, and operational discipline.",
+          descAr: "مؤشرات أداء وتطوير كوادر وأنظمة جودة وانضباط تشغيلي." },
+        { icon: "🎯", titleEn: "Brand Strategy", titleAr: "استراتيجية العلامة",
+          descEn: "Identity, positioning, loyalty systems, and experiences that outlast campaigns.",
+          descAr: "هوية وتموضع وأنظمة ولاء وتجارب تستمر أبعد من الحملات." },
+      ],
+    },
+    skillItems: {
+      type: [{ labelEn: String, labelAr: String, pct: Number }],
+      default: [
+        { labelEn: "Brand Strategy",        labelAr: "استراتيجية العلامة", pct: 95 },
+        { labelEn: "Business Development",  labelAr: "تطوير الأعمال",      pct: 90 },
+        { labelEn: "Operations Management", labelAr: "إدارة العمليات",     pct: 88 },
+        { labelEn: "Team Leadership",       labelAr: "قيادة الفرق",        pct: 92 },
+        { labelEn: "Market Analysis",       labelAr: "تحليل السوق",        pct: 82 },
+        { labelEn: "Customer Experience",   labelAr: "تجربة العميل",       pct: 87 },
+      ],
+    },
+    careerItems: {
+      type: [{ year: String, titleEn: String, titleAr: String, org: String, current: Boolean }],
+      default: [
+        { year: "2025 – Present", titleEn: "Brand Manager",            titleAr: "مدير العلامة التجارية",      org: "Thamarat Al-Khayr — Fuji Cafe",    current: true  },
+        { year: "2024 – 2025",    titleEn: "Operations & BD Manager",  titleAr: "مدير العمليات والتطوير",     org: "Thamarat Al-Khayr — Fuji Cafe",    current: false },
+        { year: "2022 – 2024",    titleEn: "Branch Manager",           titleAr: "مدير فرع",                   org: "Namq for Beverages Co.",           current: false },
+        { year: "2018 – 2022",    titleEn: "Branch Manager",           titleAr: "مدير فرع",                   org: "Al-Awaji Commercial Markets",      current: false },
+      ],
+    },
     heroTitleEn: { type: String, default: "Mohammed Al-Dabbani" },
     heroTitleAr: { type: String, default: "محمد الدباني" },
     heroSubtitleEn: { type: String, default: "8+ years leading F&B brands and operations across the Kingdom — from vision to full commercial execution." },
