@@ -16,17 +16,19 @@ import {
   Menu,
   X,
   Globe,
+  SlidersHorizontal,
 } from "lucide-react";
 
 const navItems = [
-  { href: "/admin",               label: "Dashboard",     labelAr: "الرئيسية",      icon: LayoutDashboard },
-  { href: "/admin/leads",         label: "Leads CRM",     labelAr: "العملاء المحتملون", icon: Target },
-  { href: "/admin/clients",       label: "Clients",       labelAr: "العملاء",        icon: Users },
-  { href: "/admin/consultations", label: "Consultations", labelAr: "الاستشارات",     icon: CalendarDays },
-  { href: "/admin/projects",      label: "Portfolio",     labelAr: "المشاريع",       icon: Briefcase },
-  { href: "/admin/articles",      label: "Articles",      labelAr: "المقالات",       icon: FileText },
-  { href: "/admin/services",      label: "Services",      labelAr: "الخدمات",        icon: Settings },
-  { href: "/admin/analytics",     label: "Analytics",     labelAr: "التحليلات",      icon: BarChart3 },
+  { href: "/admin",               label: "Dashboard",     labelAr: "الرئيسية",           icon: LayoutDashboard },
+  { href: "/admin/leads",         label: "Leads CRM",     labelAr: "العملاء المحتملون",  icon: Target },
+  { href: "/admin/clients",       label: "Clients",       labelAr: "العملاء",             icon: Users },
+  { href: "/admin/consultations", label: "Consultations", labelAr: "الاستشارات",          icon: CalendarDays },
+  { href: "/admin/projects",      label: "Portfolio",     labelAr: "المشاريع",            icon: Briefcase },
+  { href: "/admin/articles",      label: "Articles",      labelAr: "المقالات",            icon: FileText },
+  { href: "/admin/services",      label: "Services",      labelAr: "الخدمات",             icon: Settings },
+  { href: "/admin/analytics",     label: "Analytics",     labelAr: "التحليلات",           icon: BarChart3 },
+  { href: "/admin/settings",      label: "Site Settings", labelAr: "إعدادات الموقع",      icon: SlidersHorizontal },
 ];
 
 export function AdminLayout({ children }: { children: ReactNode }) {

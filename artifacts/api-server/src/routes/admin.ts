@@ -6,6 +6,7 @@ import { Service } from "../models/Service";
 import { Article } from "../models/Article";
 import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
+import { SiteSettings } from "../models/SiteSettings";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -262,6 +263,33 @@ router.delete("/services/:id", async (req: Request, res: Response) => {
     res.json({ message: "Service deleted" });
   } catch (err) {
     logger.error({ err }, "Delete service error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Site Settings
+router.get("/settings", async (_req: Request, res: Response) => {
+  try {
+    let settings = await SiteSettings.findOne();
+    if (!settings) settings = await SiteSettings.create({});
+    const obj = settings.toObject();
+    res.json({ ...obj, id: obj._id?.toString(), _id: undefined, __v: undefined });
+  } catch (err) {
+    logger.error({ err }, "Get site settings error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.patch("/settings", async (req: Request, res: Response) => {
+  try {
+    let settings = await SiteSettings.findOne();
+    if (!settings) settings = await SiteSettings.create({});
+    Object.assign(settings, req.body);
+    await settings.save();
+    const obj = settings.toObject();
+    res.json({ ...obj, id: obj._id?.toString(), _id: undefined, __v: undefined });
+  } catch (err) {
+    logger.error({ err }, "Update site settings error");
     res.status(500).json({ error: "Server error" });
   }
 });
