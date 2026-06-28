@@ -116,12 +116,17 @@ export default function Home() {
   const { t } = useLanguage();
   const settings = useSiteSettings();
 
-  const heroBg    = settings.heroBgColor        || NAVY;
-  const heroGold  = settings.heroAccentColor     || GOLD;
+  const heroBg     = settings.heroBgColor          || NAVY;
+  const heroGold   = settings.heroAccentColor      || GOLD;
   const heroGoldLt = settings.heroAccentLightColor || GOLD_LT;
   const heroShowPhoto  = settings.heroShowPhoto !== false;
   const heroPhotoSrc   = settings.heroPhotoUrl  || photoPath;
   const heroShowBadge  = settings.heroShowFloatingBadge !== false;
+
+  const lightBg  = settings.lightSectionBgColor  || CREAM;
+  const darkBg   = settings.darkSectionBgColor   || NAVY;
+  const sGold    = settings.accentGoldColor      || GOLD;
+  const sGoldLt  = settings.accentGoldLightColor || GOLD_LT;
 
   const heroRef = useRef(null);
   const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -342,14 +347,14 @@ export default function Home() {
       </section>
 
       {/* GEOMETRIC DIVIDER */}
-      <div style={{ background: CREAM, paddingTop: 8, paddingBottom: 8 }}>
+      <div style={{ background: lightBg, paddingTop: 8, paddingBottom: 8 }}>
         <GeoDivider />
       </div>
 
       {/* ════════════════════════════════════════════
           MARQUEE — warm cream bg
       ════════════════════════════════════════════ */}
-      <div style={{ background: CREAM, borderBottom: `1px solid ${GOLD}25` }}
+      <div style={{ background: lightBg, borderBottom: `1px solid ${sGold}25` }}
         className="overflow-hidden py-3.5">
         <motion.div animate={{ x: ["0%", "-50%"] }}
           transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
@@ -367,9 +372,9 @@ export default function Home() {
             ].map((item, i) => (
               <span key={`${rep}-${i}`}
                 className="text-[11px] font-bold uppercase tracking-[0.28em] flex items-center gap-12"
-                style={{ color: `${GOLD}70` }}>
+                style={{ color: `${sGold}70` }}>
                 {item}
-                <span style={{ color: `${GOLD}40` }}>◇</span>
+                <span style={{ color: `${sGold}40` }}>◇</span>
               </span>
             ))
           )}
@@ -379,7 +384,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           EXPERTISE + SKILLS — warm cream
       ════════════════════════════════════════════ */}
-      <section className="py-24" style={{ background: CREAM }}>
+      <section className="py-24" style={{ background: lightBg }}>
         <div className="container mx-auto px-8 lg:px-16">
           <div className="grid lg:grid-cols-2 gap-20 items-start">
 
@@ -387,13 +392,13 @@ export default function Home() {
             <div>
               <Reveal>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="h-px w-8" style={{ background: GOLD }} />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                  <div className="h-px w-8" style={{ background: sGold }} />
+                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
                     {t("Core Expertise", "التخصصات الأساسية")}
                   </p>
                 </div>
                 <h2 className="text-3xl md:text-[44px] font-black font-heading leading-tight mb-10"
-                  style={{ color: NAVY }}>
+                  style={{ color: darkBg }}>
                   {t("What I bring\nto every project", "ما أحضره\nلكل مشروع")}
                 </h2>
               </Reveal>
@@ -424,25 +429,25 @@ export default function Home() {
                       whileHover={{ x: 6 }}
                       transition={{ type: "spring", stiffness: 280, damping: 26 }}
                       className="group flex gap-5 p-6 rounded-2xl border cursor-default transition-all duration-300"
-                      style={{ background: "white", borderColor: `${GOLD}20` }}
+                      style={{ background: "white", borderColor: `${sGold}20` }}
                       onMouseEnter={e => {
-                        (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}60`;
-                        (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px ${GOLD}15`;
+                        (e.currentTarget as HTMLElement).style.borderColor = `${sGold}60`;
+                        (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px ${sGold}15`;
                       }}
                       onMouseLeave={e => {
-                        (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}20`;
+                        (e.currentTarget as HTMLElement).style.borderColor = `${sGold}20`;
                         (e.currentTarget as HTMLElement).style.boxShadow = "";
                       }}>
                       <div className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl"
-                        style={{ background: `${GOLD}12` }}>
+                        style={{ background: `${sGold}12` }}>
                         {p.icon}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1.5">
-                          <h3 className="font-bold text-base" style={{ color: NAVY }}>
+                          <h3 className="font-bold text-base" style={{ color: darkBg }}>
                             {t(p.en, p.ar)}
                           </h3>
-                          <span className="text-[10px] font-mono font-bold" style={{ color: `${GOLD}50` }}>
+                          <span className="text-[10px] font-mono font-bold" style={{ color: `${sGold}50` }}>
                             {p.num}
                           </span>
                         </div>
@@ -450,7 +455,7 @@ export default function Home() {
                           {t(p.dEn, p.dAr)}
                         </p>
                         <div className="mt-3 h-[2px] w-0 group-hover:w-full rounded-full transition-all duration-500"
-                          style={{ background: `linear-gradient(90deg, ${GOLD}, transparent)` }} />
+                          style={{ background: `linear-gradient(90deg, ${sGold}, transparent)` }} />
                       </div>
                     </motion.div>
                   </Reveal>
@@ -462,13 +467,13 @@ export default function Home() {
             <div>
               <Reveal dir="right">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="h-px w-8" style={{ background: GOLD }} />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                  <div className="h-px w-8" style={{ background: sGold }} />
+                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
                     {t("Skill Proficiency", "مستوى المهارات")}
                   </p>
                 </div>
                 <h2 className="text-3xl md:text-[44px] font-black font-heading leading-tight mb-10"
-                  style={{ color: NAVY }}>
+                  style={{ color: darkBg }}>
                   {t("Technical\nCompetencies", "الكفاءات\nالتقنية")}
                 </h2>
               </Reveal>
@@ -488,9 +493,9 @@ export default function Home() {
 
               <Reveal dir="right" delay={0.2} className="mt-10">
                 <div className="rounded-2xl border p-6"
-                  style={{ background: "white", borderColor: `${GOLD}20` }}>
+                  style={{ background: "white", borderColor: `${sGold}20` }}>
                   <p className="text-xs font-bold uppercase tracking-widest mb-5"
-                    style={{ color: `${GOLD}80` }}>
+                    style={{ color: `${sGold}80` }}>
                     {t("Certifications & Courses", "الشهادات والدورات")}
                   </p>
                   <div className="space-y-3">
@@ -516,23 +521,23 @@ export default function Home() {
       </section>
 
       {/* GEOMETRIC DIVIDER (flipped) */}
-      <div style={{ background: NAVY, paddingTop: 8, paddingBottom: 8 }}>
+      <div style={{ background: darkBg, paddingTop: 8, paddingBottom: 8 }}>
         <GeoDivider flip />
       </div>
 
       {/* ════════════════════════════════════════════
           CAREER — dark navy + gold timeline
       ════════════════════════════════════════════ */}
-      <section className="py-24 relative overflow-hidden" style={{ background: NAVY }}>
+      <section className="py-24 relative overflow-hidden" style={{ background: darkBg }}>
         <div className="absolute top-0 left-0 w-[400px] h-[400px] pointer-events-none"
-          style={{ background: `radial-gradient(circle at 0% 0%, ${GOLD}0a, transparent 60%)` }} />
+          style={{ background: `radial-gradient(circle at 0% 0%, ${sGold}0a, transparent 60%)` }} />
 
         <div className="container mx-auto px-8 lg:px-16 relative z-10">
           <div className="grid lg:grid-cols-[280px_1fr] gap-16 items-start">
             <Reveal dir="left">
               <div className="flex items-center gap-3 mb-4">
-                <div className="h-px w-8" style={{ background: GOLD }} />
-                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                <div className="h-px w-8" style={{ background: sGold }} />
+                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
                   {t("Professional History", "التاريخ المهني")}
                 </p>
               </div>
@@ -548,16 +553,15 @@ export default function Home() {
               </p>
               <Link href="/about">
                 <motion.button whileHover={{ x: 5 }}
-                  className="text-sm font-bold" style={{ color: GOLD_LT }}>
+                  className="text-sm font-bold" style={{ color: sGoldLt }}>
                   {t("Full Biography →", "السيرة الكاملة ←")}
                 </motion.button>
               </Link>
             </Reveal>
 
             <div className="relative pl-6">
-              {/* vertical gold timeline line */}
               <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full"
-                style={{ background: `linear-gradient(to bottom, ${GOLD}, ${GOLD}30)` }} />
+                style={{ background: `linear-gradient(to bottom, ${sGold}, ${sGold}30)` }} />
 
               <div className="space-y-4">
                 {[
@@ -568,33 +572,32 @@ export default function Home() {
                 ].map((item, i) => (
                   <Reveal key={i} delay={i * 0.09}>
                     <div className="relative flex items-start gap-5">
-                      {/* gold dot */}
                       <div className="absolute -left-[27px] top-4 w-3 h-3 rounded-full border-2"
                         style={{
-                          background: item.current ? GOLD_LT : NAVY,
-                          borderColor: item.current ? GOLD_LT : `${GOLD}50`,
+                          background: item.current ? sGoldLt : darkBg,
+                          borderColor: item.current ? sGoldLt : `${sGold}50`,
                         }} />
                       <motion.div whileHover={{ x: 6 }}
                         transition={{ type: "spring", stiffness: 280, damping: 26 }}
                         className="flex-1 p-5 rounded-xl border cursor-default transition-all duration-300"
-                        style={{ background: `${GOLD}06`, borderColor: `${GOLD}18` }}
+                        style={{ background: `${sGold}06`, borderColor: `${sGold}18` }}
                         onMouseEnter={e => {
-                          (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}40`;
-                          (e.currentTarget as HTMLElement).style.background = `${GOLD}0e`;
+                          (e.currentTarget as HTMLElement).style.borderColor = `${sGold}40`;
+                          (e.currentTarget as HTMLElement).style.background = `${sGold}0e`;
                         }}
                         onMouseLeave={e => {
-                          (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}18`;
-                          (e.currentTarget as HTMLElement).style.background = `${GOLD}06`;
+                          (e.currentTarget as HTMLElement).style.borderColor = `${sGold}18`;
+                          (e.currentTarget as HTMLElement).style.background = `${sGold}06`;
                         }}>
                         <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
                           <p className="font-bold text-white text-sm">{t(item.en, item.ar)}</p>
-                          <span className="text-xs font-mono" style={{ color: `${GOLD}60` }}>{item.yr}</span>
+                          <span className="text-xs font-mono" style={{ color: `${sGold}60` }}>{item.yr}</span>
                         </div>
-                        <p className="text-xs" style={{ color: `${GOLD}55` }}>{item.org}</p>
+                        <p className="text-xs" style={{ color: `${sGold}55` }}>{item.org}</p>
                         {item.current && (
                           <span className="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full"
-                            style={{ background: `${GOLD}15`, color: GOLD_LT, border: `1px solid ${GOLD}30` }}>
-                            <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: GOLD_LT }} />
+                            style={{ background: `${sGold}15`, color: sGoldLt, border: `1px solid ${sGold}30` }}>
+                            <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: sGoldLt }} />
                             {t("Current Position", "المنصب الحالي")}
                           </span>
                         )}
@@ -611,70 +614,58 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           FEATURED PROJECT — full dark navy
       ════════════════════════════════════════════ */}
-      <section className="py-28 relative overflow-hidden" style={{ background: NAVY }}>
-        {/* background accents */}
+      <section className="py-28 relative overflow-hidden" style={{ background: darkBg }}>
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-[1px]"
-            style={{ background: `linear-gradient(90deg, transparent, ${GOLD}50, transparent)` }} />
+            style={{ background: `linear-gradient(90deg, transparent, ${sGold}50, transparent)` }} />
           <div className="absolute bottom-0 left-0 right-0 h-[1px]"
-            style={{ background: `linear-gradient(90deg, transparent, ${GOLD}30, transparent)` }} />
+            style={{ background: `linear-gradient(90deg, transparent, ${sGold}30, transparent)` }} />
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-[0.05]"
-            style={{ background: `radial-gradient(circle, ${GOLD}, transparent 70%)` }} />
+            style={{ background: `radial-gradient(circle, ${sGold}, transparent 70%)` }} />
           <div className="absolute -bottom-20 right-0 select-none"
-            style={{
-              fontFamily: "'IBM Plex Sans Arabic',sans-serif",
-              fontSize: 280, fontWeight: 900, lineHeight: 1,
-              color: GOLD, opacity: 0.03, letterSpacing: -8,
-            }}>
+            style={{ fontSize: 280, fontWeight: 900, lineHeight: 1, color: sGold, opacity: 0.03, letterSpacing: -8 }}>
             🍵
           </div>
         </div>
 
         <div className="container mx-auto px-8 lg:px-16 relative z-10">
-          {/* eyebrow */}
           <Reveal className="mb-16">
             <div className="flex items-center gap-3 mb-5">
-              <div className="h-px w-8" style={{ background: GOLD }} />
-              <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+              <div className="h-px w-8" style={{ background: sGold }} />
+              <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
                 {t("Featured Project", "مشروع مميز")}
               </p>
             </div>
             <h2 className="text-4xl md:text-[52px] font-black font-heading leading-tight text-white">
               {t("Entrepreneurial", "المشروع")}{" "}
-              <span style={{ color: GOLD }}>{t("Venture", "الريادي")}</span>
+              <span style={{ color: sGold }}>{t("Venture", "الريادي")}</span>
             </h2>
           </Reveal>
 
-          {/* main card — split layout */}
           <Reveal delay={0.1}>
             <div className="grid lg:grid-cols-[1fr_380px] gap-0 rounded-3xl overflow-hidden"
-              style={{ border: `1px solid ${GOLD}25`, boxShadow: `0 24px 80px rgba(0,0,0,0.5)` }}>
+              style={{ border: `1px solid ${sGold}25`, boxShadow: `0 24px 80px rgba(0,0,0,0.5)` }}>
 
-              {/* LEFT — content */}
               <div className="p-10 md:p-14 relative"
                 style={{ background: `linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)` }}>
-                {/* top gold line */}
                 <div className="absolute top-0 left-10 right-10 h-[1px]"
-                  style={{ background: `linear-gradient(90deg, ${GOLD}, transparent)` }} />
+                  style={{ background: `linear-gradient(90deg, ${sGold}, transparent)` }} />
 
-                {/* meta row */}
                 <div className="flex flex-wrap items-center gap-3 mb-8">
                   <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest"
-                    style={{ background: `${GOLD}20`, color: GOLD, border: `1px solid ${GOLD}35` }}>
+                    style={{ background: `${sGold}20`, color: sGold, border: `1px solid ${sGold}35` }}>
                     <span className="w-1.5 h-1.5 rounded-full bg-current" />
                     {t("Founder & CEO", "مؤسس ورئيس تنفيذي")}
                   </span>
-                  <span className="text-xs font-mono" style={{ color: `${GOLD}80` }}>
+                  <span className="text-xs font-mono" style={{ color: `${sGold}80` }}>
                     {t("May 2025 – May 2026", "مايو 2025 – مايو 2026")}
                   </span>
                 </div>
 
-                {/* title */}
                 <h3 className="text-4xl md:text-5xl font-black font-heading mb-5 text-white leading-tight">
                   {t("Matcha Power", "ماتشا باور")}
                 </h3>
 
-                {/* description */}
                 <p className="text-base leading-relaxed mb-10 max-w-lg"
                   style={{ color: "rgba(240,220,170,0.6)" }}>
                   {t(
@@ -683,7 +674,6 @@ export default function Home() {
                   )}
                 </p>
 
-                {/* achievement pills */}
                 <div className="flex flex-wrap gap-2 mb-10">
                   {(t(
                     ["Brand Identity", "Business Model", "Market Research", "Operations", "Team Leadership"],
@@ -691,37 +681,32 @@ export default function Home() {
                   ) as string[]).map(tag => (
                     <span key={tag}
                       className="text-xs font-semibold px-3 py-1.5 rounded-full"
-                      style={{ background: "rgba(255,255,255,0.06)", color: "rgba(240,220,170,0.75)", border: `1px solid ${GOLD}20` }}>
+                      style={{ background: "rgba(255,255,255,0.06)", color: "rgba(240,220,170,0.75)", border: `1px solid ${sGold}20` }}>
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                {/* CTA */}
                 <Link href="/portfolio">
                   <motion.button
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     className="inline-flex items-center gap-2 h-12 px-8 rounded-xl font-bold text-sm"
-                    style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LT})`, color: NAVY }}>
+                    style={{ background: `linear-gradient(135deg, ${sGold}, ${sGoldLt})`, color: darkBg }}>
                     {t("View Full Portfolio →", "← عرض الأعمال الكاملة")}
                   </motion.button>
                 </Link>
               </div>
 
-              {/* RIGHT — visual panel */}
               <div className="relative flex flex-col items-center justify-center p-10 lg:border-l"
-                style={{ background: `linear-gradient(160deg, rgba(184,134,11,0.08) 0%, rgba(10,22,40,0.6) 100%)`, borderColor: `${GOLD}15` }}>
-
-                {/* big emoji focal point */}
+                style={{ background: `linear-gradient(160deg, ${sGold}14 0%, rgba(10,22,40,0.6) 100%)`, borderColor: `${sGold}15` }}>
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="text-[120px] leading-none mb-6 select-none"
-                  style={{ filter: `drop-shadow(0 20px 40px ${GOLD}30)` }}>
+                  style={{ filter: `drop-shadow(0 20px 40px ${sGold}30)` }}>
                   🍵
                 </motion.div>
 
-                {/* stats grid */}
                 <div className="grid grid-cols-2 gap-3 w-full max-w-[280px]">
                   {[
                     { num: "0→1",  label: t("Launch",    "إطلاق") },
@@ -730,8 +715,8 @@ export default function Home() {
                     { num: "1Y",   label: t("Journey",   "رحلة") },
                   ].map((s, i) => (
                     <div key={i} className="flex flex-col items-center justify-center py-4 px-3 rounded-xl text-center"
-                      style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${GOLD}15` }}>
-                      <span className="text-xl font-black" style={{ color: GOLD }}>{s.num}</span>
+                      style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${sGold}15` }}>
+                      <span className="text-xl font-black" style={{ color: sGold }}>{s.num}</span>
                       <span className="text-[10px] font-semibold mt-0.5" style={{ color: "rgba(240,220,170,0.5)" }}>{s.label}</span>
                     </div>
                   ))}
@@ -745,18 +730,18 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           CONTACT CTA — dark navy close
       ════════════════════════════════════════════ */}
-      <section className="py-24 relative overflow-hidden" style={{ background: NAVY }}>
+      <section className="py-24 relative overflow-hidden" style={{ background: darkBg }}>
         <div className="absolute bottom-0 left-0 right-0 h-[2px]"
-          style={{ background: `linear-gradient(90deg, transparent, ${GOLD}40, transparent)` }} />
+          style={{ background: `linear-gradient(90deg, transparent, ${sGold}40, transparent)` }} />
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: `radial-gradient(ellipse at 50% 100%, ${GOLD}08, transparent 65%)` }} />
+          style={{ background: `radial-gradient(ellipse at 50% 100%, ${sGold}08, transparent 65%)` }} />
 
         <div className="container mx-auto px-8 lg:px-16 max-w-5xl relative z-10">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
             <Reveal dir="left">
               <div className="flex items-center gap-3 mb-4">
-                <div className="h-px w-8" style={{ background: GOLD }} />
-                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: GOLD }}>
+                <div className="h-px w-8" style={{ background: sGold }} />
+                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
                   {t("Let's Work Together", "لنتعاون معاً")}
                 </p>
               </div>
@@ -779,7 +764,7 @@ export default function Home() {
                     {c.href ? (
                       <a href={c.href} className="flex items-center gap-4 group">
                         <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border transition-all duration-300 group-hover:border-amber-500"
-                          style={{ background: `${GOLD}10`, borderColor: `${GOLD}25` }}>
+                          style={{ background: `${sGold}10`, borderColor: `${sGold}25` }}>
                           {c.icon}
                         </span>
                         <span className="font-medium text-white/70 group-hover:text-amber-300 transition-colors">{c.text}</span>
@@ -787,7 +772,7 @@ export default function Home() {
                     ) : (
                       <div className="flex items-center gap-4">
                         <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border"
-                          style={{ background: `${GOLD}10`, borderColor: `${GOLD}25` }}>
+                          style={{ background: `${sGold}10`, borderColor: `${sGold}25` }}>
                           {c.icon}
                         </span>
                         <span className="font-medium" style={{ color: "rgba(240,220,180,0.45)" }}>{c.text}</span>
@@ -800,8 +785,8 @@ export default function Home() {
 
             <Reveal dir="right" delay={0.12}>
               <div className="rounded-2xl overflow-hidden border"
-                style={{ borderColor: `${GOLD}25`, boxShadow: `0 8px 40px rgba(0,0,0,0.3)` }}>
-                <div className="px-8 py-6" style={{ background: `${GOLD}12`, borderBottom: `1px solid ${GOLD}20` }}>
+                style={{ borderColor: `${sGold}25`, boxShadow: `0 8px 40px rgba(0,0,0,0.3)` }}>
+                <div className="px-8 py-6" style={{ background: `${sGold}12`, borderBottom: `1px solid ${sGold}20` }}>
                   <div className="inline-flex rounded-lg bg-white px-3 py-2">
                     <img src={logoPath} alt="md" className="h-8 w-auto object-contain"
                       style={{ mixBlendMode: "multiply" }} />
@@ -815,18 +800,18 @@ export default function Home() {
                       "«الخبرة والابتكار والأثر — المعيار الذي أحكم به على كل مشروع.»"
                     )}
                   </p>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-8" style={{ color: `${GOLD}55` }}>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-8" style={{ color: `${sGold}55` }}>
                     — {t("Mohammed Al-Dabbani", "محمد الدباني")}
                   </p>
                   <div className="flex flex-col gap-3">
                     <MagBtn href="/book"
                       className="w-full font-bold text-sm cursor-pointer rounded-xl hover:opacity-90 transition-opacity"
-                      style={{ height: 48, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LT})`, color: NAVY }}>
+                      style={{ height: 48, background: `linear-gradient(135deg, ${sGold}, ${sGoldLt})`, color: darkBg }}>
                       {t("Book a Consultation", "احجز استشارة")}
                     </MagBtn>
                     <MagBtn href="/contact"
                       className="w-full font-bold text-sm cursor-pointer rounded-xl border transition-colors hover:border-amber-400"
-                      style={{ height: 48, borderColor: `${GOLD}30`, color: "rgba(240,220,180,0.7)" }}>
+                      style={{ height: 48, borderColor: `${sGold}30`, color: "rgba(240,220,180,0.7)" }}>
                       {t("Send a Message", "أرسل رسالة")}
                     </MagBtn>
                   </div>

@@ -1,6 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface ISiteSettings extends Document {
+  lightSectionBgColor: string;
+  darkSectionBgColor: string;
+  accentGoldColor: string;
+  accentGoldLightColor: string;
   heroTitleEn: string;
   heroTitleAr: string;
   heroSubtitleEn: string;
@@ -40,6 +44,10 @@ export interface ISiteSettings extends Document {
 
 const SiteSettingsSchema = new Schema<ISiteSettings>(
   {
+    lightSectionBgColor:  { type: String, default: "#FAF6EF" },
+    darkSectionBgColor:   { type: String, default: "#0A1628" },
+    accentGoldColor:      { type: String, default: "#B8860B" },
+    accentGoldLightColor: { type: String, default: "#D4A017" },
     heroTitleEn: { type: String, default: "Mohammed Al-Dabbani" },
     heroTitleAr: { type: String, default: "محمد الدباني" },
     heroSubtitleEn: { type: String, default: "8+ years leading F&B brands and operations across the Kingdom — from vision to full commercial execution." },

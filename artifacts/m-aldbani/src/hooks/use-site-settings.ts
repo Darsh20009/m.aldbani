@@ -7,6 +7,10 @@ export interface HeroStat {
 }
 
 export interface SiteSettingsData {
+  lightSectionBgColor: string;
+  darkSectionBgColor: string;
+  accentGoldColor: string;
+  accentGoldLightColor: string;
   heroBgColor: string;
   heroAccentColor: string;
   heroAccentLightColor: string;
@@ -45,6 +49,10 @@ export interface SiteSettingsData {
 }
 
 const DEFAULTS: SiteSettingsData = {
+  lightSectionBgColor: "#FAF6EF",
+  darkSectionBgColor: "#0A1628",
+  accentGoldColor: "#B8860B",
+  accentGoldLightColor: "#D4A017",
   heroBgColor: "#0A1628",
   heroAccentColor: "#B8860B",
   heroAccentLightColor: "#D4A017",

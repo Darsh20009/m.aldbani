@@ -501,6 +501,51 @@ export default function AdminSettings() {
             </Row2>
             <Field label="Logo URL"><Input value={form.logoUrl ?? ""} onChange={e => f("logoUrl", e.target.value)} placeholder="https://..." /></Field>
           </Section>
+
+          <Section title="Section Colors — Global Palette">
+            <p className="text-xs text-muted-foreground mb-4">
+              These colors control the background and accent colors of every section on the homepage (Marquee, Expertise, Career, Featured Project, Contact).
+            </p>
+            <Row2>
+              <ColorField
+                label="Light Section Background"
+                value={form.lightSectionBgColor ?? "#FAF6EF"}
+                onChange={v => f("lightSectionBgColor", v)}
+              />
+              <ColorField
+                label="Dark Section Background"
+                value={form.darkSectionBgColor ?? "#0A1628"}
+                onChange={v => f("darkSectionBgColor", v)}
+              />
+            </Row2>
+            <Row2>
+              <ColorField
+                label="Accent Gold Color"
+                value={form.accentGoldColor ?? "#B8860B"}
+                onChange={v => f("accentGoldColor", v)}
+              />
+              <ColorField
+                label="Accent Gold Light"
+                value={form.accentGoldLightColor ?? "#D4A017"}
+                onChange={v => f("accentGoldLightColor", v)}
+              />
+            </Row2>
+            {/* Live Preview Strip */}
+            <div className="mt-4 rounded-xl overflow-hidden border border-border">
+              <div className="px-5 py-3 text-xs font-bold uppercase tracking-widest"
+                style={{ background: form.lightSectionBgColor ?? "#FAF6EF", color: form.accentGoldColor ?? "#B8860B" }}>
+                Light Section Preview — {form.accentGoldColor ?? "#B8860B"}
+              </div>
+              <div className="px-5 py-3 text-xs font-bold uppercase tracking-widest text-white"
+                style={{ background: form.darkSectionBgColor ?? "#0A1628" }}>
+                Dark Section Preview&nbsp;
+                <span style={{ color: form.accentGoldLightColor ?? "#D4A017" }}>
+                  {form.accentGoldLightColor ?? "#D4A017"}
+                </span>
+              </div>
+            </div>
+          </Section>
+
           <Section title="Footer Text">
             <Row2>
               <Field label="Footer Tagline (EN)"><Input value={form.footerTextEn ?? ""} onChange={e => f("footerTextEn", e.target.value)} /></Field>
