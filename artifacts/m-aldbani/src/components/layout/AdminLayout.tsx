@@ -1,100 +1,176 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "../../hooks/use-auth";
 import { useLanguage } from "../../hooks/use-language";
 import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782151064834.png";
-import { Button } from "@/components/ui/button";
+import {
+  LayoutDashboard,
+  Target,
+  Users,
+  CalendarDays,
+  Briefcase,
+  FileText,
+  Settings,
+  BarChart3,
+  LogOut,
+  Menu,
+  X,
+  Globe,
+} from "lucide-react";
+
+const navItems = [
+  { href: "/admin",               label: "Dashboard",     labelAr: "الرئيسية",      icon: LayoutDashboard },
+  { href: "/admin/leads",         label: "Leads CRM",     labelAr: "العملاء المحتملون", icon: Target },
+  { href: "/admin/clients",       label: "Clients",       labelAr: "العملاء",        icon: Users },
+  { href: "/admin/consultations", label: "Consultations", labelAr: "الاستشارات",     icon: CalendarDays },
+  { href: "/admin/projects",      label: "Portfolio",     labelAr: "المشاريع",       icon: Briefcase },
+  { href: "/admin/articles",      label: "Articles",      labelAr: "المقالات",       icon: FileText },
+  { href: "/admin/services",      label: "Services",      labelAr: "الخدمات",        icon: Settings },
+  { href: "/admin/analytics",     label: "Analytics",     labelAr: "التحليلات",      icon: BarChart3 },
+];
 
 export function AdminLayout({ children }: { children: ReactNode }) {
   const { user, isLoading, logout } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { t } = useLanguage();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoading) {
-      if (!user) {
-        setLocation("/auth/login");
-      } else if (user.role !== "admin") {
-        setLocation("/client");
-      }
+      if (!user) setLocation("/auth/login");
+      else if (user.role !== "admin") setLocation("/client");
     }
   }, [user, isLoading, setLocation]);
 
   if (isLoading || !user || user.role !== "admin") {
     return (
-      <div className="min-h-screen bg-muted flex items-center justify-center">
+      <div className="min-h-screen bg-[#FAF8F4] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <span className="text-muted-foreground">Loading…</span>
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm">Loading…</span>
         </div>
       </div>
     );
   }
 
-  const navItems = [
-    { href: "/admin",                label: "Dashboard",     icon: "📊" },
-    { href: "/admin/leads",          label: "Leads CRM",     icon: "🎯" },
-    { href: "/admin/clients",        label: "Clients",       icon: "👥" },
-    { href: "/admin/consultations",  label: "Consultations", icon: "🗓️" },
-    { href: "/admin/projects",       label: "Portfolio",     icon: "💻" },
-    { href: "/admin/articles",       label: "Articles",      icon: "📝" },
-    { href: "/admin/services",       label: "Services",      icon: "⚙️" },
-    { href: "/admin/analytics",      label: "Analytics",     icon: "📈" },
-  ];
+  const isActive = (href: string) =>
+    href === "/admin" ? location === "/admin" : location.startsWith(href);
 
-  return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-muted/40 text-foreground">
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 border-r border-border bg-card flex flex-col shadow-sm">
-        <div className="h-20 flex items-center px-6 border-b border-border">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-9 w-9 rounded-lg overflow-hidden border border-primary/20 shadow-sm group-hover:border-primary/50 transition-all">
-              <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
-            </div>
-            <div>
-              <p className="font-heading font-bold text-sm text-primary leading-none">M-ALDBANI</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Admin System</p>
-            </div>
-          </Link>
-        </div>
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      {/* Logo */}
+      <div className="h-16 flex items-center px-5 border-b border-border/60 shrink-0">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="h-8 w-8 rounded-lg overflow-hidden border border-primary/20 shadow-sm group-hover:border-primary/50 transition-all shrink-0">
+            <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+          </div>
+          <div>
+            <p className="font-heading font-bold text-sm text-primary leading-none">M-ALDBANI</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5 tracking-wide uppercase">Admin CRM</p>
+          </div>
+        </Link>
+        <button
+          className="ml-auto md:hidden text-muted-foreground hover:text-foreground"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <X size={18} />
+        </button>
+      </div>
 
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/8 transition-colors cursor-pointer text-sm font-medium">
-                <span className="text-base">{item.icon}</span>
-                <span>{item.label}</span>
+      {/* Nav */}
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {navItems.map((item) => {
+          const active = isActive(item.href);
+          const Icon = item.icon;
+          return (
+            <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}>
+              <div
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                  active
+                    ? "bg-primary text-white shadow-sm shadow-primary/25"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                <Icon size={16} className={active ? "text-white" : "text-muted-foreground"} />
+                <span>{t(item.label, item.labelAr)}</span>
               </div>
             </Link>
-          ))}
-        </nav>
+          );
+        })}
+      </nav>
 
-        <div className="p-4 border-t border-border">
-          <div className="flex items-center gap-3 mb-3 px-2">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
-              {(user.name ?? "?").charAt(0)}
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-bold truncate text-foreground">{user.name}</p>
-              <p className="text-xs text-muted-foreground truncate">Administrator</p>
-            </div>
+      {/* Footer */}
+      <div className="p-3 border-t border-border/60 shrink-0">
+        <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all mb-1">
+          <Globe size={15} />
+          <span>{t("View Website", "عرض الموقع")}</span>
+        </Link>
+        <div className="flex items-center gap-2.5 px-3 py-2 mt-2 border-t border-border/40 pt-3">
+          <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+            {(user.name ?? "A").charAt(0).toUpperCase()}
           </div>
-          <Button
-            variant="outline"
-            className="w-full text-sm"
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-foreground truncate">{user.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+          </div>
+          <button
             onClick={() => { logout(); setLocation("/"); }}
+            className="text-muted-foreground hover:text-destructive transition-colors p-1 rounded"
+            title="Logout"
           >
-            Logout
-          </Button>
+            <LogOut size={15} />
+          </button>
         </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen flex bg-[#F5F4F1] text-foreground">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-20 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar — desktop */}
+      <aside className="hidden md:flex w-60 shrink-0 flex-col bg-white border-r border-border/60 shadow-sm fixed h-screen z-10">
+        <SidebarContent />
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-background">
-        <div className="p-6 md:p-8">
+      {/* Sidebar — mobile drawer */}
+      <aside
+        className={`md:hidden fixed inset-y-0 left-0 w-60 bg-white border-r border-border/60 shadow-lg z-30 flex flex-col transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Main */}
+      <div className="flex-1 md:ml-60 flex flex-col min-h-screen">
+        {/* Top bar (mobile) */}
+        <header className="md:hidden h-14 bg-white border-b border-border/60 flex items-center px-4 gap-3 shadow-sm">
+          <button
+            className="text-muted-foreground hover:text-foreground"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu size={20} />
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-6 rounded overflow-hidden border border-primary/20">
+              <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+            </div>
+            <span className="font-heading font-bold text-sm text-primary">M-ALDBANI</span>
+          </div>
+        </header>
+
+        <main className="flex-1 p-5 md:p-7 overflow-auto">
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
