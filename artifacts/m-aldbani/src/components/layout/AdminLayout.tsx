@@ -128,7 +128,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen flex bg-[#F5F4F1] text-foreground">
+    <div className="min-h-screen flex bg-[#F5F4F1] text-foreground" dir="ltr">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -138,7 +138,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       )}
 
       {/* Sidebar — desktop */}
-      <aside className="hidden md:flex w-60 shrink-0 flex-col bg-white border-r border-border/60 shadow-sm fixed h-screen z-10">
+      <aside className="hidden md:flex w-60 shrink-0 flex-col bg-white border-r border-border/60 shadow-sm fixed h-screen z-10 left-0">
         <SidebarContent />
       </aside>
 
@@ -152,7 +152,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main */}
-      <div className="flex-1 md:ml-60 flex flex-col min-h-screen">
+      <div className="flex-1 ml-0 md:ml-60 flex flex-col min-h-screen">
         {/* Top bar (mobile) */}
         <header className="md:hidden h-14 bg-white border-b border-border/60 flex items-center px-4 gap-3 shadow-sm">
           <button
