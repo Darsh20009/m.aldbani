@@ -76,8 +76,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-bold text-foreground">{t("Email", "البريد الإلكتروني")}</h3>
-                    <a href="mailto:contact@m-aldbani.com" className="text-foreground/70 hover:text-primary transition-colors">
-                      contact@m-aldbani.com
+                    <a href="mailto:Moh.aldbani@gmail.com" className="text-foreground/70 hover:text-primary transition-colors">
+                      Moh.aldbani@gmail.com
                     </a>
                   </div>
                 </div>
