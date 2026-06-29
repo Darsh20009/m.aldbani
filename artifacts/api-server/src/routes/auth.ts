@@ -54,12 +54,12 @@ router.post("/login", async (req: Request, res: Response) => {
     return;
   }
 
-  // Normalize phone: strip spaces/dashes for comparison
-  const normalize = (p: string) => p.replace(/[\s\-]/g, "");
+  // Normalize phone: keep digits only, then compare last 9 digits (local SA number)
+  const digits9 = (p: string) => p.replace(/\D/g, "").slice(-9);
 
   // Fallback admin — phone or email match, works without MongoDB
   if (
-    (normalize(identifier) === normalize(ADMIN_PHONE) || identifier === ADMIN_EMAIL) &&
+    (digits9(identifier) === digits9(ADMIN_PHONE) || identifier === ADMIN_EMAIL) &&
     password === ADMIN_PASSWORD
   ) {
     const token = signToken({ id: FALLBACK_ADMIN.id, role: "admin", name: FALLBACK_ADMIN.name, email: FALLBACK_ADMIN.email });
