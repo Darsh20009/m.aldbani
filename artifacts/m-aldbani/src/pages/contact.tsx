@@ -70,25 +70,25 @@ export default function Contact() {
               </p>
 
               <div className="space-y-6">
-                <div className="glass-card p-6 rounded-xl flex items-center gap-4">
+                <div className="bg-white border border-border p-6 rounded-xl flex items-center gap-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                     ✉️
                   </div>
                   <div>
-                    <h3 className="font-bold text-white/80">{t("Email", "البريد الإلكتروني")}</h3>
-                    <a href="mailto:contact@m-aldbani.com" className="text-white hover:text-primary transition-colors">
+                    <h3 className="font-bold text-foreground">{t("Email", "البريد الإلكتروني")}</h3>
+                    <a href="mailto:contact@m-aldbani.com" className="text-foreground/70 hover:text-primary transition-colors">
                       contact@m-aldbani.com
                     </a>
                   </div>
                 </div>
-                
-                <div className="glass-card p-6 rounded-xl flex items-center gap-4">
+
+                <div className="bg-white border border-border p-6 rounded-xl flex items-center gap-4">
                   <div className="w-12 h-12 bg-[#25D366]/10 rounded-full flex items-center justify-center text-[#25D366]">
                     💬
                   </div>
                   <div>
-                    <h3 className="font-bold text-white/80">{t("WhatsApp", "واتساب")}</h3>
-                    <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#25D366] transition-colors">
+                    <h3 className="font-bold text-foreground">{t("WhatsApp", "واتساب")}</h3>
+                    <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-[#25D366] transition-colors">
                       {t("Message on WhatsApp", "راسلني على الواتساب")}
                     </a>
                   </div>
