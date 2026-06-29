@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { connectMongoDB } from "./lib/mongodb";
+import { mkdirSync } from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -38,6 +39,11 @@ app.use(express.urlencoded({ extended: true }));
 connectMongoDB().catch((err) => {
   logger.error({ err }, "Failed to connect to MongoDB — continuing without DB");
 });
+
+// Ensure uploads dir exists
+const uploadsDir = path.resolve(__dirname, "../../uploads");
+try { mkdirSync(uploadsDir, { recursive: true }); } catch {}
+app.use("/uploads", express.static(uploadsDir));
 
 app.use("/api", router);
 

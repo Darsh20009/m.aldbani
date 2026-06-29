@@ -8,12 +8,27 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Briefcase, Plus, Pencil, Trash2, Star } from "lucide-react";
+import { ImageUpload } from "../../components/ui/ImageUpload";
+import {
+  Briefcase, Plus, Pencil, Trash2, Star, Globe, Instagram, Twitter, Linkedin, Link as LinkIcon,
+} from "lucide-react";
 
-const EMPTY = { title: "", titleAr: "", category: "", description: "", descriptionAr: "", imageUrl: "", logoUrl: "", client: "", year: new Date().getFullYear(), featured: false, order: 0 };
+const EMPTY = {
+  title: "", titleAr: "", category: "", description: "", descriptionAr: "",
+  logoUrl: "", image: "", videoUrl: "",
+  websiteUrl: "", instagramUrl: "", twitterUrl: "", linkedinUrl: "",
+  client: "", year: new Date().getFullYear(), featured: false, order: 0,
+};
 
 function getToken() { return localStorage.getItem("token") ?? ""; }
 const authHeaders = () => ({ "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` });
+
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div className="grid gap-1.5">
+    <Label className="text-sm">{label}</Label>
+    {children}
+  </div>
+);
 
 export default function AdminProjects() {
   const { data: rawProjects, isLoading } = useListAdminProjects();
@@ -26,9 +41,10 @@ export default function AdminProjects() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"info" | "media" | "links">("info");
 
-  const openAdd = () => { setEditing(null); setForm(EMPTY); setOpen(true); };
-  const openEdit = (p: any) => { setEditing(p); setForm({ ...p }); setOpen(true); };
+  const openAdd = () => { setEditing(null); setForm(EMPTY); setActiveTab("info"); setOpen(true); };
+  const openEdit = (p: any) => { setEditing(p); setForm({ ...p }); setActiveTab("info"); setOpen(true); };
 
   const save = async () => {
     setSaving(true);
@@ -55,62 +71,78 @@ export default function AdminProjects() {
 
   const f = (k: string, v: any) => setForm((p: any) => ({ ...p, [k]: v }));
 
+  const TABS = [
+    { id: "info",  label: "المعلومات الأساسية" },
+    { id: "media", label: "الصور والفيديو" },
+    { id: "links", label: "الروابط" },
+  ] as const;
+
   return (
     <AdminLayout>
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h1 className="text-2xl font-bold font-heading text-foreground">Portfolio Projects</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage portfolio items, logos, and case studies shown on the website.</p>
+          <h1 className="text-2xl font-bold font-heading text-foreground">المشاريع والبراندات</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">أضف وعدّل البراندات والمشاريع التي تظهر في الموقع</p>
         </div>
-        <Button onClick={openAdd} className="gap-2"><Plus size={15} /> Add Project</Button>
+        <Button onClick={openAdd} className="gap-2"><Plus size={15} /> إضافة براند / مشروع</Button>
       </div>
 
       <div className="bg-white rounded-2xl border border-border/60 overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40 hover:bg-muted/40">
-              <TableHead className="text-muted-foreground font-medium">Logo</TableHead>
-              <TableHead className="text-muted-foreground font-medium">Title (EN)</TableHead>
-              <TableHead className="text-muted-foreground font-medium">Title (AR)</TableHead>
-              <TableHead className="text-muted-foreground font-medium">Category</TableHead>
-              <TableHead className="text-muted-foreground font-medium">Year</TableHead>
-              <TableHead className="text-muted-foreground font-medium">Status</TableHead>
-              <TableHead className="text-muted-foreground font-medium text-right">Actions</TableHead>
+              <TableHead>الشعار</TableHead>
+              <TableHead>الاسم (EN)</TableHead>
+              <TableHead>الاسم (AR)</TableHead>
+              <TableHead>التصنيف</TableHead>
+              <TableHead>السنة</TableHead>
+              <TableHead>الروابط</TableHead>
+              <TableHead>الحالة</TableHead>
+              <TableHead className="text-right">إجراءات</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow><TableCell colSpan={7} className="text-center py-10 text-muted-foreground animate-pulse">Loading projects…</TableCell></TableRow>
+              <TableRow><TableCell colSpan={8} className="text-center py-10 animate-pulse text-muted-foreground">جاري التحميل…</TableCell></TableRow>
             ) : projects.length === 0 ? (
-              <TableRow><TableCell colSpan={7} className="text-center py-10">
+              <TableRow><TableCell colSpan={8} className="text-center py-12">
                 <div className="flex flex-col items-center gap-2 text-muted-foreground">
                   <Briefcase size={28} className="opacity-30" />
-                  <p className="text-sm">No projects yet. Add your first one.</p>
+                  <p className="text-sm">لا توجد مشاريع بعد. أضف أول مشروع.</p>
                 </div>
               </TableCell></TableRow>
             ) : projects.map((p: any) => (
               <TableRow key={p.id} className="hover:bg-muted/20">
                 <TableCell>
                   {p.logoUrl ? (
-                    <img src={p.logoUrl} alt={p.title} className="w-9 h-9 rounded-lg object-cover border border-border/60" />
+                    <img src={p.logoUrl} alt={p.title} className="w-10 h-10 rounded-lg object-cover border border-border/60" />
                   ) : (
-                    <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground"><Briefcase size={14} /></div>
+                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground"><Briefcase size={14} /></div>
                   )}
                 </TableCell>
                 <TableCell className="font-semibold text-foreground">{p.title}</TableCell>
                 <TableCell className="text-foreground/70 text-sm" dir="rtl">{p.titleAr || "—"}</TableCell>
-                <TableCell className="text-foreground/70 text-sm">{p.category}</TableCell>
+                <TableCell className="text-foreground/70 text-sm">{p.category || "—"}</TableCell>
                 <TableCell className="text-foreground/70 text-sm">{p.year || "—"}</TableCell>
                 <TableCell>
+                  <div className="flex gap-1">
+                    {p.websiteUrl  && <a href={p.websiteUrl}  target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground"><Globe size={14} /></a>}
+                    {p.instagramUrl && <a href={p.instagramUrl} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-pink-500"><Instagram size={14} /></a>}
+                    {p.twitterUrl  && <a href={p.twitterUrl}  target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-sky-500"><Twitter size={14} /></a>}
+                    {p.linkedinUrl && <a href={p.linkedinUrl} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-blue-600"><Linkedin size={14} /></a>}
+                    {!p.websiteUrl && !p.instagramUrl && !p.twitterUrl && !p.linkedinUrl && <span className="text-xs text-muted-foreground">—</span>}
+                  </div>
+                </TableCell>
+                <TableCell>
                   {p.featured ? (
-                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 gap-1"><Star size={10} /> Featured</Badge>
+                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 gap-1"><Star size={10} /> مميز</Badge>
                   ) : (
-                    <Badge variant="outline" className="bg-muted text-muted-foreground border-border">Standard</Badge>
+                    <Badge variant="outline" className="bg-muted text-muted-foreground border-border">عادي</Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary h-8 px-2" onClick={() => openEdit(p)}><Pencil size={14} /></Button>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive h-8 px-2" disabled={deleting === p.id} onClick={() => setDeleteConfirm(p)}><Trash2 size={14} /></Button>
+                  <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => openEdit(p)}><Pencil size={14} /></Button>
+                  <Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground hover:text-destructive" disabled={deleting === p.id} onClick={() => setDeleteConfirm(p)}><Trash2 size={14} /></Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -118,76 +150,124 @@ export default function AdminProjects() {
         </Table>
       </div>
 
+      {/* Add/Edit Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>{editing ? "Edit Project" : "Add New Project"}</DialogTitle></DialogHeader>
-          <div className="grid gap-3 py-2">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-1.5">
-                <Label>Title (English) *</Label>
-                <Input value={form.title} onChange={e => f("title", e.target.value)} />
-              </div>
-              <div className="grid gap-1.5">
-                <Label>Title (Arabic)</Label>
-                <Input value={form.titleAr ?? ""} onChange={e => f("titleAr", e.target.value)} dir="rtl" />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-1.5">
-                <Label>Category</Label>
-                <Input value={form.category ?? ""} onChange={e => f("category", e.target.value)} placeholder="F&B, Retail…" />
-              </div>
-              <div className="grid gap-1.5">
-                <Label>Year</Label>
-                <Input type="number" value={form.year ?? ""} onChange={e => f("year", +e.target.value)} />
-              </div>
-            </div>
-            <div className="grid gap-1.5">
-              <Label>Client / Brand Name</Label>
-              <Input value={form.client ?? ""} onChange={e => f("client", e.target.value)} />
-            </div>
-            <div className="grid gap-1.5">
-              <Label>Logo URL (shown in portfolio)</Label>
-              <Input value={form.logoUrl ?? ""} onChange={e => f("logoUrl", e.target.value)} placeholder="https://..." />
-            </div>
-            <div className="grid gap-1.5">
-              <Label>Cover Image URL</Label>
-              <Input value={form.imageUrl ?? ""} onChange={e => f("imageUrl", e.target.value)} placeholder="https://..." />
-            </div>
-            <div className="grid gap-1.5">
-              <Label>Description (English)</Label>
-              <textarea value={form.description ?? ""} onChange={e => f("description", e.target.value)} rows={3} className="border border-border rounded-md px-3 py-2 text-sm bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
-            <div className="grid gap-1.5">
-              <Label>Description (Arabic)</Label>
-              <textarea value={form.descriptionAr ?? ""} onChange={e => f("descriptionAr", e.target.value)} rows={3} dir="rtl" className="border border-border rounded-md px-3 py-2 text-sm bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="feat" checked={!!form.featured} onChange={e => f("featured", e.target.checked)} className="w-4 h-4 accent-primary" />
-                <Label htmlFor="feat">Featured Project</Label>
-              </div>
-              <div className="grid gap-1.5">
-                <Label>Display Order</Label>
-                <Input type="number" value={form.order ?? 0} onChange={e => f("order", +e.target.value)} />
-              </div>
-            </div>
+        <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editing ? "تعديل المشروع / البراند" : "إضافة براند / مشروع جديد"}</DialogTitle>
+          </DialogHeader>
+
+          {/* Dialog Tabs */}
+          <div className="flex gap-1 bg-muted p-1 rounded-lg mb-4">
+            {TABS.map(t => (
+              <button key={t.id} onClick={() => setActiveTab(t.id)}
+                className={`flex-1 text-xs font-medium py-1.5 rounded-md transition-all ${activeTab === t.id ? "bg-white shadow-sm text-foreground" : "text-muted-foreground"}`}>
+                {t.label}
+              </button>
+            ))}
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={save} disabled={saving}>{saving ? "Saving…" : editing ? "Update" : "Add Project"}</Button>
+
+          {/* ── INFO ── */}
+          {activeTab === "info" && (
+            <div className="grid gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="الاسم (إنجليزي) *"><Input value={form.title ?? ""} onChange={e => f("title", e.target.value)} /></Field>
+                <Field label="الاسم (عربي)"><Input value={form.titleAr ?? ""} onChange={e => f("titleAr", e.target.value)} dir="rtl" /></Field>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="التصنيف"><Input value={form.category ?? ""} onChange={e => f("category", e.target.value)} placeholder="F&B، Retail…" /></Field>
+                <Field label="السنة"><Input type="number" value={form.year ?? ""} onChange={e => f("year", +e.target.value)} /></Field>
+              </div>
+              <Field label="اسم العميل / البراند"><Input value={form.client ?? ""} onChange={e => f("client", e.target.value)} /></Field>
+              <Field label="الوصف (إنجليزي)">
+                <textarea value={form.description ?? ""} onChange={e => f("description", e.target.value)} rows={3}
+                  className="border border-border rounded-md px-3 py-2 text-sm bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </Field>
+              <Field label="الوصف (عربي)">
+                <textarea value={form.descriptionAr ?? ""} onChange={e => f("descriptionAr", e.target.value)} rows={3} dir="rtl"
+                  className="border border-border rounded-md px-3 py-2 text-sm bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="feat" checked={!!form.featured} onChange={e => f("featured", e.target.checked)} className="w-4 h-4 accent-primary" />
+                  <Label htmlFor="feat">مشروع مميز</Label>
+                </div>
+                <Field label="ترتيب العرض"><Input type="number" value={form.order ?? 0} onChange={e => f("order", +e.target.value)} /></Field>
+              </div>
+            </div>
+          )}
+
+          {/* ── MEDIA ── */}
+          {activeTab === "media" && (
+            <div className="grid gap-4">
+              <ImageUpload
+                label="شعار البراند (Logo)"
+                value={form.logoUrl ?? ""}
+                onChange={v => f("logoUrl", v)}
+                placeholder="اسحب وأفلت الشعار أو انقر للرفع"
+              />
+              <ImageUpload
+                label="صورة الغلاف (Cover)"
+                value={form.image ?? form.imageUrl ?? ""}
+                onChange={v => { f("image", v); f("imageUrl", v); }}
+                placeholder="اسحب وأفلت صورة الغلاف أو انقر للرفع"
+              />
+              <ImageUpload
+                label="فيديو البراند (اختياري)"
+                value={form.videoUrl ?? ""}
+                onChange={v => f("videoUrl", v)}
+                accept="video/*,image/*"
+                placeholder="اسحب وأفلت فيديو أو صورة"
+              />
+            </div>
+          )}
+
+          {/* ── LINKS ── */}
+          {activeTab === "links" && (
+            <div className="grid gap-3">
+              <Field label="الموقع الإلكتروني">
+                <div className="flex items-center gap-2">
+                  <Globe size={16} className="text-muted-foreground flex-shrink-0" />
+                  <Input value={form.websiteUrl ?? ""} onChange={e => f("websiteUrl", e.target.value)} placeholder="https://..." />
+                </div>
+              </Field>
+              <Field label="إنستغرام">
+                <div className="flex items-center gap-2">
+                  <Instagram size={16} className="text-pink-500 flex-shrink-0" />
+                  <Input value={form.instagramUrl ?? ""} onChange={e => f("instagramUrl", e.target.value)} placeholder="https://instagram.com/..." />
+                </div>
+              </Field>
+              <Field label="تويتر / X">
+                <div className="flex items-center gap-2">
+                  <Twitter size={16} className="text-sky-500 flex-shrink-0" />
+                  <Input value={form.twitterUrl ?? ""} onChange={e => f("twitterUrl", e.target.value)} placeholder="https://x.com/..." />
+                </div>
+              </Field>
+              <Field label="لينكد إن">
+                <div className="flex items-center gap-2">
+                  <Linkedin size={16} className="text-blue-600 flex-shrink-0" />
+                  <Input value={form.linkedinUrl ?? ""} onChange={e => f("linkedinUrl", e.target.value)} placeholder="https://linkedin.com/..." />
+                </div>
+              </Field>
+            </div>
+          )}
+
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setOpen(false)}>إلغاء</Button>
+            <Button onClick={save} disabled={saving}>{saving ? "جاري الحفظ…" : editing ? "تحديث" : "إضافة"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/* Delete Confirm */}
       <Dialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
         <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>Delete Project</DialogTitle></DialogHeader>
-          <p className="text-sm text-muted-foreground">Delete "<strong>{deleteConfirm?.title}</strong>"? This will remove it from the portfolio.</p>
+          <DialogHeader><DialogTitle>حذف المشروع</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground">حذف "<strong>{deleteConfirm?.title}</strong>"؟ لا يمكن التراجع عن هذا.</p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setDeleteConfirm(null)}>إلغاء</Button>
             <Button variant="destructive" disabled={!!deleting} onClick={() => deleteProject(deleteConfirm.id)}>
-              {deleting ? "Deleting…" : "Delete"}
+              {deleting ? "جاري الحذف…" : "حذف"}
             </Button>
           </DialogFooter>
         </DialogContent>

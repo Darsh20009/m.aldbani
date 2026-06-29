@@ -8,6 +8,40 @@ import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
 import { logger } from "../lib/logger";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+import { mkdirSync } from "fs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const uploadsDir = path.resolve(__dirname, "../../../uploads");
+try { mkdirSync(uploadsDir, { recursive: true }); } catch {}
+
+const ALLOWED_TYPES: Record<string, string> = {
+  "image/jpeg": ".jpg",
+  "image/png": ".png",
+  "image/webp": ".webp",
+  "image/gif": ".gif",
+  "image/svg+xml": ".svg",
+  "video/mp4": ".mp4",
+  "video/webm": ".webm",
+  "video/quicktime": ".mov",
+};
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  filename: (_req, file, cb) => {
+    const ext = ALLOWED_TYPES[file.mimetype] ?? path.extname(file.originalname).toLowerCase();
+    cb(null, `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`);
+  },
+});
+
+const fileFilter: multer.Options["fileFilter"] = (_req, file, cb) => {
+  if (ALLOWED_TYPES[file.mimetype]) { cb(null, true); }
+  else { cb(new Error(`File type not allowed: ${file.mimetype}`)); }
+};
+
+const upload = multer({ storage, fileFilter, limits: { fileSize: 50 * 1024 * 1024 } });
 
 const router = Router();
 router.use(requireAdmin);
@@ -16,6 +50,13 @@ const fmt = (doc: any) => {
   const obj = doc.toObject ? doc.toObject() : doc;
   return { ...obj, id: obj._id?.toString() ?? obj.id, _id: undefined, __v: undefined };
 };
+
+// File upload
+router.post("/upload", upload.single("file"), (req: Request, res: Response) => {
+  if (!req.file) { res.status(400).json({ error: "No file uploaded" }); return; }
+  const host = `${req.protocol}://${req.get("host")}`;
+  res.json({ url: `${host}/uploads/${req.file.filename}` });
+});
 
 // Stats
 router.get("/stats", async (_req: Request, res: Response) => {
@@ -81,8 +122,8 @@ router.get("/stats", async (_req: Request, res: Response) => {
 // Leads CRUD
 router.get("/leads", async (req: Request, res: Response) => {
   try {
-    const { status } = req.query;
-    const filter = status ? { status } : {};
+    const status = typeof req.query.status === "string" ? req.query.status : undefined;
+    const filter: Record<string, string> = status ? { status } : {};
     const leads = await Lead.find(filter).sort({ createdAt: -1 });
     res.json(leads.map(fmt));
   } catch (err) {
@@ -136,8 +177,8 @@ router.get("/clients", async (_req: Request, res: Response) => {
 // Consultations
 router.get("/consultations", async (req: Request, res: Response) => {
   try {
-    const { status } = req.query;
-    const filter = status ? { status } : {};
+    const status = typeof req.query.status === "string" ? req.query.status : undefined;
+    const filter: Record<string, string> = status ? { status } : {};
     const consultations = await Consultation.find(filter).sort({ createdAt: -1 });
     res.json(consultations.map(fmt));
   } catch (err) {

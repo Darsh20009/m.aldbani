@@ -17,8 +17,8 @@ const formatDoc = (doc: any) => {
 // Projects
 router.get("/projects", async (req: Request, res: Response) => {
   try {
-    const { category } = req.query;
-    const filter = category ? { category } : {};
+    const category = typeof req.query.category === "string" ? req.query.category : undefined;
+    const filter: Record<string, string> = category ? { category } : {};
     const projects = await Project.find(filter).sort({ order: 1, createdAt: -1 });
     res.json(projects.map(formatDoc));
   } catch (err) {
@@ -52,11 +52,12 @@ router.get("/services", async (_req: Request, res: Response) => {
 // Articles
 router.get("/articles", async (req: Request, res: Response) => {
   try {
-    const { category, limit } = req.query;
-    const filter: any = { published: true };
+    const category = typeof req.query.category === "string" ? req.query.category : undefined;
+    const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
+    const filter: Record<string, unknown> = { published: true };
     if (category) filter.category = category;
     let query = Article.find(filter).sort({ publishedAt: -1, createdAt: -1 });
-    if (limit) query = query.limit(Number(limit));
+    if (limit) query = query.limit(limit);
     const articles = await query;
     res.json(articles.map(formatDoc));
   } catch (err) {
