@@ -15,8 +15,8 @@ const NAVY  = "#0A1628";
 const CREAM = "#FAF6EF";
 
 const schema = z.object({
-  email:    z.string().email(),
-  password: z.string().min(6),
+  phone:    z.string().min(9, "رقم الجوال مطلوب"),
+  password: z.string().min(1, "كلمة المرور مطلوبة"),
 });
 type F = z.infer<typeof schema>;
 
@@ -32,7 +32,7 @@ export default function Login() {
   });
 
   const onSubmit = (data: F) => {
-    mut.mutate({ data }, {
+    mut.mutate({ data: { phone: data.phone, password: data.password } as any }, {
       onSuccess: (res) => {
         setAuth(res.token, res.user);
         toast({ title: t("Welcome back", "مرحباً بعودتك") });
@@ -41,7 +41,7 @@ export default function Login() {
       onError: () => {
         toast({
           title: t("Login Failed", "فشل تسجيل الدخول"),
-          description: t("Invalid email or password.", "البريد الإلكتروني أو كلمة المرور غير صحيحة."),
+          description: t("Invalid phone or password.", "رقم الجوال أو كلمة المرور غير صحيحة."),
           variant: "destructive",
         });
       },
@@ -144,26 +144,27 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            {/* Email */}
+            {/* Phone */}
             <div>
               <label className="block text-sm font-semibold mb-2" style={{ color: NAVY }}>
-                {t("Email Address", "البريد الإلكتروني")}
+                {t("Mobile Number", "رقم الجوال")}
               </label>
               <input
-                type="email"
-                placeholder="client@example.com"
-                {...register("email")}
+                type="tel"
+                placeholder="+966 5X XXX XXXX"
+                {...register("phone")}
                 className="w-full h-12 px-4 rounded-xl border text-sm outline-none transition-all"
                 style={{
                   background: "white",
-                  borderColor: errors.email ? "#ef4444" : `${GOLD}30`,
+                  borderColor: errors.phone ? "#ef4444" : `${GOLD}30`,
                   color: NAVY,
+                  direction: "ltr",
                 }}
                 onFocus={e => (e.currentTarget.style.borderColor = GOLD)}
-                onBlur={e => (e.currentTarget.style.borderColor = errors.email ? "#ef4444" : `${GOLD}30`)}
+                onBlur={e => (e.currentTarget.style.borderColor = errors.phone ? "#ef4444" : `${GOLD}30`)}
               />
-              {errors.email && (
-                <p className="text-xs text-red-500 mt-1">{t("Valid email required", "البريد الإلكتروني مطلوب")}</p>
+              {errors.phone && (
+                <p className="text-xs text-red-500 mt-1">{t("Mobile number required", "رقم الجوال مطلوب")}</p>
               )}
             </div>
 
@@ -174,7 +175,8 @@ export default function Login() {
               </label>
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="••••••"
+                autoComplete="current-password"
                 {...register("password")}
                 className="w-full h-12 px-4 rounded-xl border text-sm outline-none transition-all"
                 style={{
@@ -186,7 +188,7 @@ export default function Login() {
                 onBlur={e => (e.currentTarget.style.borderColor = errors.password ? "#ef4444" : `${GOLD}30`)}
               />
               {errors.password && (
-                <p className="text-xs text-red-500 mt-1">{t("Min 6 characters", "6 أحرف على الأقل")}</p>
+                <p className="text-xs text-red-500 mt-1">{t("Password required", "كلمة المرور مطلوبة")}</p>
               )}
             </div>
 
