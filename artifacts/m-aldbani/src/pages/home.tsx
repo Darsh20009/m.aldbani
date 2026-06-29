@@ -70,18 +70,27 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
 function SkillBar({ label, pct, color = "#B8860B" }: { label: string; pct: number; color?: string }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
+  const { language } = useLanguage();
+  const isRTL = language === "ar";
   return (
     <div ref={ref}>
-      <div className="flex justify-between mb-1.5">
+      {/* Label row — swap order in RTL so label stays near its end */}
+      <div className={`flex items-center justify-between mb-2 ${isRTL ? "flex-row-reverse" : ""}`}>
         <span className="text-sm font-semibold" style={{ color: "#3D2B0F" }}>{label}</span>
         <span className="text-xs font-bold font-mono" style={{ color }}>{pct}%</span>
       </div>
-      <div className="h-1.5 w-full rounded-full" style={{ background: "#E8DDD0" }}>
+      {/* Track: always LTR so scaleX origin is predictable */}
+      <div className="h-2 w-full rounded-full overflow-hidden" style={{ background: "#E8DDD0", direction: "ltr" }}>
         <motion.div
-          initial={{ width: 0 }} animate={{ width: inView ? `${pct}%` : 0 }}
+          className="h-full w-full rounded-full"
+          style={{
+            background: `linear-gradient(90deg, ${color}, #D4A017)`,
+            transformOrigin: isRTL ? "right center" : "left center",
+          }}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: inView ? pct / 100 : 0 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="h-full rounded-full"
-          style={{ background: `linear-gradient(90deg, ${color}, #D4A017)` }} />
+        />
       </div>
     </div>
   );
