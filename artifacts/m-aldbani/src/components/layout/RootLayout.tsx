@@ -44,6 +44,19 @@ export function RootLayout({ children }: { children: ReactNode }) {
               <p className="text-xs text-muted-foreground">All rights reserved</p>
             </div>
           </div>
+          <div className="mt-6 pt-4 border-t border-border/40 text-center">
+            <p className="text-[11px] text-muted-foreground/60">
+              Made by{" "}
+              <a
+                href="https://qiroxstudio.online"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                Qirox Studio
+              </a>
+            </p>
+          </div>
         </div>
       </footer>
     </div>
