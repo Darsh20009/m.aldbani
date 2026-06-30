@@ -4,6 +4,7 @@ import { useGetMyInvoices } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { SarIcon } from "@/components/ui/SarIcon";
 
 export default function ClientInvoices() {
   const { t } = useLanguage();
@@ -49,7 +50,11 @@ export default function ClientInvoices() {
                 <TableRow key={inv.id} className="border-border hover:bg-primary/5">
                   <TableCell className="font-mono font-medium">{inv.number}</TableCell>
                   <TableCell className="text-white/80">{new Date(inv.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell className="font-bold">{inv.amount} {inv.currency}</TableCell>
+                  <TableCell className="font-bold">
+                    <span className="inline-flex items-center gap-1.5">
+                      {inv.amount.toLocaleString("ar-SA")} <SarIcon size={14} />
+                    </span>
+                  </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={
                       inv.status === 'paid' ? 'bg-green-500/20 text-green-400 border-green-500/20' :

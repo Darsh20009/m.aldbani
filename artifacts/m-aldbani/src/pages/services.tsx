@@ -4,6 +4,7 @@ import { useListServices } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { SarText } from "@/components/ui/SarIcon";
 
 export default function Services() {
   const { t, language } = useLanguage();
@@ -57,8 +58,8 @@ export default function Services() {
                   
                   <div className="mt-auto pt-6 border-t border-border flex items-center justify-between">
                     {service.price && (
-                      <span className="text-lg font-mono text-primary font-semibold">
-                        {service.price}
+                      <span className="text-base font-mono text-primary font-semibold">
+                        <SarText text={service.price} iconSize={14} />
                       </span>
                     )}
                     <Link href={`/book?service=${service.id}`} className={!service.price ? "w-full" : ""}>

@@ -8,13 +8,14 @@ import {
   Users, Target, CalendarDays, TrendingUp,
   ArrowUpRight, Clock, CheckCircle2, AlertCircle,
 } from "lucide-react";
+import { SarIcon } from "@/components/ui/SarIcon";
 
 const COLORS = ["#2563EB", "#7C3AED", "#3B82F6", "#8B5CF6", "#60A5FA", "#A78BFA"];
 
 const StatCard = ({
   label, value, sub, subColor = "text-emerald-600", icon: Icon, iconBg,
 }: {
-  label: string; value: string | number; sub?: string;
+  label: string; value: string | number | React.ReactNode; sub?: string;
   subColor?: string; icon: React.ElementType; iconBg: string;
 }) => (
   <div className="bg-white rounded-2xl border border-border/60 p-5 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200">
@@ -36,8 +37,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <div className="bg-white border border-border rounded-xl shadow-lg px-4 py-3 text-sm">
         <p className="font-semibold text-foreground mb-1">{label}</p>
         {payload.map((p: any, i: number) => (
-          <p key={i} style={{ color: p.color }} className="font-medium">
-            {p.name === "revenue" ? `${p.value.toLocaleString()} ر.س` : p.value}
+          <p key={i} style={{ color: p.color }} className="font-medium inline-flex items-center gap-1">
+            {p.name === "revenue" ? <>{p.value.toLocaleString()} <SarIcon size={13} /></> : p.value}
           </p>
         ))}
       </div>
@@ -119,7 +120,7 @@ export default function AdminDashboard() {
           icon={TrendingUp}
           iconBg="bg-emerald-500"
           label="Total Revenue"
-          value={`${stats.totalRevenue.toLocaleString()} ر.س`}
+          value={<span className="inline-flex items-center gap-1.5">{stats.totalRevenue.toLocaleString()} <SarIcon size={18} /></span>}
           sub="↑ Revenue tracked"
           subColor="text-emerald-600"
         />
@@ -134,8 +135,8 @@ export default function AdminDashboard() {
               <h3 className="font-semibold text-foreground text-sm">Monthly Revenue</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Revenue over the past months</p>
             </div>
-            <span className="text-xs bg-blue-50 text-blue-600 font-medium px-2.5 py-1 rounded-full border border-blue-100">
-              ر.س
+            <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 font-medium px-2.5 py-1 rounded-full border border-blue-100">
+              <SarIcon size={13} />
             </span>
           </div>
           <div className="h-[260px]">
@@ -154,7 +155,7 @@ export default function AdminDashboard() {
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(v) => `${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} ر.س`}
+                  tickFormatter={(v) => `${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f5f4f1", radius: 6 }} />
                 <Bar dataKey="revenue" fill="#2563EB" radius={[6, 6, 0, 0]} />
