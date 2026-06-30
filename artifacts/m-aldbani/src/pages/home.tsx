@@ -1,5 +1,5 @@
 import {
-  motion, useInView, useScroll, useTransform, useSpring, useMotionValue,
+  motion, useInView, useScroll, useTransform, AnimatePresence,
 } from "framer-motion";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { useLanguage } from "../hooks/use-language";
@@ -7,33 +7,80 @@ import { useSiteSettings } from "../hooks/use-site-settings";
 import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
 import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782157376997.png";
-import photoPath from "@assets/Screenshot_2026-06-22_at_6.27.49_PM_1782231945642.png";
 
-/* ── MAGNETIC BUTTON ───────────────────────────────────────── */
-function MagBtn({ children, href, className, style }: {
-  children: React.ReactNode; href?: string;
-  className?: string; style?: React.CSSProperties;
-}) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const mx = useMotionValue(0); const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 220, damping: 22 });
-  const sy = useSpring(my, { stiffness: 220, damping: 22 });
-  const onMove = useCallback((e: React.MouseEvent) => {
-    const r = ref.current!.getBoundingClientRect();
-    mx.set((e.clientX - r.left - r.width / 2) * 0.28);
-    my.set((e.clientY - r.top - r.height / 2) * 0.28);
-  }, [mx, my]);
-  const onLeave = useCallback(() => { mx.set(0); my.set(0); }, [mx, my]);
-  const btn = (
-    <motion.button ref={ref} style={{ x: sx, y: sy, ...style }}
-      onMouseMove={onMove} onMouseLeave={onLeave} className={className}>
-      {children}
-    </motion.button>
+/* ── ANIMATED MESH BACKGROUND ──────────────────────────────── */
+function MeshBg() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Base dark gradient */}
+      <div className="absolute inset-0"
+        style={{ background: "linear-gradient(135deg, #060d1a 0%, #0a1628 40%, #0d1f3c 100%)" }} />
+      {/* Orb 1 — blue */}
+      <motion.div
+        animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute rounded-full"
+        style={{
+          width: 700, height: 700, top: "-15%", left: "-10%",
+          background: "radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 65%)",
+        }}
+      />
+      {/* Orb 2 — gold */}
+      <motion.div
+        animate={{ x: [0, -50, 0], y: [0, 40, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        className="absolute rounded-full"
+        style={{
+          width: 600, height: 600, top: "10%", right: "-8%",
+          background: "radial-gradient(circle, rgba(184,134,11,0.12) 0%, transparent 65%)",
+        }}
+      />
+      {/* Orb 3 — violet */}
+      <motion.div
+        animate={{ x: [0, 30, 0], y: [0, 50, 0], scale: [1, 0.9, 1] }}
+        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut", delay: 6 }}
+        className="absolute rounded-full"
+        style={{
+          width: 500, height: 500, bottom: "5%", left: "30%",
+          background: "radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 65%)",
+        }}
+      />
+      {/* Grid lines */}
+      <svg className="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#B8860B" strokeWidth="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+      </svg>
+      {/* Noise texture overlay */}
+      <div className="absolute inset-0 opacity-[0.015]"
+        style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")", backgroundSize: "200px 200px" }} />
+    </div>
   );
-  return href ? <Link href={href}>{btn}</Link> : btn;
 }
 
-/* ── FADE IN ───────────────────────────────────────────────── */
+/* ── FLOATING STAT CARD ────────────────────────────────────── */
+function FloatCard({ value, label, delay = 0, className = "" }: {
+  value: string; label: string; delay?: number; className?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ scale: 1.05, y: -3 }}
+      className={`rounded-2xl px-5 py-4 backdrop-blur-xl border border-white/10 ${className}`}
+      style={{ background: "rgba(255,255,255,0.05)", boxShadow: "0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)" }}
+    >
+      <p className="text-2xl font-black text-white leading-none">{value}</p>
+      <p className="text-[11px] font-semibold mt-1.5 uppercase tracking-widest" style={{ color: "rgba(240,220,180,0.55)" }}>{label}</p>
+    </motion.div>
+  );
+}
+
+/* ── REVEAL ─────────────────────────────────────────────────── */
 function Reveal({ children, delay = 0, className = "", dir = "up" as "up" | "left" | "right" }) {
   const init = dir === "left" ? { opacity: 0, x: -32 }
     : dir === "right" ? { opacity: 0, x: 32 }
@@ -48,7 +95,7 @@ function Reveal({ children, delay = 0, className = "", dir = "up" as "up" | "lef
   );
 }
 
-/* ── COUNTER ───────────────────────────────────────────────── */
+/* ── COUNTER ────────────────────────────────────────────────── */
 function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
@@ -56,37 +103,30 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   useEffect(() => {
     if (!inView) return;
     const s = Date.now();
-    const t = () => {
+    const tick = () => {
       const p = Math.min((Date.now() - s) / 1600, 1);
       setV(Math.round((1 - Math.pow(1 - p, 3)) * to));
-      if (p < 1) requestAnimationFrame(t);
+      if (p < 1) requestAnimationFrame(tick);
     };
-    requestAnimationFrame(t);
+    requestAnimationFrame(tick);
   }, [inView, to]);
   return <span ref={ref}>{v}{suffix}</span>;
 }
 
-/* ── SKILL BAR ─────────────────────────────────────────────── */
+/* ── SKILL BAR ──────────────────────────────────────────────── */
 function SkillBar({ label, pct, color = "#B8860B" }: { label: string; pct: number; color?: string }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const { language } = useLanguage();
-  const isRTL = language === "ar";
   return (
     <div ref={ref}>
-      {/* Label row — swap order in RTL so label stays near its end */}
-      <div className={`flex items-center justify-between mb-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+      <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-semibold" style={{ color: "#3D2B0F" }}>{label}</span>
         <span className="text-xs font-bold font-mono" style={{ color }}>{pct}%</span>
       </div>
-      {/* Track: always LTR so scaleX origin is predictable */}
       <div className="h-2 w-full rounded-full overflow-hidden" style={{ background: "#E8DDD0", direction: "ltr" }}>
         <motion.div
           className="h-full w-full rounded-full"
-          style={{
-            background: `linear-gradient(90deg, ${color}, #D4A017)`,
-            transformOrigin: isRTL ? "right center" : "left center",
-          }}
+          style={{ background: `linear-gradient(90deg, ${color}, #D4A017)`, transformOrigin: "left center" }}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: inView ? pct / 100 : 0 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
@@ -96,33 +136,17 @@ function SkillBar({ label, pct, color = "#B8860B" }: { label: string; pct: numbe
   );
 }
 
-/* ── GEOMETRIC DIVIDER ─────────────────────────────────────── */
-function GeoDivider({ flip = false, color = "#B8860B" }) {
-  return (
-    <svg width="100%" height="32" viewBox="0 0 1200 32" preserveAspectRatio="none"
-      style={{ transform: flip ? "rotate(180deg)" : "none" }}>
-      {Array.from({ length: 30 }, (_, i) => (
-        <polygon key={i}
-          points={`${40 * i + 20},4 ${40 * i + 40},16 ${40 * i + 20},28 ${40 * i},16`}
-          fill="none" stroke={color} strokeWidth="0.6" opacity="0.35" />
-      ))}
-    </svg>
-  );
-}
-
 /* ══════════════════════════════════════════════════════════
    PAGE
 ══════════════════════════════════════════════════════════ */
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const settings = useSiteSettings();
+  const isRTL = language === "ar";
 
-  const heroBg     = settings.heroBgColor          || "#0A1628";
   const heroGold   = settings.heroAccentColor      || "#B8860B";
   const heroGoldLt = settings.heroAccentLightColor || "#D4A017";
-  const heroShowPhoto  = settings.heroShowPhoto !== false;
-  const heroPhotoSrc   = settings.heroPhotoUrl || photoPath;
-  const heroShowBadge  = settings.heroShowFloatingBadge !== false;
+  const heroBg     = settings.heroBgColor          || "#0A1628";
 
   const lightBg = settings.lightSectionBgColor  || "#FAF6EF";
   const darkBg  = settings.darkSectionBgColor   || "#0A1628";
@@ -131,215 +155,200 @@ export default function Home() {
 
   const heroRef = useRef(null);
   const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const photoY = useTransform(heroP, [0, 1], [0, -70]);
-  const textY  = useTransform(heroP, [0, 1], [0, 38]);
+  const textY = useTransform(heroP, [0, 1], [0, 60]);
+
+  const words = t("Mohammed Al-Dabbani", "محمد الدباني").split(" ");
 
   return (
     <RootLayout>
 
       {/* ════════════════════════════════════════════
-          HERO
+          HERO — Full-width, no photo
       ════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative overflow-hidden"
-        style={{ background: heroBg, minHeight: "92vh" }}>
+      <section ref={heroRef} className="relative flex flex-col items-center justify-center overflow-hidden"
+        style={{ minHeight: "100svh", paddingTop: 72 }}>
 
-        <div className="absolute inset-y-0 right-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
-          style={{ width: "55%" }}>
-          <span className="font-heading font-black leading-none"
-            style={{ fontFamily: "'IBM Plex Sans Arabic', sans-serif", fontSize: "clamp(220px, 32vw, 380px)",
-              color: heroGold, opacity: 0.04, letterSpacing: "-10px", userSelect: "none" }}>
-            الدباني
-          </span>
-        </div>
+        <MeshBg />
 
-        <div className="absolute top-0 left-0 right-0 h-[3px]"
-          style={{ background: `linear-gradient(90deg, transparent, ${heroGold}, transparent)` }} />
-        <div className="absolute top-0 right-0 w-[40%] h-full pointer-events-none"
-          style={{ background: `radial-gradient(ellipse at 100% 30%, rgba(184,134,11,0.08) 0%, transparent 60%)` }} />
+        {/* Top line accent */}
+        <div className="absolute top-0 left-0 right-0 h-px"
+          style={{ background: `linear-gradient(90deg, transparent, ${heroGold}60, transparent)` }} />
 
-        <div className="container mx-auto px-8 lg:px-16">
-          <div className="grid lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] items-center gap-0"
-            style={{ minHeight: "92vh" }}>
+        <motion.div style={{ y: textY }}
+          className="relative z-10 container mx-auto px-6 lg:px-16 flex flex-col items-center text-center py-20">
 
-            {/* TEXT */}
-            <motion.div style={{ y: textY }} className="py-20 lg:py-0 lg:pr-16 order-2 lg:order-1 relative z-10">
+          {/* Logo pill */}
+          <motion.div
+            initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-10 inline-flex items-center gap-3 rounded-2xl px-4 py-2 border"
+            style={{ background: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)" }}
+          >
+            <div className="rounded-lg bg-white px-1.5 py-1">
+              <img src={logoPath} alt="m-aldbani" className="h-6 w-auto object-contain" style={{ mixBlendMode: "multiply" }} />
+            </div>
+            <div className="w-px h-5" style={{ background: `${heroGold}40` }} />
+            <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: `${heroGold}90` }}>
+              {t(settings.heroBadgeEn, settings.heroBadgeAr)}
+            </span>
+          </motion.div>
 
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
-                className="mb-10 inline-flex rounded-xl bg-white px-3 py-2"
-                style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.3)" }}>
-                <img src={logoPath} alt="m-aldbani" className="h-8 w-auto object-contain"
-                  style={{ mixBlendMode: "multiply" }} />
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1, duration: 0.55 }}
-                className="flex items-center gap-3 mb-6">
-                <div className="h-px w-8 flex-shrink-0" style={{ background: heroGold }} />
-                <p className="text-[10px] font-bold uppercase tracking-[0.35em]" style={{ color: heroGold }}>
-                  {t(settings.heroBadgeEn, settings.heroBadgeAr)}
-                </p>
-              </motion.div>
-
-              <div className="mb-6">
-                <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                  className="font-heading font-black text-white leading-[0.92] tracking-tight"
-                  style={{ fontSize: "clamp(52px, 7.5vw, 92px)" }}>
-                  {t(settings.heroTitleEn, settings.heroTitleAr)}
-                </motion.h1>
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
-                  className="font-heading font-bold mt-3"
-                  style={{ fontSize: "clamp(18px, 2.5vw, 28px)", color: heroGold, opacity: 1,
-                    fontFamily: "'IBM Plex Sans Arabic', sans-serif", letterSpacing: "0.02em" }}>
-                  {t(settings.heroTitleAr, settings.heroTitleEn)}
-                </motion.p>
-              </div>
-
-              <motion.div initial={{ scaleX: 0, originX: 0 }} animate={{ scaleX: 1 }}
-                transition={{ delay: 0.52, duration: 0.6 }}
-                className="h-[2px] w-16 rounded-full mb-7"
-                style={{ background: `linear-gradient(90deg, ${heroGold}, ${heroGoldLt}, transparent)` }} />
-
-              <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.58, duration: 0.6 }}
-                className="leading-relaxed mb-9 max-w-[400px] text-base"
-                style={{ color: "rgba(240,220,180,0.65)" }}>
-                {t(settings.heroSubtitleEn, settings.heroSubtitleAr)}
-              </motion.p>
-
-              {settings.heroStats.length > 0 && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.65, duration: 0.6 }}
-                  className="mb-9 overflow-hidden rounded-xl border"
-                  style={{ display: "grid", gridTemplateColumns: `repeat(${settings.heroStats.length}, 1fr)`,
-                    borderColor: `${heroGold}25`, background: `${heroGold}08` }}>
-                  {settings.heroStats.map((st, i) => (
-                    <div key={i} className="flex flex-col items-center py-4 px-1"
-                      style={{ borderRight: i < settings.heroStats.length - 1 ? `1px solid ${heroGold}20` : "none" }}>
-                      <span className="text-2xl font-black font-heading" style={{ color: heroGoldLt }}>{st.value}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5"
-                        style={{ color: `${heroGold}70` }}>
-                        {t(st.labelEn, st.labelAr)}
-                      </span>
-                    </div>
-                  ))}
-                </motion.div>
-              )}
-
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.76, duration: 0.55 }}
-                className="flex flex-wrap gap-3 mb-9">
-                <MagBtn href="/book"
-                  className="font-bold text-sm cursor-pointer rounded-xl px-8 transition-opacity hover:opacity-90"
-                  style={{ height: 52, background: `linear-gradient(135deg, ${heroGold}, ${heroGoldLt})`, color: heroBg }}>
-                  {t("Book a Consultation", "احجز استشارة")}
-                </MagBtn>
-                <MagBtn href="/about"
-                  className="font-bold text-sm cursor-pointer rounded-xl px-8 border transition-colors hover:border-amber-400 hover:text-amber-300"
-                  style={{ height: 52, borderColor: `${heroGold}40`, color: "rgba(240,220,180,0.75)" }}>
-                  {t("My Profile", "ملفي الشخصي")}
-                </MagBtn>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
-                className="flex items-center gap-2 text-xs" style={{ color: `${heroGold}60` }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-                {t("Available · Riyadh, Saudi Arabia 🇸🇦", "متاح · الرياض، المملكة العربية السعودية 🇸🇦")}
-              </motion.div>
-            </motion.div>
-
-            {/* PHOTO */}
-            {heroShowPhoto && (
-              <motion.div style={{ y: photoY, alignSelf: "stretch" }}
-                initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-                className="hidden lg:flex flex-col items-end justify-end order-1 lg:order-2 h-full relative">
-                <div className="relative w-full h-full flex flex-col justify-end" style={{ minHeight: "92vh" }}>
-                  <div className="absolute inset-0 overflow-hidden">
-                    <img src={heroPhotoSrc} alt="Mohammed Al-Dabbani"
-                      className="w-full h-full object-cover object-top" />
-                    <div className="absolute inset-0 pointer-events-none"
-                      style={{ background: `linear-gradient(to right, ${heroBg} 0%, ${heroBg}80 15%, transparent 45%)` }} />
-                    <div className="absolute inset-0 pointer-events-none"
-                      style={{ background: `linear-gradient(to top, ${heroBg} 0%, ${heroBg}40 20%, transparent 50%)` }} />
-                    <div className="absolute inset-0 pointer-events-none"
-                      style={{ background: `radial-gradient(ellipse at center, rgba(184,134,11,0.06) 0%, transparent 70%)` }} />
-                  </div>
-                  <div className="relative z-10 p-8 pb-10">
-                    <div className="inline-flex flex-col border-l-2 pl-4" style={{ borderColor: heroGold }}>
-                      <span className="font-bold text-white text-base leading-tight">
-                        {t(settings.heroTitleEn, settings.heroTitleAr)}
-                      </span>
-                      <span className="text-xs mt-1" style={{ color: `${heroGoldLt}90` }}>
-                        {t(settings.heroBadgeEn, settings.heroBadgeAr)}
-                      </span>
-                    </div>
-                  </div>
-                  {heroShowBadge && (
-                    <motion.div animate={{ y: [-5, 5, -5] }}
-                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                      className="absolute top-12 right-4 z-20 rounded-2xl px-4 py-3 border"
-                      style={{ background: "rgba(10,22,40,0.92)", borderColor: `${heroGold}30`,
-                        backdropFilter: "blur(12px)", boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px ${heroGold}15` }}>
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-xl">{settings.heroFloatingBadgeEmoji}</span>
-                        <div>
-                          <p className="text-xs font-bold text-white leading-tight">
-                            {t(settings.heroFloatingBadgeTitleEn, settings.heroFloatingBadgeTitleAr)}
-                          </p>
-                          <p className="text-[10px] mt-0.5" style={{ color: `${heroGold}80` }}>
-                            {t(settings.heroFloatingBadgeSubtitleEn, settings.heroFloatingBadgeSubtitleAr)}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              </motion.div>
-            )}
+          {/* Big heading */}
+          <div className="overflow-hidden mb-3">
+            <motion.h1
+              initial={{ opacity: 0, y: 60 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+              className="font-heading font-black text-white leading-[0.9] tracking-tight"
+              style={{ fontSize: "clamp(52px, 9vw, 108px)" }}
+            >
+              {t(settings.heroTitleEn, settings.heroTitleAr)}
+            </motion.h1>
           </div>
-        </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-[2px]"
-          style={{ background: `linear-gradient(90deg, transparent, ${heroGold}50, transparent)` }} />
+          {/* Arabic subtitle */}
+          <motion.p
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ delay: 0.35, duration: 0.7 }}
+            className="font-bold mb-8"
+            style={{
+              fontSize: "clamp(20px, 3vw, 34px)",
+              background: `linear-gradient(135deg, ${heroGold}, ${heroGoldLt})`,
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+              fontFamily: "'IBM Plex Sans Arabic', sans-serif",
+            }}
+          >
+            {t(settings.heroTitleAr, settings.heroTitleEn)}
+          </motion.p>
+
+          {/* Divider */}
+          <motion.div
+            initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
+            transition={{ delay: 0.48, duration: 0.7 }}
+            className="h-px w-24 mb-8"
+            style={{ background: `linear-gradient(90deg, transparent, ${heroGold}, transparent)` }}
+          />
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.65 }}
+            className="leading-relaxed mb-10 max-w-2xl text-base md:text-lg"
+            style={{ color: "rgba(240,220,180,0.55)" }}
+          >
+            {t(settings.heroSubtitleEn, settings.heroSubtitleAr)}
+          </motion.p>
+
+          {/* Stat pills row */}
+          {settings.heroStats.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.62, duration: 0.6 }}
+              className="flex flex-wrap justify-center gap-4 mb-10"
+            >
+              {settings.heroStats.map((st, i) => (
+                <FloatCard
+                  key={i}
+                  value={st.value}
+                  label={t(st.labelEn, st.labelAr)}
+                  delay={0.64 + i * 0.08}
+                />
+              ))}
+            </motion.div>
+          )}
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.78, duration: 0.55 }}
+            className="flex flex-wrap justify-center gap-3 mb-10"
+          >
+            <Link href="/book">
+              <motion.button
+                whileHover={{ scale: 1.04, boxShadow: `0 0 40px ${heroGold}50` }}
+                whileTap={{ scale: 0.97 }}
+                className="font-bold text-sm cursor-pointer rounded-2xl px-8 transition-all duration-300"
+                style={{ height: 52, background: `linear-gradient(135deg, ${heroGold}, ${heroGoldLt})`, color: heroBg, boxShadow: `0 0 24px ${heroGold}30` }}
+              >
+                {t("Book a Consultation", "احجز استشارة")}
+              </motion.button>
+            </Link>
+            <Link href="/about">
+              <motion.button
+                whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.1)" }}
+                whileTap={{ scale: 0.97 }}
+                className="font-bold text-sm cursor-pointer rounded-2xl px-8 border transition-all duration-300"
+                style={{ height: 52, borderColor: "rgba(255,255,255,0.15)", color: "rgba(240,220,180,0.75)", background: "rgba(255,255,255,0.04)" }}
+              >
+                {t("My Profile", "ملفي الشخصي")}
+              </motion.button>
+            </Link>
+          </motion.div>
+
+          {/* Available badge */}
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ delay: 0.92 }}
+            className="flex items-center gap-2 text-xs"
+            style={{ color: `${heroGold}55` }}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+            {t("Available · Riyadh, Saudi Arabia 🇸🇦", "متاح · الرياض، المملكة العربية السعودية 🇸🇦")}
+          </motion.div>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
+          <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: `${heroGold}40` }}>
+            {t("Scroll", "انتقل للأسفل")}
+          </p>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            className="w-px h-8 rounded-full"
+            style={{ background: `linear-gradient(to bottom, ${heroGold}60, transparent)` }}
+          />
+        </motion.div>
+
+        {/* Bottom gradient fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+          style={{ background: "linear-gradient(to bottom, transparent, #0A1628)" }} />
       </section>
 
       {/* ════════════════════════════════════════════
           MARQUEE
       ════════════════════════════════════════════ */}
       {settings.showMarquee !== false && settings.marqueeItems.length > 0 && (
-        <>
-          <div style={{ background: lightBg, paddingTop: 8, paddingBottom: 8 }}>
-            <GeoDivider color={sGold} />
-          </div>
-          <div style={{ background: lightBg, borderBottom: `1px solid ${sGold}25` }} className="overflow-hidden py-3.5">
-            <motion.div animate={{ x: ["0%", "-50%"] }}
-              transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-              className="flex gap-12 whitespace-nowrap w-max">
-              {[...Array(2)].map((_, rep) =>
-                settings.marqueeItems.map((item, i) => (
-                  <span key={`${rep}-${i}`}
-                    className="text-[11px] font-bold uppercase tracking-[0.28em] flex items-center gap-12"
-                    style={{ color: `${sGold}70` }}>
-                    {t(item.en, item.ar)}
-                    <span style={{ color: `${sGold}40` }}>◇</span>
-                  </span>
-                ))
-              )}
-            </motion.div>
-          </div>
-        </>
+        <div style={{ background: lightBg, borderBottom: `1px solid ${sGold}20` }} className="overflow-hidden py-4">
+          <motion.div animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+            className="flex gap-12 whitespace-nowrap w-max">
+            {[...Array(2)].map((_, rep) =>
+              settings.marqueeItems.map((item, i) => (
+                <span key={`${rep}-${i}`}
+                  className="text-[11px] font-bold uppercase tracking-[0.28em] flex items-center gap-12"
+                  style={{ color: `${sGold}60` }}>
+                  {t(item.en, item.ar)}
+                  <span style={{ color: `${sGold}30` }}>◆</span>
+                </span>
+              ))
+            )}
+          </motion.div>
+        </div>
       )}
 
       {/* ════════════════════════════════════════════
           EXPERTISE + SKILLS
       ════════════════════════════════════════════ */}
       {(settings.showExpertise !== false || settings.showSkills !== false) && (
-        <section className="py-24" style={{ background: lightBg }}>
+        <section className="py-28" style={{ background: lightBg }}>
           <div className="container mx-auto px-8 lg:px-16">
             <div className="grid lg:grid-cols-2 gap-20 items-start">
 
-              {/* Expertise */}
               {settings.showExpertise !== false && settings.expertiseItems.length > 0 && (
                 <div>
                   <Reveal>
@@ -358,10 +367,10 @@ export default function Home() {
                     {settings.expertiseItems.map((p, i) => (
                       <Reveal key={i} delay={i * 0.08}>
                         <motion.div
-                          whileHover={{ x: 6 }}
+                          whileHover={{ x: isRTL ? -6 : 6 }}
                           transition={{ type: "spring", stiffness: 280, damping: 26 }}
-                          className="group flex gap-5 p-6 rounded-2xl border cursor-default transition-all duration-300"
-                          style={{ background: "white", borderColor: `${sGold}20` }}
+                          className="group flex gap-5 p-6 rounded-2xl border cursor-default transition-all duration-300 bg-white"
+                          style={{ borderColor: `${sGold}20` }}
                           onMouseEnter={e => {
                             (e.currentTarget as HTMLElement).style.borderColor = `${sGold}60`;
                             (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px ${sGold}15`;
@@ -396,7 +405,6 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Skills */}
               {settings.showSkills !== false && settings.skillItems.length > 0 && (
                 <div>
                   <Reveal dir="right">
@@ -429,82 +437,80 @@ export default function Home() {
           CAREER TIMELINE
       ════════════════════════════════════════════ */}
       {settings.showCareer !== false && settings.careerItems.length > 0 && (
-        <>
-          <div style={{ background: darkBg, paddingTop: 8, paddingBottom: 8 }}>
-            <GeoDivider flip color={sGold} />
-          </div>
-          <section className="py-24 relative overflow-hidden" style={{ background: darkBg }}>
-            <div className="absolute top-0 left-0 w-[400px] h-[400px] pointer-events-none"
+        <section className="py-28 relative overflow-hidden" style={{ background: darkBg }}>
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-0 w-[500px] h-[500px]"
               style={{ background: `radial-gradient(circle at 0% 0%, ${sGold}0a, transparent 60%)` }} />
-            <div className="container mx-auto px-8 lg:px-16 relative z-10">
-              <div className="grid lg:grid-cols-[280px_1fr] gap-16 items-start">
-                <Reveal dir="left">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="h-px w-8" style={{ background: sGold }} />
-                    <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
-                      {t("Professional History", "التاريخ المهني")}
-                    </p>
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-black font-heading text-white mb-5 leading-tight">
-                    {t(`${settings.experienceYears} Years of\nLeadership`, `${settings.experienceYears} سنوات\nمن القيادة`)}
-                  </h2>
-                  <p className="text-sm leading-relaxed mb-8"
-                    style={{ color: "rgba(240,220,180,0.45)" }}>
-                    {t(
-                      "A steady progression through operations and brand leadership across the Kingdom.",
-                      "تقدم متواصل في العمليات وقيادة العلامات في المملكة."
-                    )}
+            <div className="absolute bottom-0 right-0 w-[400px] h-[400px]"
+              style={{ background: `radial-gradient(circle at 100% 100%, rgba(37,99,235,0.08), transparent 60%)` }} />
+          </div>
+          <div className="container mx-auto px-8 lg:px-16 relative z-10">
+            <div className="grid lg:grid-cols-[280px_1fr] gap-16 items-start">
+              <Reveal dir="left">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-px w-8" style={{ background: sGold }} />
+                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
+                    {t("Professional History", "التاريخ المهني")}
                   </p>
-                  <Link href="/about">
-                    <motion.button whileHover={{ x: 5 }} className="text-sm font-bold" style={{ color: sGoldLt }}>
-                      {t("Full Biography →", "السيرة الكاملة ←")}
-                    </motion.button>
-                  </Link>
-                </Reveal>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black font-heading text-white mb-5 leading-tight">
+                  {t(`${settings.experienceYears} Years of\nLeadership`, `${settings.experienceYears} سنوات\nمن القيادة`)}
+                </h2>
+                <p className="text-sm leading-relaxed mb-8" style={{ color: "rgba(240,220,180,0.45)" }}>
+                  {t(
+                    "A steady progression through operations and brand leadership across the Kingdom.",
+                    "تقدم متواصل في العمليات وقيادة العلامات في المملكة."
+                  )}
+                </p>
+                <Link href="/about">
+                  <motion.button whileHover={{ x: isRTL ? -5 : 5 }} className="text-sm font-bold" style={{ color: sGoldLt }}>
+                    {t("Full Biography →", "السيرة الكاملة ←")}
+                  </motion.button>
+                </Link>
+              </Reveal>
 
-                <div className="relative pl-6">
-                  <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full"
-                    style={{ background: `linear-gradient(to bottom, ${sGold}, ${sGold}30)` }} />
-                  <div className="space-y-4">
-                    {settings.careerItems.map((item, i) => (
-                      <Reveal key={i} delay={i * 0.09}>
-                        <div className="relative flex items-start gap-5">
-                          <div className="absolute -left-[27px] top-4 w-3 h-3 rounded-full border-2"
-                            style={{ background: item.current ? sGoldLt : darkBg, borderColor: item.current ? sGoldLt : `${sGold}50` }} />
-                          <motion.div whileHover={{ x: 6 }}
-                            transition={{ type: "spring", stiffness: 280, damping: 26 }}
-                            className="flex-1 p-5 rounded-xl border cursor-default transition-all duration-300"
-                            style={{ background: `${sGold}06`, borderColor: `${sGold}18` }}
-                            onMouseEnter={e => {
-                              (e.currentTarget as HTMLElement).style.borderColor = `${sGold}40`;
-                              (e.currentTarget as HTMLElement).style.background = `${sGold}0e`;
-                            }}
-                            onMouseLeave={e => {
-                              (e.currentTarget as HTMLElement).style.borderColor = `${sGold}18`;
-                              (e.currentTarget as HTMLElement).style.background = `${sGold}06`;
-                            }}>
-                            <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-                              <p className="font-bold text-white text-sm">{t(item.titleEn, item.titleAr)}</p>
-                              <span className="text-xs font-mono" style={{ color: `${sGold}60` }}>{item.year}</span>
-                            </div>
-                            <p className="text-xs" style={{ color: `${sGold}55` }}>{item.org}</p>
-                            {item.current && (
-                              <span className="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full"
-                                style={{ background: `${sGold}15`, color: sGoldLt, border: `1px solid ${sGold}30` }}>
-                                <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: sGoldLt }} />
-                                {t("Current Position", "المنصب الحالي")}
-                              </span>
-                            )}
-                          </motion.div>
-                        </div>
-                      </Reveal>
-                    ))}
-                  </div>
+              <div className="relative pl-6">
+                <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full"
+                  style={{ background: `linear-gradient(to bottom, ${sGold}, ${sGold}30)` }} />
+                <div className="space-y-4">
+                  {settings.careerItems.map((item, i) => (
+                    <Reveal key={i} delay={i * 0.09}>
+                      <div className="relative flex items-start gap-5">
+                        <div className="absolute -left-[27px] top-4 w-3 h-3 rounded-full border-2"
+                          style={{ background: item.current ? sGoldLt : darkBg, borderColor: item.current ? sGoldLt : `${sGold}50` }} />
+                        <motion.div whileHover={{ x: 6 }}
+                          transition={{ type: "spring", stiffness: 280, damping: 26 }}
+                          className="flex-1 p-5 rounded-xl border cursor-default transition-all duration-300"
+                          style={{ background: `${sGold}06`, borderColor: `${sGold}18` }}
+                          onMouseEnter={e => {
+                            (e.currentTarget as HTMLElement).style.borderColor = `${sGold}40`;
+                            (e.currentTarget as HTMLElement).style.background = `${sGold}0e`;
+                          }}
+                          onMouseLeave={e => {
+                            (e.currentTarget as HTMLElement).style.borderColor = `${sGold}18`;
+                            (e.currentTarget as HTMLElement).style.background = `${sGold}06`;
+                          }}>
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                            <p className="font-bold text-white text-sm">{t(item.titleEn, item.titleAr)}</p>
+                            <span className="text-xs font-mono" style={{ color: `${sGold}60` }}>{item.year}</span>
+                          </div>
+                          <p className="text-xs" style={{ color: `${sGold}55` }}>{item.org}</p>
+                          {item.current && (
+                            <span className="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full"
+                              style={{ background: `${sGold}15`, color: sGoldLt, border: `1px solid ${sGold}30` }}>
+                              <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: sGoldLt }} />
+                              {t("Current Position", "المنصب الحالي")}
+                            </span>
+                          )}
+                        </motion.div>
+                      </div>
+                    </Reveal>
+                  ))}
                 </div>
               </div>
             </div>
-          </section>
-        </>
+          </div>
+        </section>
       )}
 
       {/* ════════════════════════════════════════════
@@ -513,16 +519,12 @@ export default function Home() {
       {settings.showFeaturedProject !== false && (
         <section className="py-28 relative overflow-hidden" style={{ background: darkBg }}>
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-0 right-0 h-[1px]"
+            <div className="absolute top-0 left-0 right-0 h-px"
               style={{ background: `linear-gradient(90deg, transparent, ${sGold}50, transparent)` }} />
-            <div className="absolute bottom-0 left-0 right-0 h-[1px]"
+            <div className="absolute bottom-0 left-0 right-0 h-px"
               style={{ background: `linear-gradient(90deg, transparent, ${sGold}30, transparent)` }} />
             <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-[0.05]"
               style={{ background: `radial-gradient(circle, ${sGold}, transparent 70%)` }} />
-            <div className="absolute -bottom-20 right-0 select-none"
-              style={{ fontSize: 280, fontWeight: 900, lineHeight: 1, color: sGold, opacity: 0.03, letterSpacing: -8 }}>
-              {settings.featuredEmoji}
-            </div>
           </div>
 
           <div className="container mx-auto px-8 lg:px-16 relative z-10">
@@ -541,12 +543,10 @@ export default function Home() {
             <Reveal delay={0.1}>
               <div className="grid lg:grid-cols-[1fr_380px] gap-0 rounded-3xl overflow-hidden"
                 style={{ border: `1px solid ${sGold}25`, boxShadow: `0 24px 80px rgba(0,0,0,0.5)` }}>
-
                 <div className="p-10 md:p-14 relative"
-                  style={{ background: `linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)` }}>
-                  <div className="absolute top-0 left-10 right-10 h-[1px]"
+                  style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)" }}>
+                  <div className="absolute top-0 left-10 right-10 h-px"
                     style={{ background: `linear-gradient(90deg, ${sGold}, transparent)` }} />
-
                   <div className="flex flex-wrap items-center gap-3 mb-8">
                     <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest"
                       style={{ background: `${sGold}20`, color: sGold, border: `1px solid ${sGold}35` }}>
@@ -557,16 +557,12 @@ export default function Home() {
                       {t(settings.featuredDateEn, settings.featuredDateAr)}
                     </span>
                   </div>
-
                   <h3 className="text-4xl md:text-5xl font-black font-heading mb-5 text-white leading-tight">
                     {t(settings.featuredTitleEn, settings.featuredTitleAr)}
                   </h3>
-
-                  <p className="text-base leading-relaxed mb-10 max-w-lg"
-                    style={{ color: "rgba(240,220,170,0.6)" }}>
+                  <p className="text-base leading-relaxed mb-10 max-w-lg" style={{ color: "rgba(240,220,170,0.6)" }}>
                     {t(settings.featuredDescEn, settings.featuredDescAr)}
                   </p>
-
                   {settings.featuredTags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-10">
                       {settings.featuredTags.map(tag => (
@@ -577,7 +573,6 @@ export default function Home() {
                       ))}
                     </div>
                   )}
-
                   <Link href="/portfolio">
                     <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                       className="inline-flex items-center gap-2 h-12 px-8 rounded-xl font-bold text-sm"
@@ -589,18 +584,12 @@ export default function Home() {
 
                 <div className="relative flex flex-col items-center justify-center p-10 lg:border-l"
                   style={{ background: `linear-gradient(160deg, ${sGold}14 0%, rgba(10,22,40,0.6) 100%)`, borderColor: `${sGold}15` }}>
-                  {settings.featuredImageUrl ? (
-                    <img src={settings.featuredImageUrl} alt={settings.featuredTitleEn}
-                      className="w-full h-full object-cover rounded-xl" style={{ maxHeight: 280 }} />
-                  ) : (
-                    <motion.div animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      className="text-[120px] leading-none mb-6 select-none"
-                      style={{ filter: `drop-shadow(0 20px 40px ${sGold}30)` }}>
-                      {settings.featuredEmoji}
-                    </motion.div>
-                  )}
-
+                  <motion.div animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-[120px] leading-none mb-6 select-none"
+                    style={{ filter: `drop-shadow(0 20px 40px ${sGold}30)` }}>
+                    {settings.featuredEmoji}
+                  </motion.div>
                   {settings.featuredStats.length > 0 && (
                     <div className="grid grid-cols-2 gap-3 w-full max-w-[280px] mt-4">
                       {settings.featuredStats.map((s, i) => (
@@ -622,40 +611,16 @@ export default function Home() {
       )}
 
       {/* ════════════════════════════════════════════
-          PORTFOLIO ON HOME (optional)
-      ════════════════════════════════════════════ */}
-      {settings.showPortfolioOnHome === true && (
-        <section className="py-16" style={{ background: lightBg }}>
-          <div className="container mx-auto px-8 lg:px-16 text-center">
-            <Reveal>
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="h-px w-8" style={{ background: sGold }} />
-                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
-                  {t("Selected Works", "الأعمال المختارة")}
-                </p>
-                <div className="h-px w-8" style={{ background: sGold }} />
-              </div>
-              <Link href="/portfolio">
-                <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center gap-2 h-12 px-8 rounded-xl font-bold text-sm mt-4"
-                  style={{ background: `linear-gradient(135deg, ${sGold}, ${sGoldLt})`, color: darkBg }}>
-                  {t("View Full Portfolio →", "← عرض كامل الأعمال")}
-                </motion.button>
-              </Link>
-            </Reveal>
-          </div>
-        </section>
-      )}
-
-      {/* ════════════════════════════════════════════
           CONTACT CTA
       ════════════════════════════════════════════ */}
       {settings.showContact !== false && (
-        <section className="py-24 relative overflow-hidden" style={{ background: darkBg }}>
-          <div className="absolute bottom-0 left-0 right-0 h-[2px]"
-            style={{ background: `linear-gradient(90deg, transparent, ${sGold}40, transparent)` }} />
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: `radial-gradient(ellipse at 50% 100%, ${sGold}08, transparent 65%)` }} />
+        <section className="py-28 relative overflow-hidden" style={{ background: darkBg }}>
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute bottom-0 left-0 right-0 h-px"
+              style={{ background: `linear-gradient(90deg, transparent, ${sGold}40, transparent)` }} />
+            <div className="absolute inset-0"
+              style={{ background: `radial-gradient(ellipse at 50% 100%, ${sGold}08, transparent 65%)` }} />
+          </div>
 
           <div className="container mx-auto px-8 lg:px-16 max-w-5xl relative z-10">
             <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -695,7 +660,7 @@ export default function Home() {
                       <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border"
                         style={{ background: `${sGold}10`, borderColor: `${sGold}25` }}>📍</span>
                       <span className="font-medium" style={{ color: "rgba(240,220,180,0.45)" }}>
-                        {t(settings.address, settings.address)}
+                        {settings.address}
                       </span>
                     </div>
                   )}
@@ -707,8 +672,7 @@ export default function Home() {
                   style={{ borderColor: `${sGold}25`, boxShadow: `0 8px 40px rgba(0,0,0,0.3)` }}>
                   <div className="px-8 py-6" style={{ background: `${sGold}12`, borderBottom: `1px solid ${sGold}20` }}>
                     <div className="inline-flex rounded-lg bg-white px-3 py-2">
-                      <img src={logoPath} alt="md" className="h-8 w-auto object-contain"
-                        style={{ mixBlendMode: "multiply" }} />
+                      <img src={logoPath} alt="md" className="h-8 w-auto object-contain" style={{ mixBlendMode: "multiply" }} />
                     </div>
                   </div>
                   <div className="px-8 py-8" style={{ background: "rgba(255,255,255,0.04)" }}>
@@ -722,16 +686,20 @@ export default function Home() {
                       — {t(settings.siteNameEn, settings.siteNameAr)}
                     </p>
                     <div className="flex flex-col gap-3">
-                      <MagBtn href="/book"
-                        className="w-full font-bold text-sm cursor-pointer rounded-xl hover:opacity-90 transition-opacity"
-                        style={{ height: 48, background: `linear-gradient(135deg, ${sGold}, ${sGoldLt})`, color: darkBg }}>
-                        {t("Book a Consultation", "احجز استشارة")}
-                      </MagBtn>
-                      <MagBtn href="/contact"
-                        className="w-full font-bold text-sm cursor-pointer rounded-xl border transition-colors hover:border-amber-400"
-                        style={{ height: 48, borderColor: `${sGold}30`, color: "rgba(240,220,180,0.7)" }}>
-                        {t("Send a Message", "أرسل رسالة")}
-                      </MagBtn>
+                      <Link href="/book">
+                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                          className="w-full font-bold text-sm cursor-pointer rounded-xl hover:opacity-90 transition-opacity"
+                          style={{ height: 48, background: `linear-gradient(135deg, ${sGold}, ${sGoldLt})`, color: darkBg }}>
+                          {t("Book a Consultation", "احجز استشارة")}
+                        </motion.button>
+                      </Link>
+                      <Link href="/contact">
+                        <motion.button whileHover={{ scale: 1.02, background: "rgba(255,255,255,0.06)" }} whileTap={{ scale: 0.97 }}
+                          className="w-full font-bold text-sm cursor-pointer rounded-xl border transition-all duration-200"
+                          style={{ height: 48, borderColor: `${sGold}30`, color: "rgba(240,220,180,0.7)", background: "transparent" }}>
+                          {t("Send a Message", "أرسل رسالة")}
+                        </motion.button>
+                      </Link>
                     </div>
                   </div>
                 </div>
