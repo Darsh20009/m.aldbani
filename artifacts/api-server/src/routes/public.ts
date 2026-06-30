@@ -6,6 +6,14 @@ import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
 import { logger } from "../lib/logger";
+import { notifyAdmin } from "../lib/email";
+
+async function getNotificationEmail(): Promise<string> {
+  try {
+    const s = await SiteSettings.findOne();
+    return s?.notificationEmail || "";
+  } catch { return ""; }
+}
 
 const router = Router();
 
@@ -85,8 +93,20 @@ router.post("/contact", async (req: Request, res: Response) => {
       res.status(400).json({ error: "Name, email, and message are required" });
       return;
     }
-    // Create a lead from the contact submission
     await Lead.create({ name, email, source: "contact-form", status: "new", notes: message });
+
+    // Notify admin
+    const adminEmail = await getNotificationEmail();
+    if (adminEmail) {
+      notifyAdmin({
+        adminEmail,
+        subject: `New Contact Message — ${name}`,
+        title: "New Contact Message",
+        body: `You received a new message from the contact form on your website.`,
+        details: { Name: name, Email: email, Message: message },
+      });
+    }
+
     res.json({ message: "Message received. We'll be in touch soon." });
   } catch (err) {
     logger.error({ err }, "Contact error");
@@ -106,12 +126,33 @@ router.post("/consultations/book", async (req: Request, res: Response) => {
       clientName, clientEmail, clientPhone, type, date, time,
       duration: Number(duration), notes, status: "pending", paid: false,
     });
-    // Also create a lead
     await Lead.findOneAndUpdate(
       { email: clientEmail },
       { $setOnInsert: { name: clientName, email: clientEmail, phone: clientPhone, source: "booking", status: "new" } },
       { upsert: true }
     );
+
+    // Notify admin
+    const adminEmail = await getNotificationEmail();
+    if (adminEmail) {
+      notifyAdmin({
+        adminEmail,
+        subject: `New Consultation Booking — ${clientName}`,
+        title: "New Consultation Booking",
+        body: `A new consultation has been booked on your platform.`,
+        details: {
+          Name: clientName,
+          Email: clientEmail,
+          Phone: clientPhone,
+          Type: type,
+          Date: date,
+          Time: time,
+          Duration: `${duration} min`,
+          Notes: notes || "—",
+        },
+      });
+    }
+
     res.status(201).json(formatDoc(consultation));
   } catch (err) {
     logger.error({ err }, "Book consultation error");

@@ -72,3 +72,7 @@ externalPort = 3000
 
 [userenv.shared]
 BASE_PATH = "/"
+SMTP_HOST = "server222.web-hosting.com"
+SMTP_PORT = "465"
+SMTP_USER = "info@qirox.online"
+SMTP_FROM = "info@qirox.online"

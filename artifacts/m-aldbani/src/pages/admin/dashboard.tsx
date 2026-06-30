@@ -1,5 +1,6 @@
 import { AdminLayout } from "../../components/layout/AdminLayout";
 import { useGetAdminStats } from "@workspace/api-client-react";
+import { useLanguage } from "../../hooks/use-language";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell, Legend,
@@ -49,6 +50,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useGetAdminStats();
+  const { t } = useLanguage();
 
   if (isLoading) {
     return (
@@ -72,7 +74,7 @@ export default function AdminDashboard() {
       <AdminLayout>
         <div className="flex flex-col items-center justify-center h-64 text-muted-foreground gap-3">
           <AlertCircle size={32} className="text-muted-foreground/50" />
-          <p>No data available.</p>
+          <p>{t("No data available.", "لا توجد بيانات.")}</p>
         </div>
       </AdminLayout>
     );
@@ -84,10 +86,10 @@ export default function AdminDashboard() {
       <div className="mb-6">
         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1 uppercase tracking-widest font-medium">
           <CheckCircle2 size={12} className="text-emerald-500" />
-          <span>All systems operational</span>
+          <span>{t("All systems operational", "جميع الأنظمة تعمل")}</span>
         </div>
-        <h1 className="text-2xl font-bold font-heading text-foreground">Dashboard Overview</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Key performance indicators and metrics at a glance.</p>
+        <h1 className="text-2xl font-bold font-heading text-foreground">{t("Dashboard Overview", "نظرة عامة على اللوحة")}</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">{t("Key performance indicators and metrics at a glance.", "مؤشرات الأداء الرئيسية والإحصائيات.")}</p>
       </div>
 
       {/* KPI Cards */}
@@ -95,33 +97,33 @@ export default function AdminDashboard() {
         <StatCard
           icon={Users}
           iconBg="bg-blue-500"
-          label="Total Visitors"
+          label={t("Total Visitors", "إجمالي الزوار")}
           value={stats.totalVisitors.toLocaleString()}
-          sub="↑ This month"
+          sub={t("↑ This month", "↑ هذا الشهر")}
           subColor="text-blue-600"
         />
         <StatCard
           icon={Target}
           iconBg="bg-violet-500"
-          label="Total Clients"
+          label={t("Total Clients", "إجمالي العملاء")}
           value={stats.totalClients}
-          sub={`${stats.newLeads} new leads`}
+          sub={`${stats.newLeads} ${t("new leads", "عميل محتمل جديد")}`}
           subColor="text-violet-600"
         />
         <StatCard
           icon={CalendarDays}
           iconBg="bg-amber-500"
-          label="Consultations"
+          label={t("Consultations", "الاستشارات")}
           value={stats.totalConsultations}
-          sub={`${stats.pendingConsultations} pending`}
+          sub={`${stats.pendingConsultations} ${t("pending", "معلّقة")}`}
           subColor="text-amber-600"
         />
         <StatCard
           icon={TrendingUp}
           iconBg="bg-emerald-500"
-          label="Total Revenue"
+          label={t("Total Revenue", "إجمالي الإيرادات")}
           value={<span className="inline-flex items-center gap-1.5">{stats.totalRevenue.toLocaleString()} <SarIcon size={18} /></span>}
-          sub="↑ Revenue tracked"
+          sub={t("↑ Revenue tracked", "↑ الإيرادات المرصودة")}
           subColor="text-emerald-600"
         />
       </div>
@@ -132,8 +134,8 @@ export default function AdminDashboard() {
         <div className="lg:col-span-3 bg-white rounded-2xl border border-border/60 p-5 shadow-sm">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="font-semibold text-foreground text-sm">Monthly Revenue</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">Revenue over the past months</p>
+              <h3 className="font-semibold text-foreground text-sm">{t("Monthly Revenue", "الإيرادات الشهرية")}</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">{t("Revenue over the past months", "الإيرادات خلال الأشهر الماضية")}</p>
             </div>
             <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 font-medium px-2.5 py-1 rounded-full border border-blue-100">
               <SarIcon size={13} />
@@ -167,8 +169,8 @@ export default function AdminDashboard() {
         {/* Pie Chart — narrower */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-border/60 p-5 shadow-sm">
           <div className="mb-5">
-            <h3 className="font-semibold text-foreground text-sm">Consultations by Type</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">Distribution across categories</p>
+            <h3 className="font-semibold text-foreground text-sm">{t("Consultations by Type", "الاستشارات حسب النوع")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("Distribution across categories", "التوزيع عبر الفئات")}</p>
           </div>
           <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -211,7 +213,7 @@ export default function AdminDashboard() {
           </div>
           <div>
             <p className="text-xl font-bold text-foreground">{stats.pendingConsultations}</p>
-            <p className="text-xs text-muted-foreground">Pending Consultations</p>
+            <p className="text-xs text-muted-foreground">{t("Pending Consultations", "استشارات معلّقة")}</p>
           </div>
         </div>
         <div className="bg-white rounded-2xl border border-border/60 p-5 shadow-sm flex items-center gap-4">
@@ -220,7 +222,7 @@ export default function AdminDashboard() {
           </div>
           <div>
             <p className="text-xl font-bold text-foreground">{stats.newLeads}</p>
-            <p className="text-xs text-muted-foreground">New Leads</p>
+            <p className="text-xs text-muted-foreground">{t("New Leads", "عملاء محتملون جدد")}</p>
           </div>
         </div>
         <div className="bg-white rounded-2xl border border-border/60 p-5 shadow-sm flex items-center gap-4">
@@ -229,7 +231,7 @@ export default function AdminDashboard() {
           </div>
           <div>
             <p className="text-xl font-bold text-foreground">{stats.totalClients}</p>
-            <p className="text-xs text-muted-foreground">Active Clients</p>
+            <p className="text-xs text-muted-foreground">{t("Active Clients", "العملاء النشطون")}</p>
           </div>
         </div>
       </div>

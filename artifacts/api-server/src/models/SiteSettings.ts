@@ -86,6 +86,9 @@ export interface ISiteSettings extends Document {
   logoUrl: string;
   footerTextEn: string;
   footerTextAr: string;
+
+  // ── NOTIFICATIONS ────────────────────────────────────────────────
+  notificationEmail: string;
 }
 
 const SiteSettingsSchema = new Schema<ISiteSettings>(
@@ -234,6 +237,9 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     logoUrl:    { type: String, default: "" },
     footerTextEn: { type: String, default: "Business Development · Operations · Brand Strategy" },
     footerTextAr: { type: String, default: "تطوير أعمال · عمليات · استراتيجية علامة تجارية" },
+
+    // Notifications
+    notificationEmail: { type: String, default: "" },
   },
   { timestamps: true }
 );

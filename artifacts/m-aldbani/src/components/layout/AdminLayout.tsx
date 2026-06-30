@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "../../hooks/use-auth";
 import { useLanguage } from "../../hooks/use-language";
+import { AdminEmailPrompt, useAdminEmailPrompt } from "../admin/AdminEmailPrompt";
 import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782151064834.png";
 import {
   LayoutDashboard,
@@ -36,6 +37,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   const [location, setLocation] = useLocation();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { show: showEmailPrompt, dismiss: dismissEmailPrompt } = useAdminEmailPrompt();
 
   useEffect(() => {
     if (!isLoading) {
@@ -173,6 +175,10 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
+
+      {showEmailPrompt && user?.role === "admin" && (
+        <AdminEmailPrompt onDone={dismissEmailPrompt} />
+      )}
     </div>
   );
 }
