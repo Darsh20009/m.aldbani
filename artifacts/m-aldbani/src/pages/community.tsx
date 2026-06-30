@@ -54,9 +54,9 @@ export default function Community() {
                     </div>
                   </div>
                   
-                  <div className="prose prose-invert max-w-none mb-4">
-                    <h4 className="text-lg font-bold mb-2">{post.title}</h4>
-                    <p className="text-white/80 whitespace-pre-wrap">{post.content}</p>
+                  <div className="max-w-none mb-4">
+                    <h4 className="text-lg font-bold mb-2 text-foreground">{post.title}</h4>
+                    <p className="text-foreground/70 whitespace-pre-wrap leading-relaxed">{post.content}</p>
                   </div>
                   
                   {post.image && (

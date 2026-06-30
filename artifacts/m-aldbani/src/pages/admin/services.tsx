@@ -129,7 +129,7 @@ export default function AdminServices() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
-                <Label>Price (e.g. $500)</Label>
+                <Label>السعر (مثال: 1,500 ر.س)</Label>
                 <Input value={form.price ?? ""} onChange={e => f("price", e.target.value)} placeholder="Custom" />
               </div>
               <div className="grid gap-1.5">

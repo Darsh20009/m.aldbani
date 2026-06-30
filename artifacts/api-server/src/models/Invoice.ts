@@ -23,7 +23,7 @@ const InvoiceSchema = new Schema<IInvoice>(
     clientId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     number: { type: String, required: true, unique: true },
     amount: { type: Number, required: true },
-    currency: { type: String, default: "USD" },
+    currency: { type: String, default: "SAR" },
     status: { type: String, enum: ["pending", "paid", "overdue", "cancelled"], default: "pending" },
     dueDate: { type: Date, required: true },
     paidAt: { type: Date },

@@ -37,7 +37,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="font-semibold text-foreground mb-1">{label}</p>
         {payload.map((p: any, i: number) => (
           <p key={i} style={{ color: p.color }} className="font-medium">
-            {p.name === "revenue" ? `$${p.value.toLocaleString()}` : p.value}
+            {p.name === "revenue" ? `${p.value.toLocaleString()} ر.س` : p.value}
           </p>
         ))}
       </div>
@@ -119,7 +119,7 @@ export default function AdminDashboard() {
           icon={TrendingUp}
           iconBg="bg-emerald-500"
           label="Total Revenue"
-          value={`$${stats.totalRevenue.toLocaleString()}`}
+          value={`${stats.totalRevenue.toLocaleString()} ر.س`}
           sub="↑ Revenue tracked"
           subColor="text-emerald-600"
         />
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
               <p className="text-xs text-muted-foreground mt-0.5">Revenue over the past months</p>
             </div>
             <span className="text-xs bg-blue-50 text-blue-600 font-medium px-2.5 py-1 rounded-full border border-blue-100">
-              USD
+              ر.س
             </span>
           </div>
           <div className="h-[260px]">
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(v) => `$${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
+                  tickFormatter={(v) => `${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} ر.س`}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f5f4f1", radius: 6 }} />
                 <Bar dataKey="revenue" fill="#2563EB" radius={[6, 6, 0, 0]} />
