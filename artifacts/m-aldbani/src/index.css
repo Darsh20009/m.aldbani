@@ -54,7 +54,7 @@
 
   --border: 30 18% 86%;            /* #E5DDD4 warm border */
   --input:  30 18% 86%;
-  --ring:   221 83% 53%;           /* blue */
+  --ring:   43 89% 38%;            /* #B8860B Gold */
 
   --card: 0 0% 100%;               /* #FFFFFF */
   --card-foreground: 20 15% 12%;
@@ -64,16 +64,16 @@
   --popover-foreground: 20 15% 12%;
   --popover-border: 30 18% 90%;
 
-  --primary: 221 83% 53%;          /* #2563EB logo blue */
+  --primary: 43 89% 38%;           /* #B8860B Gold */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 262 83% 58%;        /* #7C3AED logo purple */
+  --secondary: 20 15% 12%;         /* #1C1714 Near Black */
   --secondary-foreground: 0 0% 100%;
 
   --muted: 33 22% 93%;             /* #F2ECE6 */
   --muted-foreground: 20 12% 48%;  /* #7A6C62 */
 
-  --accent: 221 83% 53%;
+  --accent: 43 89% 38%;
   --accent-foreground: 0 0% 100%;
 
   --destructive: 0 84% 60%;
@@ -82,7 +82,7 @@
   --app-font-sans: 'Inter', sans-serif;
   --app-font-heading: 'Sora', sans-serif;
   --app-font-arabic: 'IBM Plex Sans Arabic', sans-serif;
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 }
 
 /* ── Dark override (admin/portal panels) ─────────────────── */

@@ -3,7 +3,8 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "../../hooks/use-auth";
 import { useLanguage } from "../../hooks/use-language";
 import { AdminEmailPrompt, useAdminEmailPrompt } from "../admin/AdminEmailPrompt";
-import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782151064834.png";
+import { LogoMark } from "../../components/Logo";
+import { useSiteSettings } from "../../hooks/use-site-settings";
 import {
   LayoutDashboard,
   Target,
@@ -36,6 +37,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   const { user, isLoading, logout } = useAuth();
   const [location, setLocation] = useLocation();
   const { t } = useLanguage();
+  const settings = useSiteSettings();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { show: showEmailPrompt, dismiss: dismissEmailPrompt } = useAdminEmailPrompt();
 
@@ -65,8 +67,12 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       {/* Logo */}
       <div className="h-16 flex items-center px-5 border-b border-border/60 shrink-0">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="h-8 w-8 rounded-lg overflow-hidden border border-primary/20 shadow-sm group-hover:border-primary/50 transition-all shrink-0">
-            <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+          <div className="h-8 w-8 rounded-lg overflow-hidden border border-primary/20 shadow-sm group-hover:border-primary/50 transition-all shrink-0 flex items-center justify-center bg-white">
+            {settings.logoUrl ? (
+              <img src={settings.logoUrl} alt="M-ALDBANI" className="h-full w-full object-cover" />
+            ) : (
+              <LogoMark size={24} />
+            )}
           </div>
           <div>
             <p className="font-heading font-bold text-sm text-primary leading-none">M-ALDBANI</p>
@@ -164,8 +170,12 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded overflow-hidden border border-primary/20">
-              <img src={logoPath} alt="M-ALDBANI" className="h-full w-full object-cover" />
+            <div className="h-6 w-6 rounded overflow-hidden border border-primary/20 flex items-center justify-center bg-white">
+              {settings.logoUrl ? (
+                <img src={settings.logoUrl} alt="M-ALDBANI" className="h-full w-full object-cover" />
+              ) : (
+                <LogoMark size={16} />
+              )}
             </div>
             <span className="font-heading font-bold text-sm text-primary">M-ALDBANI</span>
           </div>

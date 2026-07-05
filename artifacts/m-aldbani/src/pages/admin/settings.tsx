@@ -8,7 +8,7 @@ import { invalidateSiteSettingsCache } from "../../hooks/use-site-settings";
 import {
   Save, Globe, User, Phone, Palette, LayoutTemplate, ListOrdered,
   CheckCircle2, Monitor, Smartphone, Eye, EyeOff, Star, Briefcase,
-  Plus, Trash2, ChevronUp, ChevronDown, Layers, Award,
+  Plus, Trash2, ChevronUp, ChevronDown, Layers, Award, Coffee, X
 } from "lucide-react";
 
 function getToken() { return localStorage.getItem("token") ?? ""; }
@@ -147,7 +147,10 @@ function HeroPreview({ form, mode }: { form: any; mode: "desktop" | "mobile" }) 
                   <div style={{ position: "absolute", top: 16, right: 8, background: "rgba(10,22,40,0.92)",
                     borderRadius: 10, padding: "6px 10px", border: `1px solid ${gold}30`,
                     display: "flex", alignItems: "center", gap: 6 }}>
-                    <span style={{ fontSize: 14 }}>{form.heroFloatingBadgeEmoji || "🍵"}</span>
+                    <span style={{ color: goldLt }}>
+                      {/* Note: since we store icon name, we render a generic icon in preview for simplicity or map it */}
+                      <Coffee size={14} />
+                    </span>
                     <div>
                       <p style={{ margin: 0, fontSize: 8, fontWeight: 700, color: "white" }}>{form.heroFloatingBadgeTitleEn || "Matcha Power"}</p>
                       <p style={{ margin: 0, fontSize: 7, color: `${gold}80` }}>{form.heroFloatingBadgeSubtitleEn || "Founder & CEO"}</p>
@@ -351,8 +354,8 @@ export default function AdminSettings() {
               <Toggle checked={form.heroShowFloatingBadge !== false} onChange={v => f("heroShowFloatingBadge", v)} label="إظهار الشارة العائمة" />
               {form.heroShowFloatingBadge !== false && (
                 <>
-                  <Field label="الإيموجي">
-                    <Input value={form.heroFloatingBadgeEmoji ?? "🍵"} onChange={e => f("heroFloatingBadgeEmoji", e.target.value)} className="text-2xl w-20" />
+                  <Field label="الأيقونة (Lucide Name)">
+                    <Input value={form.heroFloatingBadgeEmoji ?? "Coffee"} onChange={e => f("heroFloatingBadgeEmoji", e.target.value)} className="w-full" placeholder="e.g. Coffee, Star" />
                   </Field>
                   <Row2>
                     <Field label="عنوان الشارة (EN)"><Input value={form.heroFloatingBadgeTitleEn ?? ""} onChange={e => f("heroFloatingBadgeTitleEn", e.target.value)} /></Field>
@@ -430,7 +433,7 @@ export default function AdminSettings() {
                     <button onClick={() => moveItem("expertiseItems", i, -1)} className="text-muted-foreground hover:text-foreground p-0.5"><ChevronUp size={13} /></button>
                     <button onClick={() => moveItem("expertiseItems", i, 1)} className="text-muted-foreground hover:text-foreground p-0.5"><ChevronDown size={13} /></button>
                   </div>
-                  <span className="text-2xl">{item.icon || "📌"}</span>
+                  <span className="text-sm text-muted-foreground">{item.icon || "Pin"}</span>
                   <span className="font-semibold text-sm">{item.titleEn || `تخصص ${i + 1}`}</span>
                 </div>
                 <button onClick={() => removeItem("expertiseItems", i)} className="text-muted-foreground hover:text-destructive p-1.5 rounded-lg hover:bg-destructive/10 transition-colors">
@@ -438,8 +441,8 @@ export default function AdminSettings() {
                 </button>
               </div>
               <div className="grid gap-3">
-                <Field label="الإيموجي / الأيقونة">
-                  <Input value={item.icon ?? ""} onChange={e => updateItem("expertiseItems", i, "icon", e.target.value)} placeholder="📈" className="w-20 text-2xl" />
+                <Field label="الأيقونة (Lucide Name)">
+                  <Input value={item.icon ?? ""} onChange={e => updateItem("expertiseItems", i, "icon", e.target.value)} placeholder="e.g. Pin, Star" className="w-full" />
                 </Field>
                 <Row2>
                   <Field label="العنوان (EN)"><Input value={item.titleEn ?? ""} onChange={e => updateItem("expertiseItems", i, "titleEn", e.target.value)} /></Field>
@@ -452,7 +455,7 @@ export default function AdminSettings() {
               </div>
             </div>
           ))}
-          <Button variant="outline" className="gap-1.5 w-full" onClick={() => addItem("expertiseItems", { icon: "📌", titleEn: "", titleAr: "", descEn: "", descAr: "" })}>
+          <Button variant="outline" className="gap-1.5 w-full" onClick={() => addItem("expertiseItems", { icon: "Pin", titleEn: "", titleAr: "", descEn: "", descAr: "" })}>
             <Plus size={14} /> إضافة تخصص جديد
           </Button>
         </div>
@@ -553,8 +556,8 @@ export default function AdminSettings() {
           </Section>
 
           <Section title="التفاصيل">
-            <Field label="الإيموجي / الأيقونة">
-              <Input value={form.featuredEmoji ?? "🍵"} onChange={e => f("featuredEmoji", e.target.value)} className="w-20 text-2xl" />
+            <Field label="الأيقونة (Lucide Name)">
+              <Input value={form.featuredEmoji ?? "Coffee"} onChange={e => f("featuredEmoji", e.target.value)} className="w-full" placeholder="e.g. Coffee, Star" />
             </Field>
             <Row2>
               <Field label="الدور (EN)"><Input value={form.featuredRoleEn ?? ""} onChange={e => f("featuredRoleEn", e.target.value)} placeholder="Founder & CEO" /></Field>
@@ -575,11 +578,8 @@ export default function AdminSettings() {
                     className="text-muted-foreground hover:text-destructive"><X size={11} /></button>
                 </div>
               ))}
-            </div>
             <AddTagInput onAdd={(tag) => f("featuredTags", [...(form.featuredTags ?? []), tag])} />
           </Section>
-
-          <Section title="إحصائيات المشروع المميز">
             {(form.featuredStats ?? []).map((item: any, i: number) => (
               <div key={i} className="flex items-center gap-2 p-3 bg-muted/20 rounded-xl border border-border/40">
                 <Input value={item.num ?? ""} onChange={e => updateItem("featuredStats", i, "num", e.target.value)} placeholder="0→1" className="w-20 text-sm font-mono" />

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Settings, Plus, Pencil, Trash2 } from "lucide-react";
 
-const EMPTY = { icon: "⚙️", title: "", titleAr: "", description: "", descriptionAr: "", price: "", duration: "" };
+const EMPTY = { icon: "Settings", title: "", titleAr: "", description: "", descriptionAr: "", price: "", duration: "" };
 
 function getToken() { return localStorage.getItem("token") ?? ""; }
 const authHeaders = () => ({ "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` });
@@ -106,8 +106,8 @@ export default function AdminServices() {
           <DialogHeader><DialogTitle>{editing ? "Edit Service" : "Add New Service"}</DialogTitle></DialogHeader>
           <div className="grid gap-3 py-2">
             <div className="grid gap-1.5">
-              <Label>Icon (Emoji)</Label>
-              <Input value={form.icon} onChange={e => f("icon", e.target.value)} className="text-2xl w-20" />
+              <Label>Icon (Lucide Name)</Label>
+              <Input value={form.icon} onChange={e => f("icon", e.target.value)} className="w-full" placeholder="e.g. Settings, Star" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">

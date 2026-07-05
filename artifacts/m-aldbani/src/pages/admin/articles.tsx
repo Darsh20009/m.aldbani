@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImageUpload } from "../../components/ui/ImageUpload";
 import { FileText, Plus, Pencil, Trash2 } from "lucide-react";
 
-const EMPTY = { title: "", titleAr: "", category: "", excerpt: "", content: "", imageUrl: "", published: false };
+const EMPTY = { title: "", titleAr: "", category: "", excerpt: "", content: "", coverImage: "", imageUrl: "", published: false };
 
 function getToken() { return localStorage.getItem("token") ?? ""; }
 const authHeaders = () => ({ "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` });
@@ -122,8 +123,12 @@ export default function AdminArticles() {
               <Input value={form.category ?? ""} onChange={e => f("category", e.target.value)} placeholder="e.g. Business, Marketing" />
             </div>
             <div className="grid gap-1.5">
-              <Label>Cover Image URL</Label>
-              <Input value={form.imageUrl ?? ""} onChange={e => f("imageUrl", e.target.value)} placeholder="https://..." />
+              <ImageUpload
+                label="Cover Image"
+                value={form.coverImage ?? form.imageUrl ?? ""}
+                onChange={v => { f("coverImage", v); f("imageUrl", v); }}
+                placeholder="Drag & drop cover image or click to upload"
+              />
             </div>
             <div className="grid gap-1.5">
               <Label>Excerpt</Label>
