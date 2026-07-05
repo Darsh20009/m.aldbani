@@ -1,714 +1,793 @@
-import {
-  motion, useInView, useScroll, useTransform, AnimatePresence,
-} from "framer-motion";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
 import { useLanguage } from "../hooks/use-language";
 import { useSiteSettings } from "../hooks/use-site-settings";
 import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
-import logoPath from "@assets/Screenshot_2026-06-22_at_8.55.58_PM_1782157376997.png";
+import { useListServices, useListProjects, useListArticles } from "@workspace/api-client-react";
+import { ArrowRight, ArrowLeft, Sparkles, Star, ChevronRight, Quote, ExternalLink, Play, CheckCircle, Award, TrendingUp, Users, Target } from "lucide-react";
+import logoImg from "@assets/Screenshot_2026-07-01_at_3.14.23_AM_1783289663512.png";
 
-/* ── ANIMATED MESH BACKGROUND ──────────────────────────────── */
-function MeshBg() {
+/* ══════════════════════════════════════════
+   SECTION: ANIMATED HERO BACKGROUND
+══════════════════════════════════════════ */
+function HeroBg() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Base dark gradient */}
-      <div className="absolute inset-0"
-        style={{ background: "linear-gradient(135deg, #060d1a 0%, #0a1628 40%, #0d1f3c 100%)" }} />
-      {/* Orb 1 — blue */}
+      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #060e1e 0%, #0a1628 50%, #0d1e3a 100%)" }} />
+
+      {/* Blue orb */}
       <motion.div
-        animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute rounded-full"
+        animate={{ x: [0, 50, 0], y: [0, -40, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute orb-blue"
+        style={{ width: 800, height: 800, top: "-20%", left: "-15%", opacity: 1 }}
+      />
+      {/* Purple orb */}
+      <motion.div
+        animate={{ x: [0, -60, 0], y: [0, 50, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        className="absolute orb-purple"
+        style={{ width: 700, height: 700, top: "10%", right: "-15%", opacity: 1 }}
+      />
+      {/* Gold orb */}
+      <motion.div
+        animate={{ x: [0, 30, 0], y: [0, 60, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 8 }}
+        className="absolute orb-gold"
+        style={{ width: 500, height: 500, bottom: "0%", left: "35%", opacity: 1 }}
+      />
+
+      {/* Geometric dot pattern */}
+      <div className="absolute inset-0 opacity-[0.04]"
         style={{
-          width: 700, height: 700, top: "-15%", left: "-10%",
-          background: "radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 65%)",
+          backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.9) 1px, transparent 0)",
+          backgroundSize: "36px 36px",
         }}
       />
-      {/* Orb 2 — gold */}
-      <motion.div
-        animate={{ x: [0, -50, 0], y: [0, 40, 0], scale: [1, 1.2, 1] }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-        className="absolute rounded-full"
+
+      {/* Subtle noise */}
+      <div className="absolute inset-0 opacity-[0.02]"
         style={{
-          width: 600, height: 600, top: "10%", right: "-8%",
-          background: "radial-gradient(circle, rgba(184,134,11,0.12) 0%, transparent 65%)",
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
+          backgroundSize: "180px",
         }}
       />
-      {/* Orb 3 — violet */}
-      <motion.div
-        animate={{ x: [0, 30, 0], y: [0, 50, 0], scale: [1, 0.9, 1] }}
-        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut", delay: 6 }}
-        className="absolute rounded-full"
-        style={{
-          width: 500, height: 500, bottom: "5%", left: "30%",
-          background: "radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 65%)",
-        }}
-      />
-      {/* Grid lines */}
-      <svg className="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#B8860B" strokeWidth="0.5"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
-      </svg>
-      {/* Noise texture overlay */}
-      <div className="absolute inset-0 opacity-[0.015]"
-        style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")", backgroundSize: "200px 200px" }} />
+
+      {/* Bottom fade to off-white */}
+      <div className="absolute bottom-0 left-0 right-0 h-40"
+        style={{ background: "linear-gradient(to bottom, transparent, #FAF8F4)" }} />
     </div>
   );
 }
 
-/* ── FLOATING STAT CARD ────────────────────────────────────── */
-function FloatCard({ value, label, delay = 0, className = "" }: {
-  value: string; label: string; delay?: number; className?: string;
-}) {
+/* ══════════════════════════════════════════
+   SECTION: FLOATING STAT CARD
+══════════════════════════════════════════ */
+function FloatStat({ value, en, ar, delay = 0 }: { value: string; en: string; ar: string; delay?: number }) {
+  const { t } = useLanguage();
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ scale: 1.05, y: -3 }}
-      className={`rounded-2xl px-5 py-4 backdrop-blur-xl border border-white/10 ${className}`}
-      style={{ background: "rgba(255,255,255,0.05)", boxShadow: "0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)" }}
+      className="flex flex-col items-center gap-1 px-5 py-4 rounded-2xl cursor-default"
+      style={{
+        background: "rgba(255,255,255,0.06)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)",
+      }}
     >
-      <p className="text-2xl font-black text-white leading-none">{value}</p>
-      <p className="text-[11px] font-semibold mt-1.5 uppercase tracking-widest" style={{ color: "rgba(240,220,180,0.55)" }}>{label}</p>
+      <span className="text-2xl font-black text-white leading-none font-heading">{value}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "rgba(180,200,255,0.55)" }}>
+        {t(en, ar)}
+      </span>
     </motion.div>
   );
 }
 
-/* ── REVEAL ─────────────────────────────────────────────────── */
-function Reveal({ children, delay = 0, className = "", dir = "up" as "up" | "left" | "right" }) {
-  const init = dir === "left" ? { opacity: 0, x: -32 }
-    : dir === "right" ? { opacity: 0, x: 32 }
-      : { opacity: 0, y: 28 };
+/* ══════════════════════════════════════════
+   SECTION: MARQUEE STRIP
+══════════════════════════════════════════ */
+function MarqueeStrip({ items }: { items: { en: string; ar: string }[] }) {
+  const { t, language } = useLanguage();
+  const doubled = [...items, ...items];
   return (
-    <motion.div initial={init} whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}>
-      {children}
-    </motion.div>
-  );
-}
-
-/* ── COUNTER ────────────────────────────────────────────────── */
-function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
-  const [v, setV] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    const s = Date.now();
-    const tick = () => {
-      const p = Math.min((Date.now() - s) / 1600, 1);
-      setV(Math.round((1 - Math.pow(1 - p, 3)) * to));
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [inView, to]);
-  return <span ref={ref}>{v}{suffix}</span>;
-}
-
-/* ── SKILL BAR ──────────────────────────────────────────────── */
-function SkillBar({ label, pct, color = "#B8860B" }: { label: string; pct: number; color?: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-  return (
-    <div ref={ref}>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-semibold" style={{ color: "#3D2B0F" }}>{label}</span>
-        <span className="text-xs font-bold font-mono" style={{ color }}>{pct}%</span>
-      </div>
-      <div className="h-2 w-full rounded-full overflow-hidden" style={{ background: "#E8DDD0", direction: "ltr" }}>
-        <motion.div
-          className="h-full w-full rounded-full"
-          style={{ background: `linear-gradient(90deg, ${color}, #D4A017)`, transformOrigin: "left center" }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: inView ? pct / 100 : 0 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-        />
+    <div className="overflow-hidden py-4 border-y" style={{ borderColor: "rgba(37,99,235,0.1)", background: "rgba(37,99,235,0.02)" }}>
+      <div className={`marquee-track ${language === "ar" ? "marquee-track-rtl" : ""}`}>
+        {doubled.map((item, i) => (
+          <span key={i} className="flex items-center gap-3 text-sm font-semibold whitespace-nowrap text-slate-500 select-none">
+            <span className="w-1 h-1 rounded-full bg-[#2563EB] inline-block flex-shrink-0 opacity-50" />
+            {t(item.en, item.ar)}
+          </span>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ══════════════════════════════════════════════════════════
-   PAGE
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   SECTION: EXPERTISE CARD
+══════════════════════════════════════════ */
+function ExpertiseCard({ icon, titleEn, titleAr, descEn, descAr, delay = 0 }: {
+  icon: string; titleEn: string; titleAr: string; descEn: string; descAr: string; delay?: number;
+}) {
+  const { t } = useLanguage();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative p-7 rounded-2xl overflow-hidden cursor-default"
+      style={{
+        background: "white",
+        border: "1px solid rgba(37,99,235,0.1)",
+        boxShadow: "0 4px 24px rgba(37,99,235,0.05)",
+        transition: "all 0.35s ease",
+      }}
+      whileHover={{ y: -6, boxShadow: "0 16px 48px rgba(37,99,235,0.15)" }}
+    >
+      {/* Gradient top bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-brand-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Background gradient on hover */}
+      <div className="absolute inset-0 bg-brand-gradient-soft opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+
+      <div className="relative z-10">
+        <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-5"
+          style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1))" }}>
+          {icon}
+        </div>
+        <h3 className="text-lg font-bold text-slate-900 mb-3 font-heading">{t(titleEn, titleAr)}</h3>
+        <p className="text-slate-500 text-sm leading-relaxed">{t(descEn, descAr)}</p>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════
+   SECTION: SERVICE CARD (home preview)
+══════════════════════════════════════════ */
+function ServiceCard({ service, i }: { service: any; i: number }) {
+  const { t, language } = useLanguage();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay: i * 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative bg-white rounded-2xl p-7 overflow-hidden cursor-default"
+      style={{
+        border: "1px solid rgba(37,99,235,0.1)",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
+        transition: "all 0.35s ease",
+      }}
+      whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(37,99,235,0.12)" }}
+    >
+      <div className="absolute inset-0 bg-brand-gradient-soft opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-brand-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      <div className="relative z-10">
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-5"
+          style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.12), rgba(124,58,237,0.12))" }}>
+          {service.icon || "⚡"}
+        </div>
+        <h3 className="font-bold text-slate-900 mb-3 text-lg font-heading">
+          {language === "ar" ? service.titleAr : service.title}
+        </h3>
+        <p className="text-slate-500 text-sm leading-relaxed line-clamp-3">
+          {language === "ar" ? service.descriptionAr : service.description}
+        </p>
+
+        {service.price && (
+          <div className="mt-5 flex items-center gap-1.5">
+            <span className="text-xs font-bold uppercase tracking-wide text-[#2563EB]">
+              {t("From", "يبدأ من")}
+            </span>
+            <span className="font-black text-slate-900">{service.price} {t("SAR", "ر.س")}</span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════
+   SECTION: ARTICLE CARD (home preview)
+══════════════════════════════════════════ */
+function ArticleCard({ article, i }: { article: any; i: number }) {
+  const { t, language } = useLanguage();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Link href={`/articles/${article.slug}`}>
+        <div className="group bg-white rounded-2xl overflow-hidden cursor-pointer h-full"
+          style={{
+            border: "1px solid rgba(37,99,235,0.08)",
+            boxShadow: "0 2px 16px rgba(0,0,0,0.04)",
+            transition: "all 0.3s ease",
+          }}>
+
+          {/* Cover image */}
+          <div className="relative overflow-hidden h-44">
+            {article.coverImage ? (
+              <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            ) : (
+              <div className="w-full h-full bg-brand-gradient-soft flex items-center justify-center">
+                <span className="text-4xl opacity-30">📝</span>
+              </div>
+            )}
+            {article.category && (
+              <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/90 text-[#2563EB]">
+                {article.category}
+              </span>
+            )}
+          </div>
+
+          <div className="p-5">
+            <h3 className="font-bold text-slate-900 line-clamp-2 mb-2 font-heading leading-snug group-hover:text-[#2563EB] transition-colors">
+              {language === "ar" ? (article.titleAr || article.title) : article.title}
+            </h3>
+            <p className="text-slate-500 text-sm line-clamp-2">
+              {language === "ar" ? (article.excerptAr || article.excerpt) : article.excerpt}
+            </p>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════
+   MAIN HOME PAGE
+══════════════════════════════════════════ */
 export default function Home() {
   const { t, language } = useLanguage();
   const settings = useSiteSettings();
   const isRTL = language === "ar";
+  const { data: rawServices } = useListServices();
+  const { data: rawArticles } = useListArticles();
+  const { data: rawProjects } = useListProjects();
 
-  const heroGold   = settings.heroAccentColor      || "#B8860B";
-  const heroGoldLt = settings.heroAccentLightColor || "#D4A017";
-  const heroBg     = settings.heroBgColor          || "#0A1628";
+  const services = Array.isArray(rawServices) ? rawServices.slice(0, 6) : [];
+  const articles = Array.isArray(rawArticles) ? rawArticles.slice(0, 3) : [];
+  const projects = Array.isArray(rawProjects) ? rawProjects.slice(0, 4) : [];
 
-  const lightBg = settings.lightSectionBgColor  || "#FAF6EF";
-  const darkBg  = settings.darkSectionBgColor   || "#0A1628";
-  const sGold   = settings.accentGoldColor      || "#B8860B";
-  const sGoldLt = settings.accentGoldLightColor || "#D4A017";
-
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const textY = useTransform(heroP, [0, 1], [0, 60]);
-
-  const words = t("Mohammed Al-Dabbani", "محمد الدباني").split(" ");
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
+  const heroStats = settings.heroStats?.length
+    ? settings.heroStats
+    : [
+        { value: "8+",  labelEn: "Years",      labelAr: "سنوات"  },
+        { value: "50+", labelEn: "Brands",     labelAr: "علامة"  },
+        { value: "2M+", labelEn: "Customers",  labelAr: "عميل"   },
+        { value: "3",   labelEn: "Industries", labelAr: "قطاعات" },
+      ];
 
   return (
     <RootLayout>
 
-      {/* ════════════════════════════════════════════
-          HERO — Full-width, no photo
-      ════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative flex flex-col items-center justify-center overflow-hidden"
-        style={{ minHeight: "100svh", paddingTop: 72 }}>
+      {/* ════════════════════════════════
+          HERO SECTION
+      ════════════════════════════════ */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 pb-16">
+        <HeroBg />
 
-        <MeshBg />
+        <div className="relative z-10 max-w-5xl mx-auto px-5 text-center">
 
-        {/* Top line accent */}
-        <div className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: `linear-gradient(90deg, transparent, ${heroGold}60, transparent)` }} />
-
-        <motion.div style={{ y: textY }}
-          className="relative z-10 container mx-auto px-6 lg:px-16 flex flex-col items-center text-center py-20">
-
-          {/* Logo pill */}
+          {/* Logo — large and centered in hero */}
           <motion.div
-            initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-10 inline-flex items-center gap-3 rounded-2xl px-4 py-2 border"
-            style={{ background: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)" }}
+            initial={{ opacity: 0, scale: 0.8, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="flex justify-center mb-8"
           >
-            <div className="rounded-lg bg-white px-1.5 py-1">
-              <img src={logoPath} alt="m-aldbani" className="h-6 w-auto object-contain" style={{ mixBlendMode: "multiply" }} />
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full blur-3xl opacity-30"
+                style={{ background: "linear-gradient(135deg, #2563EB, #7C3AED)", transform: "scale(1.5)" }} />
+              <img
+                src={logoImg}
+                alt="m-aldbani"
+                className="relative h-28 w-auto object-contain drop-shadow-2xl"
+              />
             </div>
-            <div className="w-px h-5" style={{ background: `${heroGold}40` }} />
-            <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: `${heroGold}90` }}>
-              {t(settings.heroBadgeEn, settings.heroBadgeAr)}
+          </motion.div>
+
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6"
+            style={{
+              background: "rgba(37,99,235,0.12)",
+              border: "1px solid rgba(37,99,235,0.25)",
+            }}
+          >
+            <Sparkles size={12} className="text-blue-400" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-300">
+              {t(settings.heroBadgeEn || "Brand Manager · Business Development", settings.heroBadgeAr || "مدير علامة تجارية · تطوير أعمال")}
             </span>
           </motion.div>
 
-          {/* Big heading */}
-          <div className="overflow-hidden mb-3">
-            <motion.h1
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-              className="font-heading font-black text-white leading-[0.9] tracking-tight"
-              style={{ fontSize: "clamp(52px, 9vw, 108px)" }}
-            >
-              {t(settings.heroTitleEn, settings.heroTitleAr)}
-            </motion.h1>
-          </div>
-
-          {/* Arabic subtitle */}
-          <motion.p
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ delay: 0.35, duration: 0.7 }}
-            className="font-bold mb-8"
-            style={{
-              fontSize: "clamp(20px, 3vw, 34px)",
-              background: `linear-gradient(135deg, ${heroGold}, ${heroGoldLt})`,
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-              fontFamily: "'IBM Plex Sans Arabic', sans-serif",
-            }}
+          {/* Name */}
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="font-black leading-none mb-2"
+            style={{ fontSize: "clamp(2.8rem, 8vw, 6rem)", color: "white" }}
           >
-            {t(settings.heroTitleAr, settings.heroTitleEn)}
-          </motion.p>
+            {t(settings.heroTitleEn || "Mohammed Al-Dabbani", settings.heroTitleAr || "محمد الدباني")}
+          </motion.h1>
 
-          {/* Divider */}
-          <motion.div
-            initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
-            transition={{ delay: 0.48, duration: 0.7 }}
-            className="h-px w-24 mb-8"
-            style={{ background: `linear-gradient(90deg, transparent, ${heroGold}, transparent)` }}
-          />
+          {/* Arabic name if in English mode */}
+          {language === "en" && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="text-2xl font-bold mb-5"
+              style={{
+                fontFamily: "'IBM Plex Sans Arabic', sans-serif",
+                background: "linear-gradient(135deg, #B8860B, #D4A017)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              محمد الدباني
+            </motion.p>
+          )}
 
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.65 }}
-            className="leading-relaxed mb-10 max-w-2xl text-base md:text-lg"
-            style={{ color: "rgba(240,220,180,0.55)" }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.7 }}
+            className="text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
+            style={{ color: "rgba(180,200,255,0.7)" }}
           >
-            {t(settings.heroSubtitleEn, settings.heroSubtitleAr)}
+            {t(
+              settings.heroSubtitleEn || "8+ years leading F&B brands and operations across the Kingdom — from vision to full commercial execution.",
+              settings.heroSubtitleAr || "أكثر من 8 سنوات في قيادة علامات F&B والعمليات في المملكة — من الرؤية إلى التنفيذ التجاري الكامل."
+            )}
           </motion.p>
 
-          {/* Stat pills row */}
-          {settings.heroStats.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.62, duration: 0.6 }}
-              className="flex flex-wrap justify-center gap-4 mb-10"
-            >
-              {settings.heroStats.map((st, i) => (
-                <FloatCard
-                  key={i}
-                  value={st.value}
-                  label={t(st.labelEn, st.labelAr)}
-                  delay={0.64 + i * 0.08}
-                />
-              ))}
-            </motion.div>
-          )}
-
-          {/* CTA Buttons */}
+          {/* CTA buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.78, duration: 0.55 }}
-            className="flex flex-wrap justify-center gap-3 mb-10"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65, duration: 0.7 }}
+            className={`flex items-center justify-center gap-4 flex-wrap mb-14 ${isRTL ? "flex-row-reverse" : ""}`}
           >
             <Link href="/book">
               <motion.button
-                whileHover={{ scale: 1.04, boxShadow: `0 0 40px ${heroGold}50` }}
+                whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                className="font-bold text-sm cursor-pointer rounded-2xl px-8 transition-all duration-300"
-                style={{ height: 52, background: `linear-gradient(135deg, ${heroGold}, ${heroGoldLt})`, color: heroBg, boxShadow: `0 0 24px ${heroGold}30` }}
+                className="flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-base"
+                style={{
+                  background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+                  color: "white",
+                  boxShadow: "0 8px 32px rgba(37,99,235,0.4)",
+                }}
               >
-                {t("Book a Consultation", "احجز استشارة")}
+                <Sparkles size={16} />
+                {t("Book Free Consultation", "احجز استشارة مجانية")}
               </motion.button>
             </Link>
-            <Link href="/about">
+            <Link href="/portfolio">
               <motion.button
-                whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.1)" }}
+                whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                className="font-bold text-sm cursor-pointer rounded-2xl px-8 border transition-all duration-300"
-                style={{ height: 52, borderColor: "rgba(255,255,255,0.15)", color: "rgba(240,220,180,0.75)", background: "rgba(255,255,255,0.04)" }}
+                className="flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-base"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  color: "rgba(220,235,255,0.9)",
+                  backdropFilter: "blur(8px)",
+                }}
               >
-                {t("My Profile", "ملفي الشخصي")}
+                {t("View Portfolio", "شاهد الأعمال")}
+                <ArrowIcon size={16} />
               </motion.button>
             </Link>
           </motion.div>
 
-          {/* Available badge */}
+          {/* Stats row */}
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ delay: 0.92 }}
-            className="flex items-center gap-2 text-xs"
-            style={{ color: `${heroGold}55` }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
+            className="flex items-center justify-center gap-4 flex-wrap"
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-            {t("Available · Riyadh, Saudi Arabia 🇸🇦", "متاح · الرياض، المملكة العربية السعودية 🇸🇦")}
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: `${heroGold}40` }}>
-            {t("Scroll", "انتقل للأسفل")}
-          </p>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            className="w-px h-8 rounded-full"
-            style={{ background: `linear-gradient(to bottom, ${heroGold}60, transparent)` }}
-          />
-        </motion.div>
-
-        {/* Bottom gradient fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent, #0A1628)" }} />
-      </section>
-
-      {/* ════════════════════════════════════════════
-          MARQUEE
-      ════════════════════════════════════════════ */}
-      {settings.showMarquee !== false && settings.marqueeItems.length > 0 && (
-        <div style={{ background: lightBg, borderBottom: `1px solid ${sGold}20` }} className="overflow-hidden py-4">
-          <motion.div animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-            className="flex gap-12 whitespace-nowrap w-max">
-            {[...Array(2)].map((_, rep) =>
-              settings.marqueeItems.map((item, i) => (
-                <span key={`${rep}-${i}`}
-                  className="text-[11px] font-bold uppercase tracking-[0.28em] flex items-center gap-12"
-                  style={{ color: `${sGold}60` }}>
-                  {t(item.en, item.ar)}
-                  <span style={{ color: `${sGold}30` }}>◆</span>
-                </span>
-              ))
-            )}
+            {heroStats.map((s, i) => (
+              <FloatStat key={i} value={s.value} en={s.labelEn} ar={s.labelAr} delay={0.8 + i * 0.08} />
+            ))}
           </motion.div>
         </div>
+      </section>
+
+      {/* ════════════════════════════════
+          MARQUEE STRIP
+      ════════════════════════════════ */}
+      {settings.showMarquee && settings.marqueeItems?.length > 0 && (
+        <MarqueeStrip items={settings.marqueeItems} />
       )}
 
-      {/* ════════════════════════════════════════════
-          EXPERTISE + SKILLS
-      ════════════════════════════════════════════ */}
-      {(settings.showExpertise !== false || settings.showSkills !== false) && (
-        <section className="py-28" style={{ background: lightBg }}>
-          <div className="container mx-auto px-8 lg:px-16">
-            <div className="grid lg:grid-cols-2 gap-20 items-start">
+      {/* ════════════════════════════════
+          EXPERTISE SECTION
+      ════════════════════════════════ */}
+      {settings.showExpertise && settings.expertiseItems?.length > 0 && (
+        <section className="py-24 px-5 bg-[#FAF8F4]">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader
+              en="Areas of Expertise"
+              ar="مجالات الخبرة"
+              subEn="Strategic thinking + operational excellence across every engagement."
+              subAr="تفكير استراتيجي وتميز تشغيلي في كل مشاركة."
+            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14">
+              {settings.expertiseItems.map((item, i) => (
+                <ExpertiseCard key={i} delay={i * 0.12} {...item} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-              {settings.showExpertise !== false && settings.expertiseItems.length > 0 && (
-                <div>
-                  <Reveal>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="h-px w-8" style={{ background: sGold }} />
-                      <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
-                        {t("Core Expertise", "التخصصات الأساسية")}
+      <div className="section-divider" />
+
+      {/* ════════════════════════════════
+          SERVICES PREVIEW
+      ════════════════════════════════ */}
+      {services.length > 0 && (
+        <section className="py-24 px-5 bg-white">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader
+              en="Consulting Services"
+              ar="الخدمات الاستشارية"
+              subEn="Comprehensive advisory packages designed for real impact."
+              subAr="حزم استشارية شاملة مصممة للأثر الحقيقي."
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
+              {services.map((s, i) => <ServiceCard key={s.id} service={s} i={i} />)}
+            </div>
+            <div className="text-center mt-10">
+              <Link href="/services">
+                <motion.button
+                  whileHover={{ scale: 1.03, y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  className={`inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-sm btn-brand`}
+                >
+                  {t("All Services", "جميع الخدمات")}
+                  <ArrowIcon size={15} />
+                </motion.button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <div className="section-divider" />
+
+      {/* ════════════════════════════════
+          FEATURED PROJECT / CAREER
+      ════════════════════════════════ */}
+      {settings.showFeaturedProject && (
+        <section className="py-24 px-5" style={{ background: "#FAF8F4" }}>
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader
+              en="Featured Work"
+              ar="أبرز الأعمال"
+              subEn="A deep-dive into one of my flagship projects."
+              subAr="نظرة معمقة على أحد أبرز مشاريعي."
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="mt-14 rounded-3xl overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #060e1e 0%, #0d1e3a 100%)",
+                border: "1px solid rgba(37,99,235,0.15)",
+                boxShadow: "0 24px 80px rgba(0,0,0,0.15)",
+              }}
+            >
+              <div className="grid lg:grid-cols-2 gap-0">
+                {/* Left content */}
+                <div className="p-10 lg:p-14">
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="text-3xl">{settings.featuredEmoji}</span>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-400">
+                        {t(settings.featuredSubtitleEn, settings.featuredSubtitleAr)}
                       </p>
+                      <h3 className="text-2xl font-black text-white font-heading">
+                        {t(settings.featuredTitleEn, settings.featuredTitleAr)}
+                      </h3>
                     </div>
-                    <h2 className="text-3xl md:text-[44px] font-black font-heading leading-tight mb-10"
-                      style={{ color: darkBg }}>
-                      {t("What I bring\nto every project", "ما أحضره\nلكل مشروع")}
-                    </h2>
-                  </Reveal>
-                  <div className="space-y-4">
-                    {settings.expertiseItems.map((p, i) => (
-                      <Reveal key={i} delay={i * 0.08}>
-                        <motion.div
-                          whileHover={{ x: isRTL ? -6 : 6 }}
-                          transition={{ type: "spring", stiffness: 280, damping: 26 }}
-                          className="group flex gap-5 p-6 rounded-2xl border cursor-default transition-all duration-300 bg-white"
-                          style={{ borderColor: `${sGold}20` }}
-                          onMouseEnter={e => {
-                            (e.currentTarget as HTMLElement).style.borderColor = `${sGold}60`;
-                            (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px ${sGold}15`;
-                          }}
-                          onMouseLeave={e => {
-                            (e.currentTarget as HTMLElement).style.borderColor = `${sGold}20`;
-                            (e.currentTarget as HTMLElement).style.boxShadow = "";
-                          }}>
-                          <div className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl"
-                            style={{ background: `${sGold}12` }}>
-                            {p.icon}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-1.5">
-                              <h3 className="font-bold text-base" style={{ color: darkBg }}>
-                                {t(p.titleEn, p.titleAr)}
-                              </h3>
-                              <span className="text-[10px] font-mono font-bold" style={{ color: `${sGold}50` }}>
-                                {String(i + 1).padStart(2, "0")}
-                              </span>
-                            </div>
-                            <p className="text-sm leading-relaxed" style={{ color: "#6B5A3E" }}>
-                              {t(p.descEn, p.descAr)}
-                            </p>
-                            <div className="mt-3 h-[2px] w-0 group-hover:w-full rounded-full transition-all duration-500"
-                              style={{ background: `linear-gradient(90deg, ${sGold}, transparent)` }} />
-                          </div>
-                        </motion.div>
-                      </Reveal>
+                  </div>
+
+                  <p className="text-slate-300 leading-relaxed mb-8 text-sm">
+                    {t(settings.featuredDescEn, settings.featuredDescAr)}
+                  </p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {settings.featuredTags?.map((tag, i) => (
+                      <span key={i} className="px-3 py-1 rounded-full text-[11px] font-semibold"
+                        style={{ background: "rgba(37,99,235,0.2)", color: "#93C5FD" }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {settings.featuredStats?.map((s, i) => (
+                      <div key={i} className="rounded-xl p-4"
+                        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                        <p className="text-xl font-black text-white">{s.num}</p>
+                        <p className="text-xs text-slate-400 mt-0.5">{t(s.labelEn, s.labelAr)}</p>
+                      </div>
                     ))}
                   </div>
                 </div>
-              )}
 
-              {settings.showSkills !== false && settings.skillItems.length > 0 && (
-                <div>
-                  <Reveal dir="right">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="h-px w-8" style={{ background: sGold }} />
-                      <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
-                        {t("Skill Proficiency", "مستوى المهارات")}
-                      </p>
+                {/* Right: image or placeholder */}
+                <div className="relative lg:min-h-[400px] overflow-hidden">
+                  {settings.featuredImageUrl ? (
+                    <img src={settings.featuredImageUrl} alt="featured" className="absolute inset-0 w-full h-full object-cover" />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+                      style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.15))" }}>
+                      <div className="text-7xl opacity-30">{settings.featuredEmoji}</div>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="text-sm font-bold text-white/40">{t(settings.featuredRoleEn, settings.featuredRoleAr)}</span>
+                        <span className="text-xs text-white/25">{t(settings.featuredDateEn, settings.featuredDateAr)}</span>
+                      </div>
                     </div>
-                    <h2 className="text-3xl md:text-[44px] font-black font-heading leading-tight mb-10"
-                      style={{ color: darkBg }}>
-                      {t("Technical\nCompetencies", "الكفاءات\nالتقنية")}
-                    </h2>
-                  </Reveal>
-                  <Reveal dir="right" delay={0.1}>
-                    <div className="space-y-5">
-                      {settings.skillItems.map((sk, i) => (
-                        <SkillBar key={i} label={t(sk.labelEn, sk.labelAr) as string} pct={sk.pct} color={sGold} />
-                      ))}
-                    </div>
-                  </Reveal>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            </motion.div>
           </div>
         </section>
       )}
 
-      {/* ════════════════════════════════════════════
-          CAREER TIMELINE
-      ════════════════════════════════════════════ */}
-      {settings.showCareer !== false && settings.careerItems.length > 0 && (
-        <section className="py-28 relative overflow-hidden" style={{ background: darkBg }}>
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-0 w-[500px] h-[500px]"
-              style={{ background: `radial-gradient(circle at 0% 0%, ${sGold}0a, transparent 60%)` }} />
-            <div className="absolute bottom-0 right-0 w-[400px] h-[400px]"
-              style={{ background: `radial-gradient(circle at 100% 100%, rgba(37,99,235,0.08), transparent 60%)` }} />
-          </div>
-          <div className="container mx-auto px-8 lg:px-16 relative z-10">
-            <div className="grid lg:grid-cols-[280px_1fr] gap-16 items-start">
-              <Reveal dir="left">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="h-px w-8" style={{ background: sGold }} />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
-                    {t("Professional History", "التاريخ المهني")}
-                  </p>
-                </div>
-                <h2 className="text-3xl md:text-4xl font-black font-heading text-white mb-5 leading-tight">
-                  {t(`${settings.experienceYears} Years of\nLeadership`, `${settings.experienceYears} سنوات\nمن القيادة`)}
-                </h2>
-                <p className="text-sm leading-relaxed mb-8" style={{ color: "rgba(240,220,180,0.45)" }}>
-                  {t(
-                    "A steady progression through operations and brand leadership across the Kingdom.",
-                    "تقدم متواصل في العمليات وقيادة العلامات في المملكة."
-                  )}
-                </p>
-                <Link href="/about">
-                  <motion.button whileHover={{ x: isRTL ? -5 : 5 }} className="text-sm font-bold" style={{ color: sGoldLt }}>
-                    {t("Full Biography →", "السيرة الكاملة ←")}
-                  </motion.button>
-                </Link>
-              </Reveal>
+      <div className="section-divider" />
 
-              <div className="relative pl-6">
-                <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-full"
-                  style={{ background: `linear-gradient(to bottom, ${sGold}, ${sGold}30)` }} />
-                <div className="space-y-4">
-                  {settings.careerItems.map((item, i) => (
-                    <Reveal key={i} delay={i * 0.09}>
-                      <div className="relative flex items-start gap-5">
-                        <div className="absolute -left-[27px] top-4 w-3 h-3 rounded-full border-2"
-                          style={{ background: item.current ? sGoldLt : darkBg, borderColor: item.current ? sGoldLt : `${sGold}50` }} />
-                        <motion.div whileHover={{ x: 6 }}
-                          transition={{ type: "spring", stiffness: 280, damping: 26 }}
-                          className="flex-1 p-5 rounded-xl border cursor-default transition-all duration-300"
-                          style={{ background: `${sGold}06`, borderColor: `${sGold}18` }}
-                          onMouseEnter={e => {
-                            (e.currentTarget as HTMLElement).style.borderColor = `${sGold}40`;
-                            (e.currentTarget as HTMLElement).style.background = `${sGold}0e`;
-                          }}
-                          onMouseLeave={e => {
-                            (e.currentTarget as HTMLElement).style.borderColor = `${sGold}18`;
-                            (e.currentTarget as HTMLElement).style.background = `${sGold}06`;
-                          }}>
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-                            <p className="font-bold text-white text-sm">{t(item.titleEn, item.titleAr)}</p>
-                            <span className="text-xs font-mono" style={{ color: `${sGold}60` }}>{item.year}</span>
-                          </div>
-                          <p className="text-xs" style={{ color: `${sGold}55` }}>{item.org}</p>
+      {/* ════════════════════════════════
+          CAREER TIMELINE
+      ════════════════════════════════ */}
+      {settings.showCareer && settings.careerItems?.length > 0 && (
+        <section className="py-24 px-5 bg-white">
+          <div className="max-w-4xl mx-auto">
+            <SectionHeader
+              en="Career Journey"
+              ar="مسيرة العمل"
+              subEn="A track record built on leadership, results, and growth."
+              subAr="سجل حافل بالقيادة والنتائج والنمو المستمر."
+            />
+            <div className="mt-14 relative">
+              {/* Vertical line */}
+              <div className={`absolute top-0 bottom-0 w-px ${isRTL ? "right-6" : "left-6"} hidden md:block`}
+                style={{ background: "linear-gradient(to bottom, #2563EB, #7C3AED, transparent)" }} />
+
+              <div className="space-y-6">
+                {settings.careerItems.map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ delay: i * 0.1, duration: 0.6 }}
+                    className={`flex gap-6 ${isRTL ? "flex-row-reverse" : ""}`}
+                  >
+                    {/* Dot */}
+                    <div className="hidden md:flex flex-col items-center pt-1 flex-shrink-0">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 z-10 ${
+                        item.current
+                          ? "bg-brand-gradient shadow-[0_0_20px_rgba(37,99,235,0.4)]"
+                          : "bg-white border-2 border-slate-200"
+                      }`}>
+                        {item.current ? <Star size={16} className="text-white" fill="white" /> : <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />}
+                      </div>
+                    </div>
+
+                    {/* Card */}
+                    <div className={`flex-1 p-5 rounded-2xl transition-all duration-300 ${
+                      item.current
+                        ? "bg-brand-gradient-soft border border-[#2563EB]/20"
+                        : "bg-[#FAF8F4] border border-slate-100"
+                    }`}>
+                      <div className="flex items-start justify-between gap-3 flex-wrap">
+                        <div>
+                          <h4 className="font-bold text-slate-900 font-heading">{t(item.titleEn, item.titleAr)}</h4>
+                          <p className="text-sm text-slate-500 mt-0.5">{item.org}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
                           {item.current && (
-                            <span className="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full"
-                              style={{ background: `${sGold}15`, color: sGoldLt, border: `1px solid ${sGold}30` }}>
-                              <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: sGoldLt }} />
-                              {t("Current Position", "المنصب الحالي")}
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2563EB] text-white">
+                              {t("Current", "حالياً")}
                             </span>
                           )}
-                        </motion.div>
-                      </div>
-                    </Reveal>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ════════════════════════════════════════════
-          FEATURED PROJECT
-      ════════════════════════════════════════════ */}
-      {settings.showFeaturedProject !== false && (
-        <section className="py-28 relative overflow-hidden" style={{ background: darkBg }}>
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-0 right-0 h-px"
-              style={{ background: `linear-gradient(90deg, transparent, ${sGold}50, transparent)` }} />
-            <div className="absolute bottom-0 left-0 right-0 h-px"
-              style={{ background: `linear-gradient(90deg, transparent, ${sGold}30, transparent)` }} />
-            <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-[0.05]"
-              style={{ background: `radial-gradient(circle, ${sGold}, transparent 70%)` }} />
-          </div>
-
-          <div className="container mx-auto px-8 lg:px-16 relative z-10">
-            <Reveal className="mb-16">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="h-px w-8" style={{ background: sGold }} />
-                <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
-                  {t(settings.featuredSubtitleEn, settings.featuredSubtitleAr)}
-                </p>
-              </div>
-              <h2 className="text-4xl md:text-[52px] font-black font-heading leading-tight text-white">
-                {t(settings.featuredTitleEn, settings.featuredTitleAr)}
-              </h2>
-            </Reveal>
-
-            <Reveal delay={0.1}>
-              <div className="grid lg:grid-cols-[1fr_380px] gap-0 rounded-3xl overflow-hidden"
-                style={{ border: `1px solid ${sGold}25`, boxShadow: `0 24px 80px rgba(0,0,0,0.5)` }}>
-                <div className="p-10 md:p-14 relative"
-                  style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)" }}>
-                  <div className="absolute top-0 left-10 right-10 h-px"
-                    style={{ background: `linear-gradient(90deg, ${sGold}, transparent)` }} />
-                  <div className="flex flex-wrap items-center gap-3 mb-8">
-                    <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest"
-                      style={{ background: `${sGold}20`, color: sGold, border: `1px solid ${sGold}35` }}>
-                      <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                      {t(settings.featuredRoleEn, settings.featuredRoleAr)}
-                    </span>
-                    <span className="text-xs font-mono" style={{ color: `${sGold}80` }}>
-                      {t(settings.featuredDateEn, settings.featuredDateAr)}
-                    </span>
-                  </div>
-                  <h3 className="text-4xl md:text-5xl font-black font-heading mb-5 text-white leading-tight">
-                    {t(settings.featuredTitleEn, settings.featuredTitleAr)}
-                  </h3>
-                  <p className="text-base leading-relaxed mb-10 max-w-lg" style={{ color: "rgba(240,220,170,0.6)" }}>
-                    {t(settings.featuredDescEn, settings.featuredDescAr)}
-                  </p>
-                  {settings.featuredTags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-10">
-                      {settings.featuredTags.map(tag => (
-                        <span key={tag} className="text-xs font-semibold px-3 py-1.5 rounded-full"
-                          style={{ background: "rgba(255,255,255,0.06)", color: "rgba(240,220,170,0.75)", border: `1px solid ${sGold}20` }}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <Link href="/portfolio">
-                    <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                      className="inline-flex items-center gap-2 h-12 px-8 rounded-xl font-bold text-sm"
-                      style={{ background: `linear-gradient(135deg, ${sGold}, ${sGoldLt})`, color: darkBg }}>
-                      {t("View Full Portfolio →", "← عرض الأعمال الكاملة")}
-                    </motion.button>
-                  </Link>
-                </div>
-
-                <div className="relative flex flex-col items-center justify-center p-10 lg:border-l"
-                  style={{ background: `linear-gradient(160deg, ${sGold}14 0%, rgba(10,22,40,0.6) 100%)`, borderColor: `${sGold}15` }}>
-                  <motion.div animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="text-[120px] leading-none mb-6 select-none"
-                    style={{ filter: `drop-shadow(0 20px 40px ${sGold}30)` }}>
-                    {settings.featuredEmoji}
-                  </motion.div>
-                  {settings.featuredStats.length > 0 && (
-                    <div className="grid grid-cols-2 gap-3 w-full max-w-[280px] mt-4">
-                      {settings.featuredStats.map((s, i) => (
-                        <div key={i} className="flex flex-col items-center justify-center py-4 px-3 rounded-xl text-center"
-                          style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${sGold}15` }}>
-                          <span className="text-xl font-black" style={{ color: sGold }}>{s.num}</span>
-                          <span className="text-[10px] font-semibold mt-0.5" style={{ color: "rgba(240,220,170,0.5)" }}>
-                            {t(s.labelEn, s.labelAr)}
-                          </span>
+                          <span className="text-xs text-slate-400 font-medium">{item.year}</span>
                         </div>
-                      ))}
+                      </div>
                     </div>
-                  )}
-                </div>
+                  </motion.div>
+                ))}
               </div>
-            </Reveal>
-          </div>
-        </section>
-      )}
-
-      {/* ════════════════════════════════════════════
-          CONTACT CTA
-      ════════════════════════════════════════════ */}
-      {settings.showContact !== false && (
-        <section className="py-28 relative overflow-hidden" style={{ background: darkBg }}>
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute bottom-0 left-0 right-0 h-px"
-              style={{ background: `linear-gradient(90deg, transparent, ${sGold}40, transparent)` }} />
-            <div className="absolute inset-0"
-              style={{ background: `radial-gradient(ellipse at 50% 100%, ${sGold}08, transparent 65%)` }} />
-          </div>
-
-          <div className="container mx-auto px-8 lg:px-16 max-w-5xl relative z-10">
-            <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <Reveal dir="left">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="h-px w-8" style={{ background: sGold }} />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color: sGold }}>
-                    {t("Let's Work Together", "لنتعاون معاً")}
-                  </p>
-                </div>
-                <h2 className="text-3xl md:text-[44px] font-black font-heading text-white leading-tight mb-5">
-                  {t("Ready to elevate\nyour brand?", "هل أنت مستعد\nللارتقاء بعلامتك؟")}
-                </h2>
-                <p className="text-sm leading-relaxed mb-8" style={{ color: "rgba(240,220,180,0.5)" }}>
-                  {t(
-                    "Strategic consulting, brand development, and operational leadership — available for serious engagements.",
-                    "استشارة استراتيجية وتطوير علامة وقيادة تشغيلية — متاح للتعاونات الجادة."
-                  )}
-                </p>
-                <div className="space-y-4 text-sm">
-                  {settings.email && (
-                    <a href={`mailto:${settings.email}`} className="flex items-center gap-4 group">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border transition-all duration-300 group-hover:border-amber-500"
-                        style={{ background: `${sGold}10`, borderColor: `${sGold}25` }}>📧</span>
-                      <span className="font-medium text-white/70 group-hover:text-amber-300 transition-colors">{settings.email}</span>
-                    </a>
-                  )}
-                  {settings.phone && (
-                    <a href={`tel:${settings.phone}`} className="flex items-center gap-4 group">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border transition-all duration-300 group-hover:border-amber-500"
-                        style={{ background: `${sGold}10`, borderColor: `${sGold}25` }}>📱</span>
-                      <span className="font-medium text-white/70 group-hover:text-amber-300 transition-colors">{settings.phone}</span>
-                    </a>
-                  )}
-                  {settings.address && (
-                    <div className="flex items-center gap-4">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-base flex-shrink-0 border"
-                        style={{ background: `${sGold}10`, borderColor: `${sGold}25` }}>📍</span>
-                      <span className="font-medium" style={{ color: "rgba(240,220,180,0.45)" }}>
-                        {settings.address}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </Reveal>
-
-              <Reveal dir="right" delay={0.12}>
-                <div className="rounded-2xl overflow-hidden border"
-                  style={{ borderColor: `${sGold}25`, boxShadow: `0 8px 40px rgba(0,0,0,0.3)` }}>
-                  <div className="px-8 py-6" style={{ background: `${sGold}12`, borderBottom: `1px solid ${sGold}20` }}>
-                    <div className="inline-flex rounded-lg bg-white px-3 py-2">
-                      <img src={logoPath} alt="md" className="h-8 w-auto object-contain" style={{ mixBlendMode: "multiply" }} />
-                    </div>
-                  </div>
-                  <div className="px-8 py-8" style={{ background: "rgba(255,255,255,0.04)" }}>
-                    <p className="text-sm leading-relaxed mb-2 italic" style={{ color: "rgba(240,220,180,0.6)" }}>
-                      {t(
-                        "\"Experience, innovation, and impact — the standard I hold every project to.\"",
-                        "«الخبرة والابتكار والأثر — المعيار الذي أحكم به على كل مشروع.»"
-                      )}
-                    </p>
-                    <p className="text-xs font-bold uppercase tracking-widest mb-8" style={{ color: `${sGold}55` }}>
-                      — {t(settings.siteNameEn, settings.siteNameAr)}
-                    </p>
-                    <div className="flex flex-col gap-3">
-                      <Link href="/book">
-                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                          className="w-full font-bold text-sm cursor-pointer rounded-xl hover:opacity-90 transition-opacity"
-                          style={{ height: 48, background: `linear-gradient(135deg, ${sGold}, ${sGoldLt})`, color: darkBg }}>
-                          {t("Book a Consultation", "احجز استشارة")}
-                        </motion.button>
-                      </Link>
-                      <Link href="/contact">
-                        <motion.button whileHover={{ scale: 1.02, background: "rgba(255,255,255,0.06)" }} whileTap={{ scale: 0.97 }}
-                          className="w-full font-bold text-sm cursor-pointer rounded-xl border transition-all duration-200"
-                          style={{ height: 48, borderColor: `${sGold}30`, color: "rgba(240,220,180,0.7)", background: "transparent" }}>
-                          {t("Send a Message", "أرسل رسالة")}
-                        </motion.button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
             </div>
           </div>
         </section>
       )}
+
+      <div className="section-divider" />
+
+      {/* ════════════════════════════════
+          ARTICLES PREVIEW
+      ════════════════════════════════ */}
+      {articles.length > 0 && (
+        <section className="py-24 px-5 bg-[#FAF8F4]">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeader
+              en="Latest Articles"
+              ar="أحدث المقالات"
+              subEn="Insights, strategies, and reflections from the field."
+              subAr="رؤى واستراتيجيات وتأملات من الميدان."
+            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14">
+              {articles.map((a, i) => <ArticleCard key={a.id} article={a} i={i} />)}
+            </div>
+            <div className="text-center mt-10">
+              <Link href="/articles">
+                <motion.button
+                  whileHover={{ scale: 1.03, y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-sm btn-brand"
+                >
+                  {t("All Articles", "جميع المقالات")}
+                  <ArrowIcon size={15} />
+                </motion.button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <div className="section-divider" />
+
+      {/* ════════════════════════════════
+          CTA SECTION
+      ════════════════════════════════ */}
+      <section className="py-24 px-5 overflow-hidden relative">
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0"
+            style={{ background: "linear-gradient(135deg, #060e1e 0%, #0a1628 60%, #0d1a36 100%)" }} />
+          <div className="orb-blue absolute" style={{ width: 600, height: 600, top: "-30%", left: "-10%", opacity: 0.8 }} />
+          <div className="orb-purple absolute" style={{ width: 500, height: 500, bottom: "-20%", right: "-10%", opacity: 0.8 }} />
+          <div className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+              backgroundSize: "32px 32px",
+            }} />
+        </div>
+
+        <div className="relative z-10 max-w-3xl mx-auto text-center">
+          {/* Logo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="flex justify-center mb-8"
+          >
+            <img src={logoImg} alt="m-aldbani" className="h-20 w-auto object-contain opacity-90" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.7 }}
+            className="font-black text-white mb-5 font-heading"
+            style={{ fontSize: "clamp(1.8rem, 5vw, 3rem)", lineHeight: 1.15 }}
+          >
+            {t("Ready to Transform\nYour Business?", "جاهز لتحويل\nأعمالك؟")}
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+            className="text-slate-300 mb-10 leading-relaxed"
+          >
+            {t(
+              "Let's build something meaningful together. Book a free consultation today.",
+              "لنبني شيئاً ذا قيمة معاً. احجز استشارة مجانية اليوم."
+            )}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.7 }}
+            className="flex items-center justify-center gap-4 flex-wrap"
+          >
+            <Link href="/book">
+              <motion.button
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base"
+                style={{
+                  background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+                  color: "white",
+                  boxShadow: "0 8px 32px rgba(37,99,235,0.5)",
+                }}
+              >
+                <Sparkles size={16} />
+                {t("Book Free Consultation", "احجز استشارة مجانية")}
+              </motion.button>
+            </Link>
+            <Link href="/contact">
+              <motion.button
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  color: "rgba(220,235,255,0.9)",
+                }}
+              >
+                {t("Get in Touch", "تواصل معي")}
+                <ArrowIcon size={15} />
+              </motion.button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
     </RootLayout>
+  );
+}
+
+/* ══════════════════════════════════════════
+   HELPER: SECTION HEADER
+══════════════════════════════════════════ */
+function SectionHeader({ en, ar, subEn, subAr }: { en: string; ar: string; subEn?: string; subAr?: string }) {
+  const { t } = useLanguage();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7 }}
+      className="text-center max-w-2xl mx-auto"
+    >
+      <h2 className="text-4xl font-black text-slate-900 mb-4 font-heading">{t(en, ar)}</h2>
+      {(subEn || subAr) && (
+        <p className="text-slate-500 text-lg leading-relaxed">{t(subEn ?? "", subAr ?? "")}</p>
+      )}
+    </motion.div>
   );
 }

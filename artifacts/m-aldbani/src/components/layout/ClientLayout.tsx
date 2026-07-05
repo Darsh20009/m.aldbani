@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/use-auth";
 import { useLanguage } from "../../hooks/use-language";
 import { useSiteSettings } from "../../hooks/use-site-settings";
 import { LogoMark } from "../Logo";
+import logoImg from "@assets/Screenshot_2026-07-01_at_3.14.23_AM_1783289663512.png";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, CalendarDays, MessageSquare, FolderOpen, Receipt, LogOut, ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -46,11 +47,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
       <aside className="w-full md:w-64 border-r border-border bg-card flex flex-col shadow-sm">
         <div className="h-20 flex items-center px-6 border-b border-border">
           <Link href="/" className="flex items-center gap-3 group">
-            {settings.logoUrl ? (
-              <img src={settings.logoUrl} alt="Logo" className="h-10 object-contain" />
-            ) : (
-              <LogoMark size={32} />
-            )}
+            <img src={settings.logoUrl || logoImg} alt="Logo" className="h-10 object-contain" />
             <div>
               <p className="font-heading font-bold text-sm text-foreground leading-none">{language === "ar" ? settings.siteNameAr : settings.siteNameEn}</p>
               <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider">{t("Client Portal", "بوابة العميل")}</p>

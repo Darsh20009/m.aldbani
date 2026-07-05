@@ -54,8 +54,7 @@ const fmt = (doc: any) => {
 // File upload
 router.post("/upload", upload.single("file"), (req: Request, res: Response) => {
   if (!req.file) { res.status(400).json({ error: "No file uploaded" }); return; }
-  const host = `${req.protocol}://${req.get("host")}`;
-  res.json({ url: `${host}/uploads/${req.file.filename}` });
+  res.json({ url: `/uploads/${req.file.filename}` });
 });
 
 // Stats

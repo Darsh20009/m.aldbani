@@ -5,7 +5,7 @@ import { useSiteSettings } from "../../hooks/use-site-settings";
 import { LogoMark } from "../Logo";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, Sparkles } from "lucide-react";
 
 const navLinks = [
   { href: "/about",     en: "About",     ar: "من أنا" },
@@ -26,7 +26,7 @@ export function Navbar() {
   const isRTL = language === "ar";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 30);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -37,117 +37,117 @@ export function Navbar() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-background/90 backdrop-blur-2xl border-b border-border shadow-sm"
-            : "bg-transparent"
+          scrolled ? "navbar-scrolled" : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto flex h-20 items-center justify-between px-6 lg:px-10">
+        <div className="max-w-7xl mx-auto flex h-[72px] items-center justify-between px-5 lg:px-10">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center group flex-shrink-0">
-            <div className="transition-all duration-300 group-hover:scale-105">
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              className="relative"
+            >
               {settings.logoUrl ? (
-                <img
-                  src={settings.logoUrl}
-                  alt={t(settings.siteNameEn, settings.siteNameAr)}
-                  className="h-10 w-auto object-contain"
-                />
+                <img src={settings.logoUrl} alt={t(settings.siteNameEn, settings.siteNameAr)} className="h-10 w-auto object-contain" />
               ) : (
-                <LogoMark size={40} />
+                <LogoMark size={42} />
               )}
-            </div>
+            </motion.div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className={`hidden lg:flex items-center gap-1 ${isRTL ? "flex-row-reverse" : ""}`}>
             {navLinks.map((item) => {
               const active = location === item.href;
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
-                    active
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 rounded-full bg-primary/10"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10">{t(item.en, item.ar)}</span>
+                <Link key={item.href} href={item.href}>
+                  <motion.span
+                    whileHover={{ y: -1 }}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full cursor-pointer transition-colors duration-200 ${
+                      active
+                        ? "text-[#2563EB]"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                    }`}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 rounded-full bg-[#2563EB]/8"
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">{t(item.en, item.ar)}</span>
+                  </motion.span>
                 </Link>
               );
             })}
           </nav>
 
           {/* Right actions */}
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-2.5 ${isRTL ? "flex-row-reverse" : ""}`}>
             {/* Language Toggle */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-              className="px-3 py-1.5 rounded-full text-xs font-bold border border-border text-muted-foreground hover:border-primary/30 hover:text-primary transition-all duration-200 bg-card hover:bg-muted"
+              className="px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200 text-slate-500 hover:border-[#2563EB]/40 hover:text-[#2563EB] hover:bg-[#2563EB]/5 transition-all duration-200"
             >
               {language === "en" ? "عربي" : "EN"}
             </motion.button>
 
-            {/* Book & Auth */}
-            <div className="hidden md:flex items-center gap-3">
+            {/* Book CTA */}
+            <div className="hidden md:flex items-center gap-2.5">
               <Link href="/book">
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.02, y: -1 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-5 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200"
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold btn-brand"
                 >
-                  {t("Book Consultation", "حجز استشارة")}
+                  <Sparkles size={13} />
+                  {t("Book Consultation", "احجز استشارة")}
                 </motion.button>
               </Link>
-              
+
               {user ? (
-                <>
+                <div className="flex items-center gap-2">
                   <Link href={user.role === "admin" ? "/admin" : "/client"}>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-4 py-2 rounded-full text-sm font-medium border border-border bg-card text-foreground hover:bg-muted transition-all duration-200"
+                      className="px-4 py-2 rounded-full text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all duration-200 shadow-sm"
                     >
-                      {user.role === "admin" ? t("Admin", "لوحة التحكم") : t("Portal", "البوابة")}
+                      {user.role === "admin" ? t("Admin", "التحكم") : t("Portal", "البوابة")}
                     </motion.button>
                   </Link>
                   <button
                     onClick={logout}
-                    className="px-3 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
+                    className="px-3 py-2 rounded-full text-sm text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
                   >
                     {t("Logout", "خروج")}
                   </button>
-                </>
+                </div>
               ) : (
                 <Link href="/auth/login">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-4 py-2 rounded-full text-sm font-medium border border-border bg-card text-foreground hover:bg-muted transition-all duration-200"
+                    className="px-4 py-2 rounded-full text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all shadow-sm"
                   >
-                    {t("Login", "تسجيل الدخول")}
+                    {t("Login", "دخول")}
                   </motion.button>
                 </Link>
               )}
             </div>
 
             {/* Mobile Hamburger */}
-            <button
-              className="md:hidden flex items-center justify-center p-2 rounded-full hover:bg-muted transition-colors text-foreground"
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-slate-100 transition-colors text-slate-700"
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
             >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </motion.button>
           </div>
         </div>
       </header>
@@ -156,50 +156,77 @@ export function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed top-20 left-4 right-4 z-40 rounded-2xl overflow-hidden border border-border shadow-xl bg-background/95 backdrop-blur-xl"
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            className="fixed top-[80px] left-4 right-4 z-40 rounded-2xl overflow-hidden shadow-2xl"
+            style={{
+              background: "rgba(255,255,255,0.97)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(37,99,235,0.12)",
+            }}
           >
-            <div className="p-4 space-y-1">
+            {/* Gradient top strip */}
+            <div className="h-1 w-full bg-brand-gradient" />
+
+            <div className="p-5 space-y-1">
+              {/* Logo inside mobile menu */}
+              <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+                {settings.logoUrl ? (
+                  <img src={settings.logoUrl} alt="logo" className="h-8 w-auto" />
+                ) : (
+                  <LogoMark size={36} />
+                )}
+                <div>
+                  <p className="font-bold text-sm text-slate-900">{t("M-ALDBANI", "م. الدباني")}</p>
+                  <p className="text-[10px] text-slate-400">{t("Business Development", "تطوير أعمال")}</p>
+                </div>
+              </div>
+
               {navLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`flex items-center px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                    location === item.href
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  {t(item.en, item.ar)}
+                <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
+                  <motion.div
+                    whileHover={{ x: isRTL ? -4 : 4 }}
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                      location === item.href
+                        ? "bg-[#2563EB]/8 text-[#2563EB] font-semibold"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    }`}
+                  >
+                    {t(item.en, item.ar)}
+                    {location === item.href && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#2563EB]" />
+                    )}
+                  </motion.div>
                 </Link>
               ))}
-              
-              <div className="pt-4 border-t border-border mt-4 flex flex-col gap-2">
+
+              <div className="pt-4 space-y-2 border-t border-slate-100 mt-4">
                 <Link href="/book" onClick={() => setMenuOpen(false)}>
-                  <button className="w-full py-3 rounded-xl text-base font-medium bg-primary text-primary-foreground">
-                    {t("Book Consultation", "حجز استشارة")}
+                  <button className="w-full py-3 rounded-xl text-sm font-semibold btn-brand flex items-center justify-center gap-2">
+                    <Sparkles size={14} />
+                    {t("Book Consultation", "احجز استشارة")}
                   </button>
                 </Link>
-                
+
                 {user ? (
                   <>
                     <Link href={user.role === "admin" ? "/admin" : "/client"} onClick={() => setMenuOpen(false)}>
-                      <button className="w-full py-3 rounded-xl text-base font-medium border border-border bg-card text-foreground">
+                      <button className="w-full py-3 rounded-xl text-sm font-medium border border-slate-200 bg-white text-slate-700">
                         {user.role === "admin" ? t("Admin Panel", "لوحة التحكم") : t("My Portal", "بوابتي")}
                       </button>
                     </Link>
-                    <button onClick={() => { logout(); setMenuOpen(false); }}
-                      className="w-full py-3 rounded-xl text-base font-medium text-destructive hover:bg-destructive/10 transition-colors">
-                      {t("Logout", "خروج")}
+                    <button
+                      onClick={() => { logout(); setMenuOpen(false); }}
+                      className="w-full py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50"
+                    >
+                      {t("Logout", "تسجيل الخروج")}
                     </button>
                   </>
                 ) : (
                   <Link href="/auth/login" onClick={() => setMenuOpen(false)}>
-                    <button className="w-full py-3 rounded-xl text-base font-medium border border-border bg-card text-foreground">
+                    <button className="w-full py-3 rounded-xl text-sm font-medium border border-slate-200 bg-white text-slate-700">
                       {t("Client Login", "دخول العملاء")}
                     </button>
                   </Link>
