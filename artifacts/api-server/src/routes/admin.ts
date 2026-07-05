@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 import { mkdirSync } from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadsDir = path.resolve(__dirname, "../../../uploads");
+const uploadsDir = path.resolve(__dirname, "../../uploads");
 try { mkdirSync(uploadsDir, { recursive: true }); } catch {}
 
 const ALLOWED_TYPES: Record<string, string> = {
