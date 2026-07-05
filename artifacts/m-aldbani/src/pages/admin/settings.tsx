@@ -578,8 +578,11 @@ export default function AdminSettings() {
                     className="text-muted-foreground hover:text-destructive"><X size={11} /></button>
                 </div>
               ))}
+            </div>
             <AddTagInput onAdd={(tag) => f("featuredTags", [...(form.featuredTags ?? []), tag])} />
           </Section>
+
+          <Section title="الإحصائيات (Stats)">
             {(form.featuredStats ?? []).map((item: any, i: number) => (
               <div key={i} className="flex items-center gap-2 p-3 bg-muted/20 rounded-xl border border-border/40">
                 <Input value={item.num ?? ""} onChange={e => updateItem("featuredStats", i, "num", e.target.value)} placeholder="0→1" className="w-20 text-sm font-mono" />
@@ -699,11 +702,3 @@ function AddTagInput({ onAdd }: { onAdd: (tag: string) => void }) {
   );
 }
 
-// Need X icon locally
-function X({ size = 16 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
