@@ -7,10 +7,7 @@ import { logger } from "../lib/logger";
 const router = Router();
 
 const ADMIN_PHONE    = process.env.ADMIN_PHONE    || "+966552469643";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-if (!ADMIN_PASSWORD) {
-  throw new Error("ADMIN_PASSWORD environment variable is required");
-}
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
 const ADMIN_NAME     = process.env.ADMIN_NAME     || "Mohammed Al-Dabbani";
 const ADMIN_EMAIL    = process.env.ADMIN_EMAIL    || "admin@m-aldbani.com";
 
