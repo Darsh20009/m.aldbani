@@ -20,6 +20,7 @@ import {
   X,
   Globe,
   SlidersHorizontal,
+  Mail,
 } from "lucide-react";
 
 const navItems = [
@@ -30,6 +31,7 @@ const navItems = [
   { href: "/admin/projects",      label: "Portfolio",     labelAr: "المشاريع",            icon: Briefcase },
   { href: "/admin/articles",      label: "Articles",      labelAr: "المقالات",            icon: FileText },
   { href: "/admin/services",      label: "Services",      labelAr: "الخدمات",             icon: Settings },
+  { href: "/admin/email",         label: "Send Email",    labelAr: "إرسال بريد",          icon: Mail },
   { href: "/admin/analytics",     label: "Analytics",     labelAr: "التحليلات",           icon: BarChart3 },
   { href: "/admin/settings",      label: "Site Settings", labelAr: "إعدادات الموقع",      icon: SlidersHorizontal },
 ];

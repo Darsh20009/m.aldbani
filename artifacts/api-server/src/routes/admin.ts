@@ -8,6 +8,7 @@ import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
 import { logger } from "../lib/logger";
+import { sendEmail } from "../lib/email";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -370,6 +371,78 @@ router.get("/analytics", async (_req: Request, res: Response) => {
     });
   } catch (err) {
     logger.error({ err }, "Analytics error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// POST /admin/send-email — send email to one or more recipients
+router.post("/send-email", async (req: Request, res: Response) => {
+  try {
+    const { to, subject, body } = req.body as {
+      to: { email: string; name: string }[];
+      subject: string;
+      body: string;
+    };
+
+    if (!Array.isArray(to) || to.length === 0) {
+      res.status(400).json({ error: "At least one recipient required" });
+      return;
+    }
+    if (!subject?.trim()) {
+      res.status(400).json({ error: "Subject is required" });
+      return;
+    }
+    if (!body?.trim()) {
+      res.status(400).json({ error: "Body is required" });
+      return;
+    }
+
+    const html = `
+<!DOCTYPE html>
+<html dir="auto" lang="ar">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:Inter,Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;padding:40px 0">
+    <tr><td align="center">
+      <table width="580" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06)">
+        <tr><td style="background:linear-gradient(135deg,#2563EB,#7C3AED);padding:28px 36px">
+          <p style="margin:0;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;opacity:0.75">M-ALDBANI Platform</p>
+          <h1 style="margin:8px 0 0;color:#fff;font-size:22px;font-weight:800">${subject}</h1>
+        </td></tr>
+        <tr><td style="padding:32px 36px">
+          <div style="color:#374151;font-size:15px;line-height:1.8;white-space:pre-wrap">${body.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+        </td></tr>
+        <tr><td style="background:#f9fafb;padding:20px 36px;border-top:1px solid #e5e7eb;text-align:center">
+          <p style="margin:0;color:#9ca3af;font-size:11px">© ${new Date().getFullYear()} M-ALDBANI · Mohammed Al-Dabbani</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+    const errors: string[] = [];
+    for (const recipient of to) {
+      try {
+        await sendEmail({ to: recipient.email, subject, html, text: body });
+      } catch (err) {
+        logger.error({ err, email: recipient.email }, "Failed to send to recipient");
+        errors.push(recipient.email);
+      }
+    }
+
+    if (errors.length === to.length) {
+      res.status(500).json({ error: "All emails failed to send" });
+      return;
+    }
+
+    res.json({
+      sent: to.length - errors.length,
+      failed: errors.length,
+      failedEmails: errors,
+    });
+  } catch (err) {
+    logger.error({ err }, "Send email error");
     res.status(500).json({ error: "Server error" });
   }
 });
