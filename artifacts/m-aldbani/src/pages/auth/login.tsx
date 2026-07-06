@@ -195,9 +195,9 @@ export default function Login() {
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 flex items-center gap-3">
             <Link href="/">
-              <div className="rounded-xl bg-white p-2.5 cursor-pointer"
-                style={{ border: "1px solid rgba(37,99,235,0.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-                <img src={logoImg} alt="m-aldbani" className="h-8 w-auto object-contain" />
+              <div className="rounded-xl bg-white overflow-hidden cursor-pointer"
+                style={{ width: 52, height: 52, border: "1px solid rgba(37,99,235,0.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+                <img src={logoImg} alt="m-aldbani" className="w-full h-full object-contain" />
               </div>
             </Link>
             <div>
