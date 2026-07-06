@@ -7,6 +7,7 @@ import { useSiteSettings } from "../../hooks/use-site-settings";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import logoImg from "@assets/Screenshot_2026-07-01_at_3.14.23_AM_1783289663512.png";
+import { WhatsAppTab } from "../WhatsAppTab";
 
 const footerNav = [
   { href: "/about",     en: "About",     ar: "من أنا" },
@@ -26,6 +27,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       <ScrollProgress />
       <Navbar />
+      <WhatsAppTab />
       <main className="flex-1 pt-[72px]">
         {children}
       </main>
