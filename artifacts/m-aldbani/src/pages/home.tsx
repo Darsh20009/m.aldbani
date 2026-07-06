@@ -81,27 +81,33 @@ export default function Home() {
           <div className="mb-6">
             {isRTL ? (
               <>
+                {/* Arabic: solid colours — gradient text breaks on connected Arabic letterforms */}
                 <motion.div {...fadeUp(0.1)}>
                   <div
-                    className="font-black leading-[0.88] text-slate-900 font-heading"
-                    style={{ fontSize: "clamp(4rem, 14vw, 11rem)", letterSpacing: "-0.04em" }}
+                    style={{
+                      fontFamily: "'Almarai', sans-serif",
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      fontSize: "clamp(4rem, 14vw, 11rem)",
+                      color: "#0F172A",
+                      letterSpacing: "0.01em",
+                    }}
                   >
                     محمد
                   </div>
                 </motion.div>
                 <motion.div {...fadeUp(0.18)}>
-                  {/* The gradient rule between name parts */}
-                  <div className="my-3" style={{ height: 3, background: "linear-gradient(90deg, #2563EB 0%, #7C3AED 100%)", maxWidth: "100%" }} />
+                  <div className="my-4" style={{ height: 3, background: "linear-gradient(90deg, #2563EB, #7C3AED)" }} />
                 </motion.div>
                 <motion.div {...fadeUp(0.22)}>
                   <div
-                    className="font-black leading-[0.88] font-heading"
                     style={{
+                      fontFamily: "'Almarai', sans-serif",
+                      fontWeight: 800,
+                      lineHeight: 1,
                       fontSize: "clamp(4rem, 14vw, 11rem)",
-                      letterSpacing: "-0.04em",
-                      background: "linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
+                      color: "#2563EB",
+                      letterSpacing: "0.01em",
                     }}
                   >
                     الدباني
@@ -110,21 +116,23 @@ export default function Home() {
               </>
             ) : (
               <>
+                {/* English: gradient text works fine on Latin letterforms */}
                 <motion.div {...fadeUp(0.1)}>
                   <div
-                    className="font-black leading-[0.88] text-slate-900 font-heading"
-                    style={{ fontSize: "clamp(3.5rem, 12vw, 10rem)", letterSpacing: "-0.04em" }}
+                    className="font-black font-heading"
+                    style={{ lineHeight: 0.9, fontSize: "clamp(3.5rem, 12vw, 10rem)", letterSpacing: "-0.04em", color: "#0F172A" }}
                   >
                     Mohammed
                   </div>
                 </motion.div>
                 <motion.div {...fadeUp(0.18)}>
-                  <div className="my-3" style={{ height: 3, background: "linear-gradient(90deg, #2563EB 0%, #7C3AED 100%)" }} />
+                  <div className="my-4" style={{ height: 3, background: "linear-gradient(90deg, #2563EB, #7C3AED)" }} />
                 </motion.div>
                 <motion.div {...fadeUp(0.22)}>
                   <div
-                    className="font-black leading-[0.88] font-heading"
+                    className="font-black font-heading"
                     style={{
+                      lineHeight: 0.9,
                       fontSize: "clamp(3.5rem, 12vw, 10rem)",
                       letterSpacing: "-0.04em",
                       background: "linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)",
