@@ -50,7 +50,7 @@ export default function AdminEmail() {
 
     setSending(true);
     try {
-      const token = localStorage.getItem("auth_token");
+      const token = localStorage.getItem("token");
       const res = await fetch("/api/admin/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },

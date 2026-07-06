@@ -18,8 +18,7 @@ export async function sendEmail(opts: {
   text?: string;
 }): Promise<void> {
   if (!process.env.SMTP_PASS) {
-    logger.warn("SMTP_PASS not set — email skipped");
-    return;
+    throw new Error("SMTP_PASS is not configured — cannot send email");
   }
   try {
     await transporter.sendMail({
@@ -32,6 +31,7 @@ export async function sendEmail(opts: {
     logger.info({ to: opts.to, subject: opts.subject }, "Email sent");
   } catch (err) {
     logger.error({ err }, "Failed to send email");
+    throw err;
   }
 }
 
