@@ -2,7 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 
-const JWT_SECRET = process.env.SESSION_SECRET || "m-aldbani-secret-key";
+const JWT_SECRET = process.env.SESSION_SECRET;
+if (!JWT_SECRET) {
+  throw new Error("SESSION_SECRET environment variable is required");
+}
 
 export interface AuthRequest extends Request {
   user?: { id: string; role: string; name: string; email: string };

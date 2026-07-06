@@ -5,7 +5,7 @@ Personal brand platform for Mohammed Al-Dabbani — bilingual (AR/EN) consulting
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — API server (port 8080, MongoDB Atlas)
-- `pnpm --filter @workspace/m-aldbani run dev` — React frontend (port 23559)
+- `pnpm --filter @workspace/m-aldbani run dev` — React frontend (port 5000)
 - `pnpm --filter @workspace/api-server exec tsx src/seed.ts` — Re-seed MongoDB with demo data
 
 ## Stack
