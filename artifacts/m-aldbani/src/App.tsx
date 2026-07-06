@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "./hooks/use-auth";
 import { LanguageProvider } from "./hooks/use-language";
+import { SplashScreen } from "./components/SplashScreen";
 
 // Public pages
 import Home from "@/pages/home";
@@ -93,6 +94,7 @@ function App() {
       <TooltipProvider>
         <LanguageProvider>
           <AuthProvider>
+            <SplashScreen />
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
               <Router />
             </WouterRouter>
