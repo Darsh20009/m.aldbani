@@ -9,9 +9,9 @@ export function SplashScreen() {
   const [exiting, setExiting]   = useState(false);
 
   useEffect(() => {
-    // Only show once per session
-    if (sessionStorage.getItem(SPLASH_KEY)) return;
-    sessionStorage.setItem(SPLASH_KEY, "1");
+    // Only show once per browser (persists across tabs)
+    if (localStorage.getItem(SPLASH_KEY)) return;
+    localStorage.setItem(SPLASH_KEY, "1");
     setVisible(true);
 
     // Start exit animation
