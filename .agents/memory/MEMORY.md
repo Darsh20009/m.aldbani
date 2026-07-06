@@ -2,4 +2,4 @@
 - [Mongoose async pre-hooks](mongoose-hooks.md) — Mongoose 9.x async pre-save hooks must NOT call next(); just return early
 - [Frontend hook import paths](frontend-paths.md) — hooks in src/hooks/; layout components use ../../hooks/ not ../hooks/
 - [Git push via project task](git-push-task.md) — main agent git operations sandboxed; use project tasks for git commit/push to external remotes
-- [Duplicate artifact workflows](artifact-workflow-duplicates.md) — project has both plain (.replit) workflows and "artifacts/*" canvas-managed workflows for the same services; don't guess artifact workflow names, and check for orphaned processes holding ports after a failed restart
+- [Duplicate artifact workflows](artifact-workflow-duplicates.md) — plain .replit workflows and artifact/* canvas workflows conflict on same ports; fix by removing plain ones via removeWorkflow() so artifact workflows can claim the ports
