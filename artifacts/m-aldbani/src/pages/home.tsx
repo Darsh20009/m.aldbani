@@ -85,8 +85,8 @@ export default function Home() {
                 <motion.div {...fadeUp(0.1)}>
                   <div
                     style={{
-                      fontFamily: "'Almarai', sans-serif",
-                      fontWeight: 800,
+                      fontFamily: "'El Messiri', sans-serif",
+                      fontWeight: 700,
                       lineHeight: 1,
                       fontSize: "clamp(4rem, 14vw, 11rem)",
                       color: "#0F172A",
@@ -102,8 +102,8 @@ export default function Home() {
                 <motion.div {...fadeUp(0.22)}>
                   <div
                     style={{
-                      fontFamily: "'Almarai', sans-serif",
-                      fontWeight: 800,
+                      fontFamily: "'El Messiri', sans-serif",
+                      fontWeight: 700,
                       lineHeight: 1,
                       fontSize: "clamp(4rem, 14vw, 11rem)",
                       color: "#2563EB",

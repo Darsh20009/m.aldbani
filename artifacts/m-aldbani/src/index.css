@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Almarai:wght@300;400;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=El+Messiri:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700;800;900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -81,7 +81,8 @@
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-heading: 'Sora', sans-serif;
-  --app-font-arabic: 'Almarai', sans-serif;
+  --app-font-arabic: 'Tajawal', sans-serif;
+  --app-font-arabic-display: 'El Messiri', sans-serif;
   --radius: 0.75rem;
 
   /* Brand gradient */
@@ -126,7 +127,9 @@
   html[dir="rtl"] h3,
   html[dir="rtl"] h4,
   html[dir="rtl"] h5,
-  html[dir="rtl"] h6 { @apply font-arabic; }
+  html[dir="rtl"] h6 {
+    font-family: var(--app-font-arabic-display), var(--app-font-arabic), sans-serif;
+  }
 }
 
 /* ── Brand gradient text ──────────────────────────────────── */
