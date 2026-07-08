@@ -5,7 +5,7 @@ import { ScrollProgress } from "../ScrollProgress";
 import { useLanguage } from "../../hooks/use-language";
 import { useSiteSettings } from "../../hooks/use-site-settings";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram } from "lucide-react";
 import logoImg from "@assets/Screenshot_2026-07-01_at_3.14.23_AM_1783289663512.png";
 import { WhatsAppTab } from "../WhatsAppTab";
 
@@ -37,41 +37,6 @@ export function RootLayout({ children }: { children: ReactNode }) {
 
         {/* Top gradient strip */}
         <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(37,99,235,0.4), rgba(124,58,237,0.4), transparent)" }} />
-
-        {/* CTA Banner */}
-        <div className="relative overflow-hidden border-b"
-          style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="orb-blue absolute" style={{ width: 400, height: 400, top: "-50%", left: "-5%", opacity: 0.6 }} />
-            <div className="orb-purple absolute" style={{ width: 300, height: 300, bottom: "-50%", right: "5%", opacity: 0.6 }} />
-          </div>
-          <div className="relative z-10 max-w-5xl mx-auto px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className={isRTL ? "text-right" : "text-left"}>
-              <h3 className="text-xl font-black text-white font-heading mb-1">
-                {t("Ready to start a project?", "جاهز لبدء مشروع؟")}
-              </h3>
-              <p className="text-slate-300 text-sm">
-                {t("Let's build something meaningful together.", "لنبني شيئاً ذا قيمة معاً.")}
-              </p>
-            </div>
-            <Link href="/book">
-              <motion.button
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm flex-shrink-0"
-                style={{
-                  background: "linear-gradient(135deg, #2563EB, #7C3AED)",
-                  color: "white",
-                  boxShadow: "0 4px 20px rgba(37,99,235,0.4)",
-                }}
-              >
-                <Sparkles size={14} />
-                {t("Book Free Consultation", "احجز استشارة مجانية")}
-                {isRTL ? <ArrowLeft size={14} /> : <ArrowRight size={14} />}
-              </motion.button>
-            </Link>
-          </div>
-        </div>
 
         {/* Main footer content */}
         <div className="max-w-6xl mx-auto px-8 py-14">

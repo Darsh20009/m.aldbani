@@ -446,52 +446,6 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── Languages ── */}
-      <section className="py-16" style={{ background: "hsl(var(--muted)/0.3)" }}>
-        <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-8"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-px w-8" style={{ background: GOLD }} />
-              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
-                {t("Communication", "التواصل")}
-              </span>
-            </div>
-            <h2 className="text-3xl font-black font-heading">{t("Languages", "اللغات")}</h2>
-          </motion.div>
-
-          <div className="flex flex-wrap gap-4">
-            {[
-              { flag: "🇸🇦", name: "العربية", level: t("Native", "اللغة الأم") },
-              { flag: "🇬🇧", name: "English", level: t("Intermediate", "متوسط") },
-            ].map((l, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-4 px-6 py-5 rounded-xl"
-                style={{
-                  background: "hsl(var(--card))",
-                  border: `1px solid ${GOLD}20`,
-                  minWidth: 180,
-                }}
-              >
-                <span className="text-3xl">{l.flag}</span>
-                <div>
-                  <p className="font-bold text-sm">{l.name}</p>
-                  <p className="text-xs text-muted-foreground">{l.level}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
     </RootLayout>
   );
 }
