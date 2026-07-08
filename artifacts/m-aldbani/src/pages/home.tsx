@@ -29,11 +29,11 @@ const fu = (delay = 0) => ({
 });
 
 /* ── Marquee strip ──────────────────────────────── */
-function Marquee({ items }: { items: string[] }) {
+function Marquee({ items, rtl = false }: { items: string[]; rtl?: boolean }) {
   const doubled = [...items, ...items, ...items];
   return (
     <div className="overflow-hidden border-t border-b" style={{ borderColor: "rgba(0,0,0,0.08)", background: BLACK }}>
-      <div className="marquee-track py-3 gap-12">
+      <div className={`marquee-track py-3 gap-12 ${rtl ? "marquee-track-rtl" : ""}`}>
         {doubled.map((item, i) => (
           <span key={i} className="flex items-center gap-5 whitespace-nowrap select-none">
             <span className="w-1 h-1 rounded-full inline-block" style={{ background: GOLD }} />
@@ -269,7 +269,7 @@ export default function Home() {
       </section>
 
       {/* ── Marquee ── */}
-      <Marquee items={marqueeItems} />
+      <Marquee items={marqueeItems} rtl={isRTL} />
 
       {/* ══════════════════════════════════════════
           2. RECENT WORK — dark brand grid
@@ -331,55 +331,66 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
-          3. PROCESS — 3 tilted cards
+          3. PROCESS — 3 tilted cards (desktop) / stacked (mobile)
       ══════════════════════════════════════════ */}
-      <section className="py-28 overflow-hidden" style={{ background: BG }}>
+      <section className="py-24 overflow-hidden" style={{ background: BG }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
 
-          <motion.div {...fu(0)} className="text-center mb-24">
+          <motion.div {...fu(0)} className="text-center mb-12 md:mb-24">
             <p className="section-eyebrow mb-3">{t("Our Process, Explained", "طريقة عملنا")}</p>
             <h2 className="text-4xl md:text-5xl font-black" style={{ color: BLACK }}>
               {t("Here's how it works", "كيف تسير الأمور")}
             </h2>
           </motion.div>
 
-          {/* Cards container — tilt effect */}
-          <div className="relative flex items-center justify-center" style={{ height: 320 }}>
-            {/* Card 1 */}
+          {/* MOBILE: simple vertical stack */}
+          <div className="grid grid-cols-1 gap-5 md:hidden">
+            {[
+              { num: "1", title: t("Connect", "التواصل"),    desc: t("Book a free intro call to discuss your vision and goals.", "احجز مكالمة مجانية لمناقشة رؤيتك وأهدافك.") },
+              { num: "2", title: t("Strategize", "التخطيط"), desc: t("We build a tailored action plan aligned with your brand objectives.", "نبني خطة عمل مصممة لأهداف علامتك التجارية.") },
+              { num: "3", title: t("Execute", "التنفيذ"),    desc: t("Full execution — systems, operations, brand, results.", "تنفيذ كامل: أنظمة، عمليات، علامة تجارية، نتائج.") },
+            ].map((card, i) => (
+              <motion.div key={i} {...fu(i * 0.08)}
+                className="rounded-2xl p-7 shadow-md"
+                style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.06)" }}>
+                <span className="text-5xl font-black block mb-3" style={{ color: BLACK }}>{card.num}</span>
+                <h3 className="text-lg font-bold mb-2" style={{ color: BLACK }}>{card.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: TITANIUM }}>{card.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* DESKTOP: tilted / overlapping layout */}
+          <div className="hidden md:block relative" style={{ height: 340 }}>
             <ProcessCard
               num="1" zIndex={1}
               rotate="-5deg" translate="-230px, 20px"
               title={t("Connect", "التواصل")}
               desc={t("Book a free intro call to discuss your vision and goals.", "احجز مكالمة مجانية لمناقشة رؤيتك وأهدافك.")}
             />
-            {/* Card 2 */}
             <ProcessCard
               num="2" zIndex={3}
               rotate="2deg" translate="0px, -30px"
               title={t("Strategize", "التخطيط")}
               desc={t("We build a tailored action plan aligned with your brand objectives.", "نبني خطة عمل مصممة لأهداف علامتك التجارية.")}
             />
-            {/* Card 3 */}
             <ProcessCard
               num="3" zIndex={2}
               rotate="-2deg" translate="220px, 10px"
               title={t("Execute", "التنفيذ")}
               desc={t("Full execution — systems, operations, brand, results.", "تنفيذ كامل: أنظمة، عمليات، علامة تجارية، نتائج.")}
             />
-
             {/* SVG connectors */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 700 320" fill="none">
-              <path d="M 175 120 C 250 80, 320 100, 350 90" stroke="#C7AC70" strokeWidth="1.5" fill="none"
-                strokeDasharray="4 4" opacity="0.5" />
-              <path d="M 350 90 C 400 80, 460 100, 520 120" stroke="#C7AC70" strokeWidth="1.5" fill="none"
-                strokeDasharray="4 4" opacity="0.5" />
-              <circle cx="175" cy="120" r="4" fill="#C7AC70" opacity="0.6" />
-              <circle cx="350" cy="90"  r="4" fill="#C7AC70" opacity="0.6" />
-              <circle cx="520" cy="120" r="4" fill="#C7AC70" opacity="0.6" />
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 700 340" fill="none">
+              <path d="M 175 130 C 250 90, 320 110, 350 100" stroke="#C7AC70" strokeWidth="1.5" fill="none" strokeDasharray="4 4" opacity="0.5" />
+              <path d="M 350 100 C 400 90, 460 110, 520 130" stroke="#C7AC70" strokeWidth="1.5" fill="none" strokeDasharray="4 4" opacity="0.5" />
+              <circle cx="175" cy="130" r="4" fill="#C7AC70" opacity="0.6" />
+              <circle cx="350" cy="100" r="4" fill="#C7AC70" opacity="0.6" />
+              <circle cx="520" cy="130" r="4" fill="#C7AC70" opacity="0.6" />
             </svg>
           </div>
 
-          <motion.div {...fu(0.3)} className="flex justify-center mt-16">
+          <motion.div {...fu(0.3)} className="flex justify-center mt-10 md:mt-16">
             <Link href="/book">
               <button className="btn-black">
                 {t("Start the Process", "ابدأ الآن")} <Arrow size={16} />
