@@ -1,237 +1,163 @@
 import { Link, useLocation } from "wouter";
 import { useLanguage } from "../../hooks/use-language";
 import { useAuth } from "../../hooks/use-auth";
-import { useSiteSettings } from "../../hooks/use-site-settings";
-import { LogoMark } from "../Logo";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, Sparkles } from "lucide-react";
+import { X } from "lucide-react";
+import mdLogoBlack from "@assets/Screenshot_2026-07-09_at_2.14.54_AM_1783552521055.png";
 
 const navLinks = [
-  { href: "/about",     en: "About",     ar: "من أنا" },
-  { href: "/portfolio", en: "Portfolio",  ar: "الأعمال" },
-  { href: "/services",  en: "Services",   ar: "الخدمات" },
-  { href: "/articles",  en: "Articles",   ar: "المقالات" },
-  { href: "/community", en: "Community",  ar: "المجتمع" },
-  { href: "/contact",   en: "Contact",    ar: "اتصل بي" },
+  { href: "/about",     en: "About",      ar: "من أنا"    },
+  { href: "/portfolio", en: "Work",        ar: "الأعمال"  },
+  { href: "/services",  en: "Services",    ar: "الخدمات"  },
+  { href: "/articles",  en: "Articles",    ar: "المقالات" },
+  { href: "/community", en: "Community",   ar: "المجتمع"  },
+  { href: "/contact",   en: "Contact",     ar: "اتصل بي"  },
 ];
 
 export function Navbar() {
   const { language, setLanguage, t } = useLanguage();
   const { user, logout } = useAuth();
-  const settings = useSiteSettings();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [location] = useLocation();
   const isRTL = language === "ar";
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   useEffect(() => { setMenuOpen(false); }, [location]);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest("[data-menu]")) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [menuOpen]);
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "navbar-scrolled" : "bg-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto flex h-[72px] items-center justify-between px-5 lg:px-10">
+      {/* ── Navbar ── */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-5 pt-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+          {/* LEFT — Logo pill */}
+          <Link href="/">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-              className="relative"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+              className="navbar-pill flex items-center gap-2.5 cursor-pointer"
             >
-              {settings.logoUrl ? (
-                <img src={settings.logoUrl} alt={t(settings.siteNameEn, settings.siteNameAr)} className="h-10 w-auto object-contain" />
-              ) : (
-                <LogoMark size={42} />
-              )}
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-[#0F0F10] flex items-center justify-center flex-shrink-0">
+                <img src={mdLogoBlack} alt="MD" className="w-10 h-10 object-cover scale-110" />
+              </div>
+              <span className="text-[13px] font-bold text-[#0F0F10] tracking-tight pr-1">
+                M-ALDBANI
+              </span>
             </motion.div>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className={`hidden lg:flex items-center gap-1 ${isRTL ? "flex-row-reverse" : ""}`}>
-            {navLinks.map((item) => {
-              const active = location === item.href;
-              return (
-                <Link key={item.href} href={item.href}>
-                  <motion.span
-                    whileHover={{ y: -1 }}
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full cursor-pointer transition-colors duration-200 ${
-                      active
-                        ? "text-[#2563EB]"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
-                    }`}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="nav-pill"
-                        className="absolute inset-0 rounded-full bg-[#2563EB]/8"
-                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                      />
-                    )}
-                    <span className="relative z-10">{t(item.en, item.ar)}</span>
-                  </motion.span>
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right actions */}
-          <div className={`flex items-center gap-2.5 ${isRTL ? "flex-row-reverse" : ""}`}>
-            {/* Language Toggle */}
+          {/* RIGHT — Language + Hamburger */}
+          <div className="flex items-center gap-2" data-menu>
+            {/* Language toggle */}
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.92 }}
               onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-              className="px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200 text-slate-500 hover:border-[#2563EB]/40 hover:text-[#2563EB] hover:bg-[#2563EB]/5 transition-all duration-200"
+              className="px-3 py-1.5 rounded-full text-xs font-bold border border-black/10 bg-white/90 text-[#3A3A3A] hover:border-black/25 transition-all backdrop-blur-md"
             >
               {language === "en" ? "عربي" : "EN"}
             </motion.button>
 
-            {/* Book CTA */}
-            <div className="hidden md:flex items-center gap-2.5">
-              <Link href="/book">
-                <motion.button
-                  whileHover={{ scale: 1.02, y: -1 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold btn-brand"
-                >
-                  <Sparkles size={13} />
-                  {t("Book Consultation", "احجز استشارة")}
-                </motion.button>
-              </Link>
-
-              {user ? (
-                <div className="flex items-center gap-2">
-                  <Link href={user.role === "admin" ? "/admin" : "/client"}>
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="px-4 py-2 rounded-full text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all duration-200 shadow-sm"
-                    >
-                      {user.role === "admin" ? t("Admin", "التحكم") : t("Portal", "البوابة")}
-                    </motion.button>
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="px-3 py-2 rounded-full text-sm text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
-                  >
-                    {t("Logout", "خروج")}
-                  </button>
-                </div>
-              ) : (
-                <Link href="/auth/login">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="px-4 py-2 rounded-full text-sm font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all shadow-sm"
-                  >
-                    {t("Login", "دخول")}
-                  </motion.button>
-                </Link>
-              )}
-            </div>
-
-            {/* Mobile Hamburger */}
+            {/* Hamburger */}
             <motion.button
               whileTap={{ scale: 0.92 }}
-              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-slate-100 transition-colors text-slate-700"
               onClick={() => setMenuOpen(!menuOpen)}
+              className="w-10 h-10 rounded-full bg-[#0F0F10] text-white flex items-center justify-center transition-all hover:bg-[#3A3A3A]"
+              aria-label="Menu"
             >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+              {menuOpen ? (
+                <X size={16} />
+              ) : (
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                  <rect x="0" y="0"  width="16" height="2" rx="1" fill="white" />
+                  <rect x="0" y="5"  width="12" height="2" rx="1" fill="white" />
+                  <rect x="0" y="10" width="8"  height="2" rx="1" fill="white" />
+                </svg>
+              )}
             </motion.button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* ── Dropdown menu ── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            data-menu
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed top-[80px] left-4 right-4 z-40 rounded-2xl overflow-hidden shadow-2xl"
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
+            className={`fixed top-[72px] z-40 w-56 rounded-2xl shadow-2xl overflow-hidden ${isRTL ? "left-5" : "right-5"}`}
             style={{
-              background: "rgba(255,255,255,0.97)",
+              background: "rgba(255,255,255,0.98)",
+              border: "1px solid rgba(0,0,0,0.08)",
               backdropFilter: "blur(20px)",
-              border: "1px solid rgba(37,99,235,0.12)",
             }}
           >
-            {/* Gradient top strip */}
-            <div className="h-1 w-full bg-brand-gradient" />
+            {/* Gold top strip */}
+            <div className="h-[2px] w-full" style={{ background: "linear-gradient(90deg, #C7AC70, #8C9198)" }} />
 
-            <div className="p-5 space-y-1">
-              {/* Logo inside mobile menu */}
-              <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-                {settings.logoUrl ? (
-                  <img src={settings.logoUrl} alt="logo" className="h-8 w-auto" />
-                ) : (
-                  <LogoMark size={36} />
-                )}
-                <div>
-                  <p className="font-bold text-sm text-slate-900">{t("M-ALDBANI", "م. الدباني")}</p>
-                  <p className="text-[10px] text-slate-400">{t("Business Development", "تطوير أعمال")}</p>
-                </div>
-              </div>
-
+            <div className="p-2">
               {navLinks.map((item) => (
                 <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
                   <motion.div
-                    whileHover={{ x: isRTL ? -4 : 4 }}
-                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                    whileHover={{ x: isRTL ? -4 : 4, backgroundColor: "rgba(0,0,0,0.04)" }}
+                    className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-semibold cursor-pointer transition-colors ${
                       location === item.href
-                        ? "bg-[#2563EB]/8 text-[#2563EB] font-semibold"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                        ? "text-[#C7AC70] bg-[#C7AC70]/8"
+                        : "text-[#0F0F10]"
                     }`}
                   >
                     {t(item.en, item.ar)}
                     {location === item.href && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#2563EB]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#C7AC70]" />
                     )}
                   </motion.div>
                 </Link>
               ))}
 
-              <div className="pt-4 space-y-2 border-t border-slate-100 mt-4">
-                <Link href="/book" onClick={() => setMenuOpen(false)}>
-                  <button className="w-full py-3 rounded-xl text-sm font-semibold btn-brand flex items-center justify-center gap-2">
-                    <Sparkles size={14} />
-                    {t("Book Consultation", "احجز استشارة")}
-                  </button>
-                </Link>
+              {/* Divider */}
+              <div className="my-2 h-px bg-black/6 mx-2" />
 
-                {user ? (
-                  <>
-                    <Link href={user.role === "admin" ? "/admin" : "/client"} onClick={() => setMenuOpen(false)}>
-                      <button className="w-full py-3 rounded-xl text-sm font-medium border border-slate-200 bg-white text-slate-700">
-                        {user.role === "admin" ? t("Admin Panel", "لوحة التحكم") : t("My Portal", "بوابتي")}
-                      </button>
-                    </Link>
-                    <button
-                      onClick={() => { logout(); setMenuOpen(false); }}
-                      className="w-full py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50"
-                    >
-                      {t("Logout", "تسجيل الخروج")}
-                    </button>
-                  </>
-                ) : (
-                  <Link href="/auth/login" onClick={() => setMenuOpen(false)}>
-                    <button className="w-full py-3 rounded-xl text-sm font-medium border border-slate-200 bg-white text-slate-700">
-                      {t("Client Login", "دخول العملاء")}
-                    </button>
+              {/* CTA */}
+              <Link href="/book" onClick={() => setMenuOpen(false)}>
+                <div className="mx-2 mb-1 py-2.5 px-4 rounded-xl bg-[#0F0F10] text-white text-[13px] font-bold text-center cursor-pointer hover:bg-[#3A3A3A] transition-colors">
+                  {t("Book Consultation", "احجز استشارة")}
+                </div>
+              </Link>
+
+              {user ? (
+                <>
+                  <Link href={user.role === "admin" ? "/admin" : "/client"} onClick={() => setMenuOpen(false)}>
+                    <div className="mx-2 mt-1 py-2.5 px-4 rounded-xl border border-black/10 text-[#3A3A3A] text-[13px] font-semibold text-center cursor-pointer hover:bg-black/4 transition-colors">
+                      {user.role === "admin" ? t("Admin", "التحكم") : t("Portal", "البوابة")}
+                    </div>
                   </Link>
-                )}
-              </div>
+                  <button
+                    onClick={() => { logout(); setMenuOpen(false); }}
+                    className="w-full mt-1 py-2 px-4 text-[12px] text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                  >
+                    {t("Logout", "خروج")}
+                  </button>
+                </>
+              ) : (
+                <Link href="/auth/login" onClick={() => setMenuOpen(false)}>
+                  <div className="mx-2 mt-1 mb-1 py-2.5 px-4 rounded-xl border border-black/10 text-[#3A3A3A] text-[13px] font-semibold text-center cursor-pointer hover:bg-black/4 transition-colors">
+                    {t("Login", "دخول")}
+                  </div>
+                </Link>
+              )}
             </div>
           </motion.div>
         )}
