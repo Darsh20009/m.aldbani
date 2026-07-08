@@ -1,6 +1,10 @@
 import { RootLayout } from "../components/layout/RootLayout";
 import { useLanguage } from "../hooks/use-language";
 import { motion } from "framer-motion";
+import fujiLogo     from "@assets/Screenshot_2026-07-01_at_3.07.57_AM_1783549571265.png";
+import communityLogo from "@assets/Screenshot_2026-07-01_at_3.13.59_AM_1783549571269.png";
+import qiroxLogo    from "@assets/Screenshot_2026-07-09_at_1.27.26_AM_1783549658879.png";
+import genmzLogo    from "@assets/Screenshot_2026-07-09_at_1.28.37_AM_1783549747745.png";
 
 const GOLD  = "#B8860B";
 const GOLD2 = "#D4A017";
@@ -105,15 +109,12 @@ export default function About() {
     },
   ];
 
-  const skills = [
-    { en: "Brand Building & Positioning",       ar: "بناء البراندات والتموضع التجاري",      icon: "🎯" },
-    { en: "Business Development Strategy",       ar: "استراتيجية تطوير الأعمال",              icon: "📊" },
-    { en: "Operations Management",               ar: "إدارة العمليات التشغيلية",              icon: "⚙️" },
-    { en: "Market Analysis & Opportunity",       ar: "تحليل السوق واكتشاف الفرص",            icon: "🔍" },
-    { en: "Customer Experience Design",          ar: "تصميم تجربة العميل",                   icon: "✨" },
-    { en: "Team Leadership & Development",       ar: "قيادة وبناء الفرق",                    icon: "👥" },
-    { en: "Idea-to-Project Execution",           ar: "تحويل الأفكار إلى مشاريع",             icon: "🚀" },
-    { en: "Creativity + Profitability Linking",  ar: "ربط الإبداع بالربحية",                 icon: "💡" },
+  const brands = [
+    { nameEn: "Fuji Cafe",                      nameAr: "فوجي كافية",               logo: fujiLogo,       bg: "#ffffff" },
+    { nameEn: "Gen M&Z",                         nameAr: "جن ام آند زد",             logo: genmzLogo,      bg: "#f5f5f5" },
+    { nameEn: "QIROX",                           nameAr: "كيروكس",                   logo: qiroxLogo,      bg: "#111111" },
+    { nameEn: "Community Marketing Initiative",  nameAr: "مجتمع مبادرة تسويقية",    logo: communityLogo,  bg: "#1a2e5a" },
+    { nameEn: "Matcha Power",                    nameAr: "ماتشا باور",               logo: null,           bg: "#2d6a4f" },
   ];
 
   return (
@@ -406,7 +407,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── Skills ── */}
+      {/* ── Brands / Works ── */}
       <section className="py-20" style={{ background: "hsl(var(--muted)/0.3)" }}>
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div
@@ -418,28 +419,44 @@ export default function About() {
             <div className="flex items-center gap-3 mb-3">
               <div className="h-px w-8" style={{ background: GOLD }} />
               <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
-                {t("Expertise", "الكفاءات")}
+                {t("Portfolio", "الأعمال")}
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-black font-heading">{t("Skills", "المهارات")}</h2>
+            <h2 className="text-3xl md:text-4xl font-black font-heading">{t("Brands & Projects", "العلامات والمشاريع")}</h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {skills.map((skill, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
+            {brands.map((brand, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="group flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                transition={{ delay: i * 0.08 }}
+                className="flex flex-col items-center justify-center rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300"
                 style={{
-                  background: "hsl(var(--card))",
-                  border: `1px solid hsl(var(--border))`,
+                  background: brand.bg,
+                  border: `1px solid ${GOLD}20`,
+                  minHeight: 150,
+                  padding: "1.5rem 1rem",
                 }}
               >
-                <span className="text-2xl">{skill.icon}</span>
-                <span className="text-sm font-semibold">{t(skill.en, skill.ar)}</span>
+                {brand.logo ? (
+                  <img
+                    src={brand.logo}
+                    alt={brand.nameAr}
+                    className="w-full object-contain"
+                    style={{ maxHeight: 90 }}
+                  />
+                ) : (
+                  <span className="text-white font-black text-xl text-center leading-tight">
+                    {isAr ? brand.nameAr : brand.nameEn}
+                  </span>
+                )}
+                <p className="mt-3 text-xs font-semibold text-center"
+                  style={{ color: brand.bg === "#111111" || brand.bg === "#1a2e5a" || brand.bg === "#2d6a4f" ? "#fff" : "#555" }}>
+                  {isAr ? brand.nameAr : brand.nameEn}
+                </p>
               </motion.div>
             ))}
           </div>
