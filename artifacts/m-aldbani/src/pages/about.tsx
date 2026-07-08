@@ -116,14 +116,6 @@ export default function About() {
     { en: "Creativity + Profitability Linking",  ar: "ربط الإبداع بالربحية",                 icon: "💡" },
   ];
 
-  const courses = [
-    { en: "Inventory & Procurement Management",        ar: "إدارة المخزون والمشتريات",                          org: "مركز التقنية الحصرية" },
-    { en: "Advanced Restaurant & Café Management",     ar: "إدارة وتشغيل المطاعم والمقاهي (المتقدمة)",         org: "محمد الطبشي" },
-    { en: "Barista Profession",                        ar: "مهنة البريستا",                                    org: "مركز التدريب بنان" },
-    { en: "Professional Operations Course",            ar: "دورة التشغيل الاحترافي",                           org: "معهد BCI" },
-    { en: "Business Operations Management",            ar: "إدارة عمليات الأعمال",                             org: "منصة إدارك" },
-  ];
-
   return (
     <RootLayout>
       {/* ── Hero Banner ── */}
@@ -448,52 +440,6 @@ export default function About() {
               >
                 <span className="text-2xl">{skill.icon}</span>
                 <span className="text-sm font-semibold">{t(skill.en, skill.ar)}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Courses ── */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-10"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-px w-8" style={{ background: GOLD }} />
-              <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
-                {t("Education", "التطوير المهني")}
-              </span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-black font-heading">{t("Training & Courses", "الدورات التدريبية")}</h2>
-          </motion.div>
-
-          <div className="space-y-3">
-            {courses.map((course, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: isAr ? 20 : -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                className="flex items-center justify-between gap-4 px-6 py-5 rounded-xl group hover:-translate-y-0.5 transition-all duration-200"
-                style={{
-                  background: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                }}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black text-white flex-shrink-0"
-                    style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})` }}>
-                    {i + 1}
-                  </span>
-                  <span className="font-semibold text-sm">{t(course.en, course.ar)}</span>
-                </div>
-                <span className="text-xs text-muted-foreground flex-shrink-0 hidden sm:block">{course.org}</span>
               </motion.div>
             ))}
           </div>
