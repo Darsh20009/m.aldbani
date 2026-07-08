@@ -157,8 +157,8 @@ export default function Home() {
             <div className={`max-w-lg ${isRTL ? "text-right" : ""}`}>
               <p className="text-slate-500 leading-relaxed mb-6" style={{ fontSize: "1.05rem" }}>
                 {t(
-                  "8+ years leading F&B brands and operations across the Kingdom — from vision to full commercial execution.",
-                  "أكثر من ٨ سنوات في قيادة علامات F&B وعمليات المطاعم في المملكة — من الفكرة إلى التنفيذ التجاري الكامل."
+                  "I seek a leadership position in business development and operations in the F&B sector, contributing to brand building through strategy development, operational plan execution, and continuous performance improvement. I innovate solutions that support growth and profitability.",
+                  "أسعى لتولي منصب قيادي في مجال تطوير الأعمال والتشغيل بقطاع الأغذية والمشروبات، أساهم في بناء العلامة التجارية عبر تطوير الاستراتيجيات وتنفيذ الخطط التشغيلية بكفاءة، وتحسين جودة الأداء والمنتجات وابتكار حلول تدعم النمو والربحية."
                 )}
               </p>
               <div className={`flex items-center gap-5 flex-wrap ${isRTL ? "flex-row-reverse" : ""}`}>
