@@ -47,10 +47,8 @@ export function Navbar() {
               whileTap={{ scale: 0.97 }}
               className="navbar-pill flex items-center gap-2.5 cursor-pointer"
             >
-              {/* Dark circle with SVG logo mark */}
-              <div className="w-8 h-8 rounded-full bg-[#0F0F10] flex items-center justify-center flex-shrink-0">
-                <LogoMark color="#F5F5F3" size={20} />
-              </div>
+              {/* SVG logo mark — transparent, no background */}
+              <LogoMark color="#0F0F10" size={30} className="flex-shrink-0" />
               <span className="text-[13px] font-bold text-[#0F0F10] tracking-tight pr-1">
                 M-ALDBANI
               </span>
@@ -110,9 +108,7 @@ export function Navbar() {
 
             {/* Menu logo header */}
             <div className="px-4 pt-4 pb-3 flex items-center gap-2.5 border-b border-black/5">
-              <div className="w-7 h-7 rounded-full bg-[#0F0F10] flex items-center justify-center flex-shrink-0">
-                <LogoMark color="#F5F5F3" size={18} />
-              </div>
+              <LogoMark color="#0F0F10" size={26} className="flex-shrink-0" />
               <div>
                 <p className="text-[11px] font-black text-[#0F0F10] tracking-wide leading-tight">MOHAMMED AL-DABBANI</p>
                 <p className="text-[9px] text-[#8C9198] tracking-[0.15em] uppercase">Brand Manager · F&B</p>

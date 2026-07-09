@@ -115,10 +115,7 @@ export default function Login() {
           <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <Link href="/">
               <div className="inline-flex items-center gap-3 cursor-pointer group">
-                <div className="rounded-xl bg-white/10 backdrop-blur-sm p-2.5 group-hover:bg-white/15 transition-colors flex items-center justify-center"
-                  style={{ border: "1px solid rgba(255,255,255,0.12)", width: 48, height: 48 }}>
-                  <LogoMark color="#ffffff" size={28} />
-                </div>
+                <LogoMark color="#ffffff" size={40} className="flex-shrink-0" />
                 <div>
                   <p className="text-white font-bold text-sm font-heading">MOHAMMED AL-DABBANI</p>
                   <p className="text-[#C7AC70] text-[10px] font-semibold uppercase tracking-wider">Brand Manager · F&B</p>
@@ -195,10 +192,7 @@ export default function Login() {
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 flex items-center gap-3">
             <Link href="/">
-              <div className="rounded-xl bg-[#0F0F10] overflow-hidden cursor-pointer flex items-center justify-center"
-                style={{ width: 52, height: 52 }}>
-                <LogoMark color="#F5F5F3" size={32} />
-              </div>
+              <LogoMark color="#0F0F10" size={44} className="cursor-pointer flex-shrink-0" />
             </Link>
             <div>
               <p className="font-bold text-slate-900 text-sm font-heading">m-aldbani</p>

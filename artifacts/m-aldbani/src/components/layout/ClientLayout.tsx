@@ -46,9 +46,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
       <aside className="w-full md:w-64 border-r border-border bg-card flex flex-col shadow-sm">
         <div className="h-20 flex items-center px-6 border-b border-border">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-10 w-10 rounded-xl flex items-center justify-center bg-[#0F0F10] shrink-0">
-              <LogoMark color="#F5F5F3" size={26} />
-            </div>
+            <LogoMark color="#0F0F10" size={34} className="shrink-0" />
             <div>
               <p className="font-heading font-bold text-sm text-foreground leading-none">{language === "ar" ? settings.siteNameAr : settings.siteNameEn}</p>
               <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider">{t("Client Portal", "بوابة العميل")}</p>

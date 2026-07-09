@@ -66,22 +66,19 @@ export function LogoFull({ className = "", color = "#0F0F10", height = 48 }: { c
   );
 }
 
-/** Pill-style logo for the navbar: small mark + text side by side */
-export function LogoPill({ className = "" }: { className?: string }) {
+/** Pill-style logo for the navbar: small mark + text side by side — no background box */
+export function LogoPill({ className = "", color = "#0F0F10" }: { className?: string; color?: string }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      {/* Mark in a dark circle */}
-      <div className="w-8 h-8 rounded-full bg-[#0F0F10] flex items-center justify-center flex-shrink-0">
-        <LogoMark color="#F5F5F3" size={20} />
-      </div>
-      <span className="text-[13px] font-bold text-[#0F0F10] tracking-tight leading-none">
+      <LogoMark color={color} size={30} />
+      <span className="text-[13px] font-bold tracking-tight leading-none" style={{ color }}>
         M-ALDBANI
       </span>
     </div>
   );
 }
 
-/** Inline logo mark for embedding in headlines */
+/** Inline logo mark for embedding in headlines — transparent, no background box */
 export function LogoInline({
   size = 80,
   dark = true,
@@ -93,15 +90,10 @@ export function LogoInline({
 }) {
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-2xl overflow-hidden flex-shrink-0 ${className}`}
-      style={{
-        width: size,
-        height: size,
-        background: dark ? "#0F0F10" : "#F5F5F3",
-        border: dark ? "none" : "1px solid rgba(0,0,0,0.08)",
-      }}
+      className={`inline-flex items-center justify-center flex-shrink-0 ${className}`}
+      style={{ width: size, height: size }}
     >
-      <LogoMark color={dark ? "#F5F5F3" : "#0F0F10"} size={Math.round(size * 0.6)} />
+      <LogoMark color={dark ? "#0F0F10" : "#F5F5F3"} size={size} />
     </span>
   );
 }

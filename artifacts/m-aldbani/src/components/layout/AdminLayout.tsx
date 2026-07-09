@@ -69,9 +69,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       {/* Logo */}
       <div className="h-16 flex items-center px-5 border-b border-border/60 shrink-0">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="h-9 w-9 rounded-xl shrink-0 flex items-center justify-center bg-[#0F0F10] group-hover:bg-[#3A3A3A] transition-all">
-            <LogoMark color="#F5F5F3" size={22} />
-          </div>
+          <LogoMark color="#0F0F10" size={30} className="shrink-0" />
           <div>
             <p className="font-heading font-bold text-sm text-primary leading-none">M-ALDBANI</p>
             <p className="text-[10px] text-muted-foreground mt-0.5 tracking-wide uppercase">Admin CRM</p>
@@ -168,9 +166,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg flex items-center justify-center bg-[#0F0F10]">
-              <LogoMark color="#F5F5F3" size={18} />
-            </div>
+            <LogoMark color="#0F0F10" size={24} />
             <span className="font-heading font-bold text-sm text-primary">M-ALDBANI</span>
           </div>
         </header>
