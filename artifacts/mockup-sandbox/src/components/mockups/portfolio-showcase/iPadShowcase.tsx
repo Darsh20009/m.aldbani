@@ -26,7 +26,7 @@ const BRANDS = [
     name: "Gen M&Z",
     nameAr: "جن ام وزد",
     tag: "Marketing · Gen Z",
-    img: "/__mockup/images/genmz.jpg",
+    img: "/__mockup/images/genmz-logo.png",
     bg: "#0d0d0d",
     accent: "#C7AC70",
     year: "2024",
