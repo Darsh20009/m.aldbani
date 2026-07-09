@@ -3,73 +3,163 @@ import { useLanguage } from "../hooks/use-language";
 import { useListProjects } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ExternalLink, Globe, Sparkles, Briefcase } from "lucide-react";
+import { LogoMark } from "../components/Logo";
+import { ExternalLink } from "lucide-react";
 
-function ProjectCard({ project, i }: { project: any; i: number }) {
-  const { t, language } = useLanguage();
+import fujiLogo      from "@assets/Screenshot_2026-07-01_at_3.07.57_AM_1783549571265.png";
+import communityLogo from "@assets/Screenshot_2026-07-01_at_3.13.59_AM_1783549571269.png";
+import qiroxLogo     from "@assets/Screenshot_2026-07-09_at_1.27.26_AM_1783549658879.png";
+import genmzImg      from "@assets/PHOTO-2026-07-07-01-59-22_1783549857639.jpg";
 
+const BLACK    = "#0F0F10";
+const GOLD     = "#C7AC70";
+const TITANIUM = "#8C9198";
+const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
+
+/* ─── Static featured brands (always shown) ─── */
+const FEATURED_BRANDS = [
+  {
+    nameEn: "Fuji Cafe",
+    nameAr: "فوجي كافية",
+    tagEn: "Brand Identity · F&B",
+    tagAr: "هوية بصرية · مطاعم",
+    logo: fujiLogo,
+    bg: "#1a1a1a",
+    logoBg: "#ffffff",
+    dark: true,
+  },
+  {
+    nameEn: "Gen M&Z",
+    nameAr: "جن ام وزد",
+    tagEn: "Marketing · Gen Z",
+    tagAr: "تسويق · الجيل الجديد",
+    logo: genmzImg,
+    bg: "#111827",
+    dark: true,
+    wide: true,
+  },
+  {
+    nameEn: "QIROX",
+    nameAr: "كيروكس",
+    tagEn: "Brand Strategy",
+    tagAr: "استراتيجية علامة",
+    logo: qiroxLogo,
+    bg: "#0a0a0a",
+    dark: true,
+  },
+  {
+    nameEn: "Community Initiative",
+    nameAr: "مبادرة تسويقية",
+    tagEn: "Community · Marketing",
+    tagAr: "مجتمع · تسويق",
+    logo: communityLogo,
+    bg: "#0f1e3c",
+    dark: true,
+  },
+  {
+    nameEn: "Matcha Power",
+    nameAr: "ماتشا باور",
+    tagEn: "Founder · Brand Build",
+    tagAr: "مؤسس · بناء العلامة",
+    logo: null,
+    bg: "#1a3a2a",
+    dark: true,
+  },
+];
+
+function BrandCard({ brand, i }: { brand: typeof FEATURED_BRANDS[0]; i: number }) {
+  const { t } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ delay: i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: i * 0.08, duration: 0.7, ease: EASE }}
+      whileHover={{ y: -6, scale: 1.015 }}
+      className={`relative rounded-2xl overflow-hidden group cursor-default ${"wide" in brand && brand.wide ? "md:col-span-2" : ""}`}
+      style={{ background: brand.bg, border: "1px solid rgba(255,255,255,0.06)", minHeight: 240 }}
+    >
+      {/* Gold top line on hover */}
+      <div className="absolute top-0 left-0 right-0 h-px transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+        style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+
+      {/* Logo area */}
+      <div className="flex items-center justify-center p-10" style={{ minHeight: 170 }}>
+        {brand.logo ? (
+          <img
+            src={brand.logo}
+            alt={"nameEn" in brand ? brand.nameEn : ""}
+            className="transition-transform duration-500 group-hover:scale-105"
+            style={{ objectFit: "contain", maxHeight: 110, maxWidth: "80%" }}
+          />
+        ) : (
+          <div className="flex flex-col items-center gap-3">
+            <LogoMark color={GOLD} size={52} />
+            <span className="text-xl font-black" style={{ color: GOLD }}>{t(brand.nameEn, brand.nameAr)}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="px-5 pb-5 flex items-end justify-between">
+        <div>
+          <p className="text-sm font-bold" style={{ color: "#fff" }}>{t(brand.nameEn, brand.nameAr)}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest mt-0.5" style={{ color: GOLD, opacity: 0.75 }}>
+            {t(brand.tagEn, brand.tagAr)}
+          </p>
+        </div>
+        <div className="w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ background: `rgba(199,172,112,0.15)`, border: `1px solid rgba(199,172,112,0.3)` }}>
+          <ExternalLink size={12} style={{ color: GOLD }} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ProjectCard({ project, i }: { project: any; i: number }) {
+  const { t, language } = useLanguage();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ delay: i * 0.1, duration: 0.7, ease: EASE }}
     >
       <Link href={`/portfolio/${project.slug}`}>
-        <div className="group bg-white rounded-3xl overflow-hidden cursor-pointer h-full flex flex-col"
-          style={{
-            border: "1px solid rgba(37,99,235,0.1)",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
-            transition: "all 0.35s ease",
-          }}>
-
-          {/* Cover image */}
-          <div className="relative overflow-hidden h-52">
+        <div className="group rounded-2xl overflow-hidden cursor-pointer h-full flex flex-col"
+          style={{ background: BLACK, border: "1px solid rgba(255,255,255,0.07)" }}>
+          <div className="relative overflow-hidden" style={{ height: 200 }}>
             {project.coverImage ? (
-              <img
-                src={project.coverImage}
-                alt={project.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+              <img src={project.coverImage} alt={project.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.08), rgba(124,58,237,0.08))" }}>
-                <Briefcase size={36} className="text-[#2563EB] opacity-30" />
+              <div className="w-full h-full flex items-center justify-center"
+                style={{ background: "#1a1a1a" }}>
+                <LogoMark color={GOLD} size={48} />
               </div>
             )}
-
-            {/* Category badge */}
             {project.category && (
-              <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-bold backdrop-blur-sm"
-                style={{ background: "rgba(37,99,235,0.85)", color: "white" }}>
+              <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-bold"
+                style={{ background: "rgba(199,172,112,0.9)", color: BLACK }}>
                 {project.category}
               </span>
             )}
-
-            {/* Hover overlay */}
-            <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
           </div>
-
-          {/* Top gradient bar */}
-          <div className="h-1 w-full bg-brand-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-          <div className="p-6 flex-1 flex flex-col">
-            <h3 className="font-black text-slate-900 text-lg font-heading mb-2 group-hover:text-[#2563EB] transition-colors">
+          <div className="p-5 flex-1 flex flex-col">
+            <h3 className="font-black text-white text-base font-heading mb-1.5 group-hover:text-[#C7AC70] transition-colors">
               {language === "ar" ? (project.titleAr || project.title) : project.title}
             </h3>
-
             {project.description && (
-              <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 mb-4 flex-1">
+              <p className="text-sm leading-relaxed line-clamp-2 flex-1" style={{ color: TITANIUM }}>
                 {language === "ar" ? (project.descriptionAr || project.description) : project.description}
               </p>
             )}
-
-            {/* Tags */}
             {project.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-auto">
+              <div className="flex flex-wrap gap-1.5 mt-3">
                 {project.tags.slice(0, 3).map((tag: string, ti: number) => (
                   <span key={ti} className="px-2.5 py-1 rounded-full text-[10px] font-semibold"
-                    style={{ background: "rgba(37,99,235,0.08)", color: "#2563EB" }}>
+                    style={{ background: "rgba(199,172,112,0.1)", color: GOLD }}>
                     {tag}
                   </span>
                 ))}
@@ -83,29 +173,31 @@ function ProjectCard({ project, i }: { project: any; i: number }) {
 }
 
 export default function Portfolio() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { data: rawProjects, isLoading } = useListProjects();
   const projects = Array.isArray(rawProjects) ? rawProjects : [];
 
   return (
     <RootLayout>
 
-      {/* Hero */}
-      <section className="relative pt-36 pb-20 overflow-hidden" style={{ background: "#FAF8F4" }}>
-        <div className="absolute top-0 left-0 right-0 h-1 bg-brand-gradient" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.05] pointer-events-none"
-          style={{ background: "radial-gradient(circle, #2563EB, #7C3AED)" }} />
-        <div className="absolute inset-0 pattern-geo opacity-50 pointer-events-none" />
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden" style={{ background: BLACK, paddingTop: 120, paddingBottom: 80 }}>
+        {/* Grain texture */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
+          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px" }} />
+        {/* Gold radial */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none"
+          style={{ background: "radial-gradient(circle at top right, rgba(199,172,112,0.08), transparent 60%)" }} />
 
         <div className="relative z-10 max-w-2xl mx-auto px-5 text-center">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6"
-            style={{ background: "rgba(37,99,235,0.08)", border: "1px solid rgba(37,99,235,0.15)" }}
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full mb-8"
+            style={{ background: "rgba(199,172,112,0.1)", border: `1px solid rgba(199,172,112,0.25)` }}
           >
-            <Sparkles size={12} className="text-[#2563EB]" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#2563EB]">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: GOLD }} />
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: GOLD }}>
               {t("Selected Works", "الأعمال المختارة")}
             </span>
           </motion.div>
@@ -113,8 +205,9 @@ export default function Portfolio() {
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl font-black text-slate-900 font-heading mb-4"
+            transition={{ delay: 0.1, ease: EASE, duration: 0.7 }}
+            className="text-6xl font-black font-heading mb-4"
+            style={{ color: "#F5F5F3" }}
           >
             {t("Portfolio", "الأعمال")}
           </motion.h1>
@@ -122,45 +215,83 @@ export default function Portfolio() {
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-slate-500 text-lg leading-relaxed"
+            transition={{ delay: 0.2, ease: EASE, duration: 0.7 }}
+            className="text-lg leading-relaxed"
+            style={{ color: TITANIUM }}
           >
             {t(
-              "A curated selection of brands and projects — from concept to commercial launch.",
-              "مجموعة مختارة من العلامات والمشاريع — من الفكرة إلى الإطلاق التجاري."
+              "Brands built from concept to commercial launch — strategy, identity, and execution.",
+              "علامات بُنيت من الفكرة إلى الإطلاق التجاري — استراتيجية وهوية وتنفيذ."
             )}
           </motion.p>
         </div>
       </section>
 
-      {/* Projects Grid */}
-      <section className="py-16 px-5 bg-[#FAF8F4]">
-        <div className="max-w-6xl mx-auto">
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="h-80 rounded-3xl bg-white animate-pulse"
-                  style={{ border: "1px solid rgba(37,99,235,0.08)" }} />
-              ))}
+      {/* Gold divider */}
+      <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${GOLD}50, transparent)` }} />
+
+      {/* ── Featured Brands Grid ── */}
+      <section className="py-20 px-5" style={{ background: "#0a0a0a" }}>
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-10"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="h-px w-8" style={{ background: GOLD }} />
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                {t("Featured Brands", "العلامات البارزة")}
+              </span>
             </div>
-          ) : projects.length === 0 ? (
-            <div className="text-center py-24">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5"
-                style={{ background: "rgba(37,99,235,0.08)" }}>
-                <Briefcase size={36} className="text-[#2563EB] opacity-50" />
-              </div>
-              <p className="text-lg font-bold text-slate-700 mb-2">{t("No projects yet", "لا توجد مشاريع بعد")}</p>
-              <p className="text-slate-400 text-sm">{t("Check back soon for portfolio updates.", "تحقق مرة أخرى قريباً.")}</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project, i) => (
-                <ProjectCard key={project.id} project={project} i={i} />
-              ))}
-            </div>
-          )}
+            <h2 className="text-3xl font-black font-heading" style={{ color: "#F5F5F3" }}>
+              {t("Brands & Projects", "العلامات والمشاريع")}
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {FEATURED_BRANDS.map((brand, i) => (
+              <BrandCard key={i} brand={brand} i={i} />
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* ── API Projects (if any) ── */}
+      {(isLoading || projects.length > 0) && (
+        <section className="py-16 px-5" style={{ background: "#0F0F10" }}>
+          <div className="max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <div className="h-px w-8" style={{ background: GOLD }} />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+                  {t("All Projects", "كل المشاريع")}
+                </span>
+              </div>
+            </motion.div>
+
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-64 rounded-2xl animate-pulse" style={{ background: "#1a1a1a" }} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {projects.map((project, i) => (
+                  <ProjectCard key={project.id} project={project} i={i} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
     </RootLayout>
   );
