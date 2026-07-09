@@ -1,31 +1,41 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { useLanguage } from "../hooks/use-language";
 import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
 import { useListServices } from "@workspace/api-client-react";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { LogoMark, LogoInline } from "../components/Logo";
 
 /* ── Brand logo imports ─────────────────────────── */
-import mdLogo        from "@assets/Screenshot_2026-07-09_at_2.14.54_AM_1783552521055.png";
 import fujiLogo      from "@assets/Screenshot_2026-07-01_at_3.07.57_AM_1783549571265.png";
 import communityLogo from "@assets/Screenshot_2026-07-01_at_3.13.59_AM_1783549571269.png";
 import qiroxLogo     from "@assets/Screenshot_2026-07-09_at_1.27.26_AM_1783549658879.png";
 import genmzImg      from "@assets/PHOTO-2026-07-07-01-59-22_1783549857639.jpg";
 
 /* ── Design tokens ──────────────────────────────── */
-const BG        = "#F5F5F3";
-const BLACK     = "#0F0F10";
-const GRAPHITE  = "#3A3A3A";
-const TITANIUM  = "#8C9198";
-const GOLD      = "#C7AC70";
+const BG       = "#F5F5F3";
+const BLACK    = "#0F0F10";
+const GRAPHITE = "#3A3A3A";
+const TITANIUM = "#8C9198";
+const GOLD     = "#C7AC70";
 
-/* ── Fade-up animation ──────────────────────────── */
+/* ── Shared animation helpers ───────────────────── */
+const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
+
 const fu = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 28 },
   whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" as const },
+  transition: { duration: 0.72, delay, ease: EASE },
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const fadeIn = (delay = 0) => ({
+  initial: { opacity: 0 },
+  whileInView: { opacity: 1 },
   viewport: { once: true },
-  transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.6, delay },
 });
 
 /* ── Marquee strip ──────────────────────────────── */
@@ -47,65 +57,82 @@ function Marquee({ items, rtl = false }: { items: string[]; rtl?: boolean }) {
   );
 }
 
-/* ── Process card ───────────────────────────────── */
+/* ── Process card (tilted) ──────────────────────── */
 function ProcessCard({
-  num, title, desc, rotate = "0deg", translate = "0px,0px", zIndex = 0
+  num, title, desc, rotate = "0deg", translate = "0px,0px", zIndex = 0,
 }: {
   num: string; title: string; desc: string;
   rotate?: string; translate?: string; zIndex?: number;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute rounded-2xl p-8 shadow-xl"
+      transition={{ duration: 0.65, ease: EASE }}
+      whileHover={{ y: -6, scale: 1.02 }}
+      className="absolute rounded-2xl p-8 shadow-xl cursor-default"
       style={{
         background: "#ffffff",
-        border: "1px solid rgba(0,0,0,0.06)",
+        border: "1px solid rgba(0,0,0,0.07)",
         transform: `rotate(${rotate}) translate(${translate})`,
         zIndex,
-        width: "280px",
-        minHeight: "200px",
+        width: "290px",
+        minHeight: "210px",
       }}
     >
-      <span className="text-6xl font-black" style={{ color: BLACK, lineHeight: 1 }}>{num}</span>
-      <h3 className="mt-4 text-lg font-bold" style={{ color: BLACK }}>{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed" style={{ color: TITANIUM }}>{desc}</p>
+      <span className="text-[4.5rem] font-black leading-none block" style={{ color: BLACK }}>{num}</span>
+      <h3 className="mt-3 text-lg font-bold" style={{ color: BLACK }}>{title}</h3>
+      <p className="mt-1.5 text-sm leading-relaxed" style={{ color: TITANIUM }}>{desc}</p>
     </motion.div>
   );
 }
 
-/* ── Brand card ─────────────────────────────────── */
-function BrandCard({
-  logo, name, tag, bg = "#1a1a1a", logoFit = "contain", dark = true
+/* ── Work showcase card ─────────────────────────── */
+function WorkCard({
+  logo, name, tag, bg = "#1a1a1a", logoFit = "contain", dark = true,
+  wide = false, tall = false,
 }: {
-  logo?: string; name: string; tag: string; bg?: string; logoFit?: "contain" | "cover"; dark?: boolean;
+  logo?: string; name: string; tag: string; bg?: string;
+  logoFit?: "contain" | "cover"; dark?: boolean;
+  wide?: boolean; tall?: boolean;
 }) {
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.01 }}
-      transition={{ duration: 0.25 }}
-      className="rounded-2xl overflow-hidden relative cursor-pointer"
+      whileHover={{ y: -6, scale: 1.015 }}
+      transition={{ duration: 0.28, ease: EASE }}
+      className={`rounded-2xl overflow-hidden relative group cursor-pointer ${wide ? "col-span-2" : ""} ${tall ? "row-span-2" : ""}`}
       style={{ background: bg, border: "1px solid rgba(255,255,255,0.06)" }}
     >
-      <div className="aspect-[4/3] flex items-center justify-center p-8">
+      <div className={`flex items-center justify-center p-10 ${tall ? "min-h-[360px]" : "min-h-[200px]"}`}>
         {logo ? (
-          <img src={logo} alt={name} className="w-full h-full"
-            style={{ objectFit: logoFit, maxHeight: 140 }} />
+          <img src={logo} alt={name} className="w-full h-full transition-transform duration-500 group-hover:scale-105"
+            style={{ objectFit: logoFit, maxHeight: tall ? 180 : 120, maxWidth: "80%" }} />
         ) : (
-          <span className="text-2xl font-black" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
+          <span className="text-3xl font-black" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
         )}
       </div>
       <div className="px-5 pb-5 flex items-center justify-between">
         <span className="text-sm font-bold" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
-        <span className="text-xs px-2 py-0.5 rounded-full" style={{
-          background: "rgba(255,255,255,0.1)",
+        <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{
+          background: "rgba(255,255,255,0.08)",
           color: dark ? TITANIUM : GRAPHITE
         }}>{tag}</span>
       </div>
     </motion.div>
+  );
+}
+
+/* ── Section eyebrow ────────────────────────────── */
+function Eyebrow({ en, ar, t, gold = false }: { en: string; ar: string; t: (e: string, a: string) => string; gold?: boolean }) {
+  return (
+    <div className="flex items-center gap-3 mb-3">
+      <div className="h-px w-8 opacity-40" style={{ background: gold ? GOLD : GRAPHITE }} />
+      <p className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: gold ? GOLD : TITANIUM }}>
+        {t(en, ar)}
+      </p>
+      <div className="h-px w-8 opacity-40" style={{ background: gold ? GOLD : GRAPHITE }} />
+    </div>
   );
 }
 
@@ -119,10 +146,15 @@ export default function Home() {
   const services = Array.isArray(rawServices) ? rawServices.slice(0, 4) : [];
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
 
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
   const marqueeItems = [
     "Brand Strategy", "F&B Operations", "Business Development",
     "استراتيجية العلامة", "التشغيل", "تطوير الأعمال",
-    "Management Systems", "AI & Automation", "Market Analysis",
+    "Management Systems", "Market Analysis", "Saudi Arabia",
   ];
 
   const experiences = [
@@ -136,132 +168,164 @@ export default function Home() {
     <RootLayout>
 
       {/* ══════════════════════════════════════════
-          1. HERO
+          1. HERO — editorial, big, minimal
       ══════════════════════════════════════════ */}
       <section
-        className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-24 pb-0"
+        ref={heroRef}
+        className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-24 pb-6"
         style={{ background: BG }}
       >
-        {/* Subtle radial glow */}
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(199,172,112,0.06) 0%, transparent 70%)" }} />
+        {/* Background light rays */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[700px] opacity-[0.07]"
+            style={{
+              background: "conic-gradient(from 270deg at 50% -10%, #C7AC70 0deg, transparent 40deg, transparent 320deg, #C7AC70 360deg)",
+            }} />
+          <div className="absolute inset-0"
+            style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(199,172,112,0.05) 0%, transparent 70%)" }} />
+        </div>
 
-        <div className="max-w-7xl mx-auto w-full px-6 lg:px-12">
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-7xl mx-auto w-full px-6 lg:px-12">
 
           {/* Status badge */}
-          <motion.div {...fu(0)} className="flex justify-center mb-10">
+          <motion.div {...fu(0)} className="flex justify-center mb-12">
             <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full text-[13px] font-semibold"
               style={{
-                background: "rgba(255,255,255,0.9)",
-                border: "1px solid rgba(0,0,0,0.08)",
+                background: "rgba(255,255,255,0.92)",
+                border: "1px solid rgba(0,0,0,0.07)",
                 color: GRAPHITE,
+                boxShadow: "0 2px 16px rgba(0,0,0,0.04)",
               }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: GOLD }} />
               {t("Available for New Projects", "متاح للمشاريع الجديدة")}
-              <span className="mx-1 opacity-30">·</span>
-              {t("Brand Manager · F&B · Saudi Arabia", "مدير علامة تجارية · F&B · المملكة العربية السعودية")}
+              <span className="mx-0.5 opacity-25">·</span>
+              {t("Brand Manager · F&B · Saudi Arabia", "مدير علامة · F&B · المملكة")}
             </div>
           </motion.div>
 
-          {/* Giant headline */}
-          <motion.div {...fu(0.06)} className="text-center">
-            {/* Line 1 */}
-            <div className="flex items-center justify-center gap-4 flex-wrap" style={{ lineHeight: 0.9 }}>
-              <span className="font-black text-[11vw] md:text-[9vw] lg:text-[8vw] xl:text-[7rem] leading-none tracking-tight"
-                style={{ color: BLACK }}>
+          {/* Giant headline — Framer-style inline logo embed */}
+          <motion.div {...fu(0.06)} className="text-center select-none">
+
+            {/* Line 1: BRAND [logo] MANAGER */}
+            <div className={`flex items-center justify-center gap-3 md:gap-5 flex-wrap ${isRTL ? "flex-row-reverse" : ""}`}
+              style={{ lineHeight: 0.88 }}>
+              <span
+                className="font-black tracking-[-0.04em] leading-none"
+                style={{ fontSize: "clamp(3.2rem, 9.5vw, 7.5rem)", color: BLACK }}
+              >
                 {t("BRAND", "إدارة")}
               </span>
-              {/* Logo mark embedded in headline */}
-              <div className="inline-flex rounded-2xl overflow-hidden shadow-xl mx-2"
-                style={{ width: "clamp(60px, 8vw, 110px)", height: "clamp(60px, 8vw, 110px)", background: BLACK }}>
-                <img src={mdLogo} alt="MD" className="w-full h-full object-cover scale-110" />
-              </div>
-              <span className="font-black text-[11vw] md:text-[9vw] lg:text-[8vw] xl:text-[7rem] leading-none tracking-tight"
-                style={{ color: TITANIUM }}>
+
+              {/* MD logo embedded in headline */}
+              <LogoInline size={Math.min(100, 80)} dark className="shadow-xl mx-1" />
+
+              <span
+                className="font-black tracking-[-0.04em] leading-none"
+                style={{ fontSize: "clamp(3.2rem, 9.5vw, 7.5rem)", color: TITANIUM }}
+              >
                 {t("MANAGER", "العلامات")}
               </span>
             </div>
 
-            {/* Line 2 */}
-            <div className="flex items-center justify-center gap-4 flex-wrap mt-2" style={{ lineHeight: 0.9 }}>
-              <span className="font-black text-[11vw] md:text-[9vw] lg:text-[8vw] xl:text-[7rem] leading-none tracking-tight"
-                style={{ color: TITANIUM }}>
+            {/* Line 2: & BUSINESS [gold box] DEV */}
+            <div className={`flex items-center justify-center gap-3 md:gap-5 flex-wrap mt-1 ${isRTL ? "flex-row-reverse" : ""}`}
+              style={{ lineHeight: 0.88 }}>
+              <span
+                className="font-black tracking-[-0.04em] leading-none"
+                style={{ fontSize: "clamp(3.2rem, 9.5vw, 7.5rem)", color: TITANIUM }}
+              >
                 {t("& BUSINESS", "والأعمال")}
               </span>
-              <div className="inline-flex rounded-2xl overflow-hidden shadow-xl mx-2"
-                style={{
-                  width: "clamp(50px, 6vw, 90px)", height: "clamp(50px, 6vw, 90px)",
-                  background: GOLD, alignItems: "center", justifyContent: "center"
-                }}>
-                <span className="text-white font-black text-2xl">F&B</span>
-              </div>
-              <span className="font-black text-[11vw] md:text-[9vw] lg:text-[8vw] xl:text-[7rem] leading-none tracking-tight"
-                style={{ color: BLACK }}>
+
+              {/* Gold F&B badge */}
+              <span
+                className="inline-flex items-center justify-center rounded-2xl font-black text-white text-xl md:text-2xl px-4 py-1 mx-1 shadow-lg"
+                style={{ background: `linear-gradient(135deg, ${GOLD}, #a8914a)`, letterSpacing: "-0.01em" }}
+              >
+                F&B
+              </span>
+
+              <span
+                className="font-black tracking-[-0.04em] leading-none"
+                style={{ fontSize: "clamp(3.2rem, 9.5vw, 7.5rem)", color: BLACK }}
+              >
                 {t("DEV", "تطوير")}
               </span>
             </div>
           </motion.div>
 
           {/* Subtext */}
-          <motion.p {...fu(0.12)} className="text-center mt-8 text-base md:text-lg max-w-lg mx-auto leading-relaxed"
+          <motion.p {...fu(0.14)} className="text-center mt-8 max-w-md mx-auto leading-relaxed text-[15px] md:text-base"
             style={{ color: TITANIUM }}>
             {t(
-              "I seek a leadership position in business development and operations in the F&B sector, contributing to brand building through strategy, execution, and continuous performance improvement.",
-              "أسعى لتولي منصب قيادي في مجال تطوير الأعمال والتشغيل بقطاع الأغذية والمشروبات، مساهماً في بناء العلامات من خلال الاستراتيجية والتنفيذ وتحسين الأداء المستمر."
+              "I help F&B brands scale through strategy, operations, and relentless execution — fast and without the noise.",
+              "أساعد علامات F&B على النمو من خلال الاستراتيجية والتشغيل والتنفيذ المستمر."
             )}
           </motion.p>
 
           {/* CTAs */}
-          <motion.div {...fu(0.16)} className={`flex items-center justify-center gap-3 mt-10 flex-wrap ${isRTL ? "flex-row-reverse" : ""}`}>
+          <motion.div
+            {...fu(0.19)}
+            className={`flex items-center justify-center gap-3 mt-10 flex-wrap ${isRTL ? "flex-row-reverse" : ""}`}
+          >
             <Link href="/book">
-              <button className="btn-black">
+              <motion.button
+                whileHover={{ scale: 1.04, y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2.5 px-7 py-3.5 rounded-full text-[14px] font-bold text-white transition-all"
+                style={{ background: BLACK, boxShadow: "0 6px 24px rgba(15,15,16,0.25)" }}
+              >
                 {t("Book Consultation", "احجز استشارة")}
-                <Arrow size={16} />
-              </button>
+                <Arrow size={15} />
+              </motion.button>
             </Link>
             <Link href="/portfolio">
-              <button className="btn-ghost">
+              <motion.button
+                whileHover={{ scale: 1.02, backgroundColor: "rgba(0,0,0,0.05)" }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-7 py-3.5 rounded-full text-[14px] font-bold border transition-all"
+                style={{ borderColor: "rgba(0,0,0,0.12)", color: GRAPHITE }}
+              >
                 {t("See My Work", "أعمالي")}
-              </button>
+              </motion.button>
             </Link>
           </motion.div>
 
-          {/* Brand logos strip */}
-          <motion.div {...fu(0.22)} className="mt-16 flex flex-col items-center gap-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em]" style={{ color: TITANIUM }}>
+          {/* Trusted by brands */}
+          <motion.div {...fu(0.25)} className="mt-16 flex flex-col items-center gap-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: TITANIUM }}>
               {t("Brands I've Worked With", "علامات عملت معها")}
             </p>
-            <div className="flex items-center gap-6 flex-wrap justify-center">
+            <div className="flex items-center gap-4 flex-wrap justify-center">
               {[
-                { img: fujiLogo,      bg: "#fff",    size: 60 },
-                { img: qiroxLogo,     bg: "#111",    size: 80 },
-                { img: communityLogo, bg: "#1a2e5a", size: 60 },
-              ].map(({ img, bg, size }, i) => (
-                <div key={i} className="rounded-xl overflow-hidden flex items-center justify-center p-2"
-                  style={{ background: bg, width: size + 16, height: 44 }}>
-                  <img src={img} alt="" className="object-contain" style={{ height: 28, maxWidth: size }} />
+                { img: fujiLogo,      bg: "#fff",    border: "rgba(0,0,0,0.08)", h: 28, w: 64 },
+                { img: qiroxLogo,     bg: "#111",    border: "transparent",      h: 30, w: 80 },
+                { img: communityLogo, bg: "#1a2e5a", border: "transparent",      h: 26, w: 64 },
+              ].map(({ img, bg, border, h, w }, i) => (
+                <div key={i} className="rounded-xl overflow-hidden flex items-center justify-center px-4 py-2"
+                  style={{ background: bg, border: `1px solid ${border}`, height: 46 }}>
+                  <img src={img} alt="" className="object-contain" style={{ height: h, maxWidth: w }} />
                 </div>
               ))}
-              <div className="rounded-xl px-4 py-2 text-xs font-bold"
-                style={{ background: "#f0f0f0", color: GRAPHITE }}>GENMZ</div>
-              <div className="rounded-xl px-4 py-2 text-xs font-bold"
+              <div className="rounded-xl px-4 py-2 text-[11px] font-bold h-[46px] flex items-center"
+                style={{ background: "#f0f0ee", color: GRAPHITE, border: "1px solid rgba(0,0,0,0.06)" }}>GENMZ</div>
+              <div className="rounded-xl px-4 py-2 text-[11px] font-bold h-[46px] flex items-center"
                 style={{ background: "#2d6a4f", color: "#fff" }}>{t("MATCHA POWER", "ماتشا باور")}</div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Scroll cue */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          className="flex justify-center pb-8 mt-14"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 1.8, duration: 1 }}
+          className="flex justify-center pb-6 mt-14"
         >
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+            animate={{ y: [0, 7, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             className="w-5 h-8 rounded-full border-2 flex items-start justify-center pt-1.5"
-            style={{ borderColor: "rgba(0,0,0,0.15)" }}
+            style={{ borderColor: "rgba(0,0,0,0.13)" }}
           >
             <div className="w-1 h-2 rounded-full" style={{ background: GOLD }} />
           </motion.div>
@@ -272,58 +336,65 @@ export default function Home() {
       <Marquee items={marqueeItems} rtl={isRTL} />
 
       {/* ══════════════════════════════════════════
-          2. RECENT WORK — dark brand grid
+          2. RECENT WORK — dark editorial grid
       ══════════════════════════════════════════ */}
-      <section className="py-24" style={{ background: BLACK }}>
+      <section className="py-24 relative" style={{ background: BLACK }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
 
-          <motion.div {...fu(0)} className={`flex items-end justify-between mb-12 ${isRTL ? "flex-row-reverse" : ""}`}>
+          {/* Header row */}
+          <motion.div {...fu(0)} className={`flex items-end justify-between mb-14 ${isRTL ? "flex-row-reverse" : ""}`}>
             <div>
-              <div className="section-eyebrow mb-2" style={{ color: GOLD }}>
-                {t("Our Projects", "مشاريعنا")}
-              </div>
-              <h2 className="text-4xl md:text-5xl font-black" style={{ color: "#fff" }}>
+              <Eyebrow en="Our Projects" ar="مشاريعنا" t={t} gold />
+              <h2 className="text-4xl md:text-5xl font-black mt-1" style={{ color: "#fff" }}>
                 {t("Recent Work", "أحدث الأعمال")}
               </h2>
             </div>
             <Link href="/portfolio">
               <motion.button
-                whileHover={{ scale: 1.04 }}
+                whileHover={{ scale: 1.04, borderColor: "rgba(255,255,255,0.3)" }}
                 whileTap={{ scale: 0.96 }}
                 className="hidden md:flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold border transition-all"
                 style={{ borderColor: "rgba(255,255,255,0.12)", color: TITANIUM }}
               >
-                {t("View All", "عرض الكل")} <Arrow size={14} />
+                {t("View All", "عرض الكل")} <ArrowUpRight size={14} />
               </motion.button>
             </Link>
           </motion.div>
 
+          {/* Bento-style work grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <motion.div {...fu(0)} className="sm:col-span-2 lg:col-span-1">
-              <BrandCard logo={fujiLogo}      name="Fuji Cafe"     tag={t("F&B Brand","علامة F&B")}       bg="#fff"    dark={false} logoFit="contain" />
+            <motion.div {...fu(0)}>
+              <WorkCard logo={fujiLogo} name="Fuji Cafe" tag={t("F&B Brand","علامة F&B")} bg="#ffffff" dark={false} logoFit="contain" tall />
             </motion.div>
-            <motion.div {...fu(0.05)}>
-              <BrandCard logo={qiroxLogo}     name="QIROX"         tag={t("Systems","أنظمة")}              bg="#111111" logoFit="contain" />
+            <motion.div {...fu(0.06)}>
+              <WorkCard logo={qiroxLogo} name="QIROX" tag={t("Systems","أنظمة")} bg="#111111" logoFit="contain" />
             </motion.div>
             <motion.div {...fu(0.1)}>
-              <BrandCard logo={communityLogo} name={t("Community Initiative","مجتمع مبادرة")} tag={t("Marketing","تسويق")} bg="#1a2e5a" logoFit="contain" />
+              <WorkCard logo={communityLogo} name={t("Community","المجتمع")} tag={t("Marketing","تسويق")} bg="#1a2e5a" logoFit="contain" />
             </motion.div>
-            <motion.div {...fu(0.15)}>
-              <BrandCard logo={genmzImg}      name="GEN M&Z"       tag={t("Fashion Brand","علامة أزياء")} bg="#1a1a1a" logoFit="cover" />
+            <motion.div {...fu(0.14)}>
+              <WorkCard logo={genmzImg} name="GEN M&Z" tag={t("Fashion","أزياء")} bg="#1a1a1a" logoFit="cover" />
             </motion.div>
-            <motion.div {...fu(0.2)}>
-              <BrandCard name={t("Matcha Power","ماتشا باور")} tag={t("Beverages","مشروبات")} bg="#2d6a4f" />
+            <motion.div {...fu(0.18)}>
+              <WorkCard name={t("Matcha Power","ماتشا باور")} tag={t("Beverages","مشروبات")} bg="#2d6a4f" />
             </motion.div>
-            {/* "See all" card */}
+
+            {/* See all card */}
             <Link href="/portfolio">
               <motion.div
-                {...fu(0.25)}
-                whileHover={{ y: -4 }}
-                className="rounded-2xl flex flex-col items-center justify-center aspect-[4/3] cursor-pointer border-2 border-dashed transition-all"
-                style={{ borderColor: "rgba(255,255,255,0.12)", color: TITANIUM }}
+                {...fu(0.22)}
+                whileHover={{ y: -6, borderColor: "rgba(199,172,112,0.4)" }}
+                className="rounded-2xl flex flex-col items-center justify-center min-h-[200px] cursor-pointer border-2 border-dashed transition-all"
+                style={{ borderColor: "rgba(255,255,255,0.1)", color: TITANIUM }}
               >
-                <Arrow size={24} />
-                <p className="mt-3 text-sm font-semibold">{t("View All Work", "كل الأعمال")}</p>
+                <motion.div
+                  whileHover={{ rotate: 45 }}
+                  transition={{ duration: 0.25 }}
+                  className="w-12 h-12 rounded-full border border-current flex items-center justify-center mb-3"
+                >
+                  <ArrowUpRight size={20} />
+                </motion.div>
+                <p className="text-sm font-semibold">{t("View All Work", "كل الأعمال")}</p>
               </motion.div>
             </Link>
           </div>
@@ -331,19 +402,19 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
-          3. PROCESS — 3 tilted cards (desktop) / stacked (mobile)
+          3. PROCESS — 3 tilted scattered cards
       ══════════════════════════════════════════ */}
       <section className="py-24 overflow-hidden" style={{ background: BG }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
 
-          <motion.div {...fu(0)} className="text-center mb-12 md:mb-24">
-            <p className="section-eyebrow mb-3">{t("Our Process, Explained", "طريقة عملنا")}</p>
-            <h2 className="text-4xl md:text-5xl font-black" style={{ color: BLACK }}>
+          <motion.div {...fu(0)} className="text-center mb-16 md:mb-28">
+            <Eyebrow en="Our Process, Explained" ar="طريقة عملنا" t={t} />
+            <h2 className="text-4xl md:text-5xl font-black mt-2" style={{ color: BLACK }}>
               {t("Here's how it works", "كيف تسير الأمور")}
             </h2>
           </motion.div>
 
-          {/* MOBILE: simple vertical stack */}
+          {/* MOBILE: vertical stack */}
           <div className="grid grid-cols-1 gap-5 md:hidden">
             {[
               { num: "1", title: t("Connect", "التواصل"),    desc: t("Book a free intro call to discuss your vision and goals.", "احجز مكالمة مجانية لمناقشة رؤيتك وأهدافك.") },
@@ -352,65 +423,76 @@ export default function Home() {
             ].map((card, i) => (
               <motion.div key={i} {...fu(i * 0.08)}
                 className="rounded-2xl p-7 shadow-md"
-                style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.06)" }}>
-                <span className="text-5xl font-black block mb-3" style={{ color: BLACK }}>{card.num}</span>
+                style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.06)" }}
+              >
+                <span className="text-5xl font-black block mb-3 leading-none" style={{ color: BLACK }}>{card.num}</span>
                 <h3 className="text-lg font-bold mb-2" style={{ color: BLACK }}>{card.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: TITANIUM }}>{card.desc}</p>
               </motion.div>
             ))}
           </div>
 
-          {/* DESKTOP: tilted / overlapping layout */}
-          <div className="hidden md:block relative" style={{ height: 340 }}>
-            <ProcessCard
-              num="1" zIndex={1}
-              rotate="-5deg" translate="-230px, 20px"
-              title={t("Connect", "التواصل")}
-              desc={t("Book a free intro call to discuss your vision and goals.", "احجز مكالمة مجانية لمناقشة رؤيتك وأهدافك.")}
-            />
-            <ProcessCard
-              num="2" zIndex={3}
-              rotate="2deg" translate="0px, -30px"
-              title={t("Strategize", "التخطيط")}
-              desc={t("We build a tailored action plan aligned with your brand objectives.", "نبني خطة عمل مصممة لأهداف علامتك التجارية.")}
-            />
-            <ProcessCard
-              num="3" zIndex={2}
-              rotate="-2deg" translate="220px, 10px"
-              title={t("Execute", "التنفيذ")}
-              desc={t("Full execution — systems, operations, brand, results.", "تنفيذ كامل: أنظمة، عمليات، علامة تجارية، نتائج.")}
-            />
-            {/* SVG connectors */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 700 340" fill="none">
-              <path d="M 175 130 C 250 90, 320 110, 350 100" stroke="#C7AC70" strokeWidth="1.5" fill="none" strokeDasharray="4 4" opacity="0.5" />
-              <path d="M 350 100 C 400 90, 460 110, 520 130" stroke="#C7AC70" strokeWidth="1.5" fill="none" strokeDasharray="4 4" opacity="0.5" />
-              <circle cx="175" cy="130" r="4" fill="#C7AC70" opacity="0.6" />
-              <circle cx="350" cy="100" r="4" fill="#C7AC70" opacity="0.6" />
-              <circle cx="520" cy="130" r="4" fill="#C7AC70" opacity="0.6" />
-            </svg>
+          {/* DESKTOP: tilted / overlapping */}
+          <div className="hidden md:flex justify-center relative" style={{ height: 360 }}>
+            {/* Centered group */}
+            <div className="relative" style={{ width: 700 }}>
+              <ProcessCard
+                num="1" zIndex={1}
+                rotate="-6deg" translate="-220px, 30px"
+                title={t("Connect", "التواصل")}
+                desc={t("Book a free intro call to discuss your vision and goals.", "احجز مكالمة مجانية لمناقشة رؤيتك وأهدافك.")}
+              />
+              <ProcessCard
+                num="2" zIndex={3}
+                rotate="1.5deg" translate="0px, -20px"
+                title={t("Strategize", "التخطيط")}
+                desc={t("We build a tailored action plan aligned with your brand objectives.", "نبني خطة عمل مصممة لأهداف علامتك التجارية.")}
+              />
+              <ProcessCard
+                num="3" zIndex={2}
+                rotate="-2.5deg" translate="218px, 15px"
+                title={t("Execute", "التنفيذ")}
+                desc={t("Full execution — systems, operations, brand, results.", "تنفيذ كامل: أنظمة، عمليات، علامة تجارية، نتائج.")}
+              />
+              {/* SVG connector curves */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 700 360" fill="none">
+                <path d="M 180 150 C 260 100, 330 120, 360 105"
+                  stroke={GOLD} strokeWidth="1.5" fill="none" strokeDasharray="5 5" opacity="0.45" />
+                <path d="M 360 105 C 400 92, 460 115, 530 145"
+                  stroke={GOLD} strokeWidth="1.5" fill="none" strokeDasharray="5 5" opacity="0.45" />
+                <circle cx="180" cy="150" r="4.5" fill={GOLD} opacity="0.55" />
+                <circle cx="360" cy="105" r="4.5" fill={GOLD} opacity="0.55" />
+                <circle cx="530" cy="145" r="4.5" fill={GOLD} opacity="0.55" />
+              </svg>
+            </div>
           </div>
 
-          <motion.div {...fu(0.3)} className="flex justify-center mt-10 md:mt-16">
+          <motion.div {...fu(0.3)} className="flex justify-center mt-12 md:mt-20">
             <Link href="/book">
-              <button className="btn-black">
-                {t("Start the Process", "ابدأ الآن")} <Arrow size={16} />
-              </button>
+              <motion.button
+                whileHover={{ scale: 1.04, y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2.5 px-8 py-3.5 rounded-full text-[14px] font-bold text-white transition-all"
+                style={{ background: BLACK, boxShadow: "0 6px 24px rgba(15,15,16,0.2)" }}
+              >
+                {t("Start the Process", "ابدأ الآن")} <Arrow size={15} />
+              </motion.button>
             </Link>
           </motion.div>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════
-          4. SERVICES — grid cards
+          4. SERVICES — no pricing shown
       ══════════════════════════════════════════ */}
       {services.length > 0 && (
         <section className="py-24" style={{ background: "#fff" }}>
           <div className="max-w-6xl mx-auto px-6 lg:px-12">
 
-            <motion.div {...fu(0)} className={`flex items-end justify-between mb-12 ${isRTL ? "flex-row-reverse" : ""}`}>
+            <motion.div {...fu(0)} className={`flex items-end justify-between mb-14 ${isRTL ? "flex-row-reverse" : ""}`}>
               <div>
-                <p className="section-eyebrow mb-2">{t("What I Offer", "ما أقدمه")}</p>
-                <h2 className="text-4xl md:text-5xl font-black" style={{ color: BLACK }}>
+                <Eyebrow en="What I Offer" ar="ما أقدمه" t={t} />
+                <h2 className="text-4xl md:text-5xl font-black mt-2" style={{ color: BLACK }}>
                   {t("Services", "الخدمات")}
                 </h2>
               </div>
@@ -419,7 +501,7 @@ export default function Home() {
                   whileHover={{ scale: 1.04 }}
                   className="hidden md:flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold border border-black/10 transition-all hover:bg-black/4"
                   style={{ color: GRAPHITE }}>
-                  {t("All Services", "كل الخدمات")} <Arrow size={14} />
+                  {t("All Services", "كل الخدمات")} <ArrowUpRight size={14} />
                 </motion.button>
               </Link>
             </motion.div>
@@ -429,28 +511,25 @@ export default function Home() {
                 <motion.div
                   key={svc.id || i}
                   {...fu(i * 0.06)}
-                  whileHover={{ y: -4, boxShadow: "0 20px 48px rgba(0,0,0,0.08)" }}
-                  className="p-7 rounded-2xl border transition-all cursor-default"
+                  whileHover={{ y: -4, boxShadow: "0 24px 52px rgba(0,0,0,0.07)" }}
+                  className="p-7 rounded-2xl border transition-all cursor-default group"
                   style={{ border: "1px solid rgba(0,0,0,0.06)", background: BG }}
                 >
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start justify-between mb-5">
                     <span className="text-3xl">{svc.icon || "⚡"}</span>
                     {svc.featured && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide"
+                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide"
                         style={{ background: GOLD + "22", color: GOLD }}>
                         {t("Featured", "مميز")}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold mb-2" style={{ color: BLACK }}>
+                  <h3 className="text-lg font-bold mb-2.5" style={{ color: BLACK }}>
                     {isRTL ? svc.titleAr : svc.title}
                   </h3>
                   <p className="text-sm leading-relaxed" style={{ color: TITANIUM }}>
                     {isRTL ? svc.descriptionAr : svc.description}
                   </p>
-                  {svc.price && (
-                    <p className="mt-4 text-sm font-bold" style={{ color: GOLD }}>{svc.price}</p>
-                  )}
                 </motion.div>
               ))}
             </div>
@@ -459,51 +538,72 @@ export default function Home() {
       )}
 
       {/* ══════════════════════════════════════════
-          5. ABOUT TEASER
+          5. ABOUT — "Pushing boundaries since 2016"
       ══════════════════════════════════════════ */}
       <section className="py-28" style={{ background: BG }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
 
           <motion.div {...fu(0)} className="mb-16">
-            <p className="section-eyebrow mb-3">{t("About Me", "من أنا")}</p>
-            <h2 className="text-4xl md:text-6xl font-black leading-tight" style={{ color: BLACK }}>
-              {t("Building F&B brands", "أبني علامات F&B")}
+            <Eyebrow en="About Me" ar="من أنا" t={t} />
+            <h2 className="text-4xl md:text-6xl font-black leading-none mt-2" style={{ color: BLACK }}>
+              {t("Pushing boundaries", "أبني علامات")}
               <br />
-              <span style={{ color: TITANIUM }}>{t("since 2016", "منذ ٢٠١٦")}</span>
+              <span style={{ color: TITANIUM }}>{t("since 2016", "F&B منذ ٢٠١٦")}</span>
             </h2>
           </motion.div>
 
-          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 ${isRTL ? "lg:flex lg:flex-row-reverse" : ""}`}>
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start ${isRTL ? "lg:[direction:rtl]" : ""}`}>
 
-            {/* Left — big logo display */}
-            <motion.div {...fu(0.06)}
-              className="rounded-3xl overflow-hidden flex items-center justify-center"
-              style={{ background: BLACK, minHeight: 380 }}>
-              <div className="p-12 flex flex-col items-center text-center">
-                <img src={mdLogo} alt="MD Logo" className="w-40 h-40 object-contain mb-6" />
-                <p className="text-white font-black text-xl tracking-wide">MOHAMMED</p>
-                <p className="text-[#C7AC70] font-black text-xl tracking-wide">AL-DABBANI</p>
-                <p className="text-[#8C9198] text-xs tracking-[0.3em] mt-2 uppercase">
-                  {t("Brand Manager · F&B · Saudi Arabia", "مدير علامة · F&B · المملكة")}
-                </p>
+            {/* Left — brand identity card */}
+            <motion.div
+              {...fu(0.06)}
+              className="rounded-3xl overflow-hidden relative"
+              style={{ background: BLACK, minHeight: 420 }}
+            >
+              {/* Background glow */}
+              <div className="absolute inset-0 pointer-events-none"
+                style={{ background: "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(199,172,112,0.1) 0%, transparent 70%)" }} />
+
+              <div className="relative z-10 p-12 flex flex-col items-center justify-center h-full text-center min-h-[420px]">
+                {/* Large SVG logo mark */}
+                <LogoMark color="#F5F5F3" size={100} className="mb-6 opacity-90" />
+
+                <div className="space-y-1">
+                  <p className="text-white font-black text-2xl tracking-[0.12em] leading-tight">MOHAMMED</p>
+                  <p className="font-black text-2xl tracking-[0.12em] leading-tight" style={{ color: GOLD }}>AL-DABBANI</p>
+                </div>
+
+                <div className="mt-4 flex items-center gap-2">
+                  <div className="h-px w-6 opacity-30" style={{ background: GOLD }} />
+                  <p className="text-[10px] tracking-[0.28em] uppercase" style={{ color: TITANIUM }}>
+                    {t("Brand Manager · F&B · Saudi Arabia", "مدير علامة · F&B · المملكة")}
+                  </p>
+                  <div className="h-px w-6 opacity-30" style={{ background: GOLD }} />
+                </div>
+
+                {/* Decorative gold corners */}
+                <div className="absolute top-6 left-6 w-6 h-6 border-t-2 border-l-2 rounded-tl-md opacity-30" style={{ borderColor: GOLD }} />
+                <div className="absolute top-6 right-6 w-6 h-6 border-t-2 border-r-2 rounded-tr-md opacity-30" style={{ borderColor: GOLD }} />
+                <div className="absolute bottom-6 left-6 w-6 h-6 border-b-2 border-l-2 rounded-bl-md opacity-30" style={{ borderColor: GOLD }} />
+                <div className="absolute bottom-6 right-6 w-6 h-6 border-b-2 border-r-2 rounded-br-md opacity-30" style={{ borderColor: GOLD }} />
               </div>
             </motion.div>
 
-            {/* Right — bio + experience table */}
+            {/* Right — bio + experience timeline */}
             <motion.div {...fu(0.1)} className="flex flex-col justify-center">
-              <p className="text-base leading-loose mb-10" style={{ color: GRAPHITE }}>
+              <p className="text-[15px] leading-loose mb-10" style={{ color: GRAPHITE }}>
                 {t(
-                  "I seek a leadership position in business development and operations in the F&B sector, contributing to brand building through strategy development, operational plan execution, and continuous performance improvement. I innovate solutions that guarantee sustainability and profitability.",
-                  "أسعى لتولي منصب قيادي في مجال تطوير الأعمال والتشغيل بقطاع الأغذية والمشروبات، مساهماً في بناء العلامات التجارية من خلال وضع الاستراتيجيات وتنفيذ الخطط التشغيلية وتحسين الأداء المستمر. أبتكر حلولاً تضمن الاستدامة والربحية."
+                  "I seek a leadership position in business development and operations in the F&B sector, contributing to brand building through strategy, execution, and continuous performance improvement. I innovate solutions that guarantee sustainability and profitability.",
+                  "أسعى لتولي منصب قيادي في مجال تطوير الأعمال والتشغيل بقطاع الأغذية والمشروبات، مساهماً في بناء العلامات التجارية من خلال وضع الاستراتيجيات وتنفيذ الخطط التشغيلية وتحسين الأداء المستمر."
                 )}
               </p>
 
               {/* Experience timeline */}
-              <div className="space-y-0">
+              <div className="space-y-0 border-t" style={{ borderColor: "rgba(0,0,0,0.07)" }}>
                 {experiences.map((exp, i) => (
                   <motion.div
                     key={i}
-                    {...fu(0.1 + i * 0.05)}
+                    {...fu(0.1 + i * 0.06)}
                     className="timeline-row"
                   >
                     <span className="text-sm font-semibold flex-1" style={{ color: GRAPHITE }}>{exp.role}</span>
@@ -513,11 +613,16 @@ export default function Home() {
                 ))}
               </div>
 
-              <motion.div {...fu(0.3)} className="mt-10">
+              <motion.div {...fu(0.35)} className="mt-10">
                 <Link href="/about">
-                  <button className="btn-black">
-                    {t("Learn More", "اعرف أكثر")} <Arrow size={16} />
-                  </button>
+                  <motion.button
+                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="flex items-center gap-2.5 px-7 py-3.5 rounded-full text-[14px] font-bold text-white transition-all"
+                    style={{ background: BLACK, boxShadow: "0 6px 24px rgba(15,15,16,0.18)" }}
+                  >
+                    {t("Learn More", "اعرف أكثر")} <Arrow size={15} />
+                  </motion.button>
                 </Link>
               </motion.div>
             </motion.div>
@@ -526,32 +631,45 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
-          6. CONTACT CTA — full dark
+          6. CONTACT CTA — full dark with light rays
       ══════════════════════════════════════════ */}
-      <section className="relative overflow-hidden py-32 flex flex-col items-center justify-center text-center"
-        style={{ background: BLACK }}>
+      <section
+        className="relative overflow-hidden flex flex-col items-center justify-center text-center"
+        style={{ background: BLACK, minHeight: "60vh", padding: "8rem 1.5rem" }}
+      >
+        {/* Light ray effect */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] opacity-[0.06]"
+            style={{
+              background: "conic-gradient(from 270deg at 50% -5%, white 0deg, transparent 35deg, transparent 325deg, white 360deg)",
+            }} />
+          <div className="absolute inset-0"
+            style={{ background: "radial-gradient(ellipse 70% 55% at 50% 60%, rgba(199,172,112,0.07) 0%, transparent 70%)" }} />
+        </div>
 
-        {/* Radial glow */}
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(199,172,112,0.08) 0%, transparent 70%)" }} />
+        {/* MD logo watermark */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <LogoMark color="#ffffff" size={320} className="opacity-[0.025]" />
+        </div>
 
-        <motion.div {...fu(0)} className="relative z-10 max-w-3xl px-6">
-          {/* Eyebrow */}
+        <motion.div {...fu(0)} className="relative z-10 max-w-3xl">
+
+          {/* Eyebrow with lines */}
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="h-px w-12" style={{ background: GOLD, opacity: 0.5 }} />
-            <span className="section-eyebrow" style={{ color: GOLD }}>
-              {t("2 spots available", "مكانان متاحان")}
+            <div className="h-px w-12 opacity-40" style={{ background: GOLD }} />
+            <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: GOLD }}>
+              {t("Let's Collaborate", "لنتعاون")}
             </span>
-            <div className="h-px w-12" style={{ background: GOLD, opacity: 0.5 }} />
+            <div className="h-px w-12 opacity-40" style={{ background: GOLD }} />
           </div>
 
           {/* Big headline */}
-          <h2 className="font-black leading-none mb-6" style={{ fontSize: "clamp(3rem, 10vw, 7rem)", color: "#fff" }}>
+          <h2 className="font-black leading-none mb-6" style={{ fontSize: "clamp(3rem, 11vw, 7.5rem)", color: "#fff" }}>
             {t("Let's", "دعنا")}{" "}
             <span style={{ color: TITANIUM }}>{t("Connect", "نتعاون")}</span>
           </h2>
 
-          <p className="text-base md:text-lg mb-10 leading-relaxed" style={{ color: TITANIUM }}>
+          <p className="text-[15px] md:text-base mb-10 leading-relaxed" style={{ color: TITANIUM }}>
             {t(
               "Feel free to reach out if you have a project in mind or want to explore collaboration.",
               "تواصل معي إذا كان لديك مشروع أو ترغب في التعاون."
@@ -560,16 +678,46 @@ export default function Home() {
 
           <Link href="/book">
             <motion.button
-              whileHover={{ scale: 1.04, y: -2 }}
+              whileHover={{ scale: 1.04, y: -2, borderColor: "rgba(255,255,255,0.4)" }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-3 px-9 py-4 rounded-full text-base font-bold border-2 mx-auto transition-all"
-              style={{ borderColor: "rgba(255,255,255,0.2)", color: "#fff" }}
+              className="inline-flex items-center gap-3 px-9 py-4 rounded-full text-[14px] font-bold border-2 transition-all"
+              style={{ borderColor: "rgba(255,255,255,0.18)", color: "#fff" }}
             >
               {t("Book a free intro call", "احجز مكالمة مجانية")}
-              <Arrow size={18} />
+              <Arrow size={16} />
             </motion.button>
           </Link>
         </motion.div>
+
+        {/* Footer bar */}
+        <div className="absolute bottom-0 left-0 right-0 px-8 py-5 flex items-center justify-between border-t"
+          style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+          <div className="flex items-center gap-2.5">
+            <LogoMark color="#F5F5F3" size={22} className="opacity-60" />
+            <span className="text-[11px] font-semibold tracking-[0.15em] opacity-40" style={{ color: "#fff" }}>
+              © {new Date().getFullYear()} MOHAMMED AL-DABBANI
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            {[
+              { label: "@", href: "/contact" },
+              { label: "in", href: "/contact" },
+            ].map(({ label, href }) => (
+              <Link key={label} href={href}>
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold transition-colors"
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    color: "rgba(255,255,255,0.45)",
+                  }}
+                >
+                  {label}
+                </motion.div>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
     </RootLayout>

@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/use-auth";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import mdLogoBlack from "@assets/Screenshot_2026-07-09_at_2.14.54_AM_1783552521055.png";
+import { LogoMark } from "../Logo";
 
 const navLinks = [
   { href: "/about",     en: "About",      ar: "من أنا"    },
@@ -24,7 +24,6 @@ export function Navbar() {
 
   useEffect(() => { setMenuOpen(false); }, [location]);
 
-  // Close on outside click
   useEffect(() => {
     if (!menuOpen) return;
     const handler = (e: MouseEvent) => {
@@ -48,8 +47,9 @@ export function Navbar() {
               whileTap={{ scale: 0.97 }}
               className="navbar-pill flex items-center gap-2.5 cursor-pointer"
             >
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-[#0F0F10] flex items-center justify-center flex-shrink-0">
-                <img src={mdLogoBlack} alt="MD" className="w-10 h-10 object-cover scale-110" />
+              {/* Dark circle with SVG logo mark */}
+              <div className="w-8 h-8 rounded-full bg-[#0F0F10] flex items-center justify-center flex-shrink-0">
+                <LogoMark color="#F5F5F3" size={20} />
               </div>
               <span className="text-[13px] font-bold text-[#0F0F10] tracking-tight pr-1">
                 M-ALDBANI
@@ -98,7 +98,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
-            className={`fixed top-[72px] z-40 w-56 rounded-2xl shadow-2xl overflow-hidden ${isRTL ? "left-5" : "right-5"}`}
+            className={`fixed top-[72px] z-40 w-60 rounded-2xl shadow-2xl overflow-hidden ${isRTL ? "left-5" : "right-5"}`}
             style={{
               background: "rgba(255,255,255,0.98)",
               border: "1px solid rgba(0,0,0,0.08)",
@@ -107,6 +107,17 @@ export function Navbar() {
           >
             {/* Gold top strip */}
             <div className="h-[2px] w-full" style={{ background: "linear-gradient(90deg, #C7AC70, #8C9198)" }} />
+
+            {/* Menu logo header */}
+            <div className="px-4 pt-4 pb-3 flex items-center gap-2.5 border-b border-black/5">
+              <div className="w-7 h-7 rounded-full bg-[#0F0F10] flex items-center justify-center flex-shrink-0">
+                <LogoMark color="#F5F5F3" size={18} />
+              </div>
+              <div>
+                <p className="text-[11px] font-black text-[#0F0F10] tracking-wide leading-tight">MOHAMMED AL-DABBANI</p>
+                <p className="text-[9px] text-[#8C9198] tracking-[0.15em] uppercase">Brand Manager · F&B</p>
+              </div>
+            </div>
 
             <div className="p-2">
               {navLinks.map((item) => (
