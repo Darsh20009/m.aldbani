@@ -8,10 +8,10 @@ import { ArrowRight, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { LogoMark, LogoInline } from "../components/Logo";
 
 /* ── Brand logo imports ─────────────────────────── */
-import fujiLogo      from "@assets/Screenshot_2026-07-01_at_3.07.57_AM_1783549571265.png";
-import communityLogo from "@assets/Screenshot_2026-07-01_at_3.13.59_AM_1783549571269.png";
-import qiroxLogo     from "@assets/Screenshot_2026-07-09_at_1.27.26_AM_1783549658879.png";
-import genmzImg      from "@assets/Screenshot_2026-07-09_at_1.28.37_AM_1783569179187.png";
+import fujiLogo      from "@assets/fuji_no_bg.png";
+import communityLogo from "@assets/community_no_bg.png";
+import qiroxLogo     from "@assets/qirox_no_bg.png";
+import genmzImg      from "@assets/genmz_no_bg.png";
 
 /* ── Design tokens ──────────────────────────────── */
 const BG       = "#F5F5F3";
@@ -291,26 +291,31 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {/* Trusted by brands */}
-          <motion.div {...fu(0.25)} className="mt-16 flex flex-col items-center gap-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: TITANIUM }}>
-              {t("Brands I've Worked With", "علامات عملت معها")}
-            </p>
-            <div className="flex items-center gap-4 flex-wrap justify-center">
-              {[
-                { img: fujiLogo,      bg: "#fff",    border: "rgba(0,0,0,0.08)", h: 28, w: 64 },
-                { img: qiroxLogo,     bg: "#111",    border: "transparent",      h: 30, w: 80 },
-                { img: communityLogo, bg: "#1a2e5a", border: "transparent",      h: 26, w: 64 },
-              ].map(({ img, bg, border, h, w }, i) => (
-                <div key={i} className="rounded-xl overflow-hidden flex items-center justify-center px-4 py-2"
-                  style={{ background: bg, border: `1px solid ${border}`, height: 46 }}>
-                  <img src={img} alt="" className="object-contain" style={{ height: h, maxWidth: w }} />
-                </div>
-              ))}
-              <div className="rounded-xl px-4 py-2 text-[11px] font-bold h-[46px] flex items-center"
-                style={{ background: "#f0f0ee", color: GRAPHITE, border: "1px solid rgba(0,0,0,0.06)" }}>GENMZ</div>
-              <div className="rounded-xl px-4 py-2 text-[11px] font-bold h-[46px] flex items-center"
-                style={{ background: "#2d6a4f", color: "#fff" }}>{t("MATCHA POWER", "ماتشا باور")}</div>
+          {/* Trusted by brands — one seamless strip, no per-logo background boxes */}
+          <motion.div {...fu(0.25)} className="mt-16 w-full max-w-3xl">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(0,0,0,0.12))" }} />
+              <p className="text-[10px] font-bold uppercase tracking-[0.3em] whitespace-nowrap" style={{ color: TITANIUM }}>
+                {t("Brands I've Worked With", "علامات عملت معها")}
+              </p>
+              <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(0,0,0,0.12), transparent)" }} />
+            </div>
+            <div className="rounded-3xl py-8 px-6" style={{ background: BLACK }}>
+              <div className="flex items-center gap-8 md:gap-12 flex-wrap justify-center">
+                {[
+                  { img: fujiLogo,      name: "Fuji Cafe",  h: 40, invert: true },
+                  { img: qiroxLogo,     name: "QIROX",      h: 26, invert: false },
+                  { img: communityLogo, name: "Community",  h: 44, invert: false },
+                  { img: genmzImg,      name: "GEN M&Z",    h: 44, invert: true },
+                ].map(({ img, name, h, invert }, i) => (
+                  <img key={i} src={img} alt={name}
+                    className="object-contain transition-opacity hover:opacity-100"
+                    style={{ height: h, maxWidth: 110, opacity: 0.9, filter: invert ? "brightness(0) invert(1)" : "none" }} />
+                ))}
+                <span className="text-[13px] font-black tracking-wide" style={{ color: "#fff", opacity: 0.85 }}>
+                  {t("MATCHA POWER", "ماتشا باور")}
+                </span>
+              </div>
             </div>
           </motion.div>
         </motion.div>

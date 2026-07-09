@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 import { LogoMark } from "../components/Logo";
 import { ExternalLink } from "lucide-react";
 
-import fujiLogo      from "@assets/Screenshot_2026-07-01_at_3.07.57_AM_1783549571265.png";
-import communityLogo from "@assets/Screenshot_2026-07-01_at_3.13.59_AM_1783549571269.png";
-import qiroxLogo     from "@assets/Screenshot_2026-07-09_at_1.27.26_AM_1783549658879.png";
-import genmzImg      from "@assets/Screenshot_2026-07-09_at_1.28.37_AM_1783569179187.png";
+import fujiLogo      from "@assets/fuji_no_bg.png";
+import communityLogo from "@assets/community_no_bg.png";
+import qiroxLogo     from "@assets/qirox_no_bg.png";
+import genmzImg      from "@assets/genmz_no_bg.png";
 
 const BLACK    = "#0F0F10";
 const GOLD     = "#C7AC70";
