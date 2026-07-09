@@ -9,7 +9,7 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Sparkles, ArrowLeft, ArrowRight, Phone, Mail, Lock, Star } from "lucide-react";
 import { useState } from "react";
-import logoImg from "@assets/Screenshot_2026-07-01_at_3.14.23_AM_1783289663512.png";
+import { LogoMark } from "../../components/Logo";
 
 /* ────────────────────────────────────── */
 
@@ -115,13 +115,13 @@ export default function Login() {
           <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <Link href="/">
               <div className="inline-flex items-center gap-3 cursor-pointer group">
-                <div className="rounded-xl bg-white/10 backdrop-blur-sm p-2.5 group-hover:bg-white/15 transition-colors"
-                  style={{ border: "1px solid rgba(255,255,255,0.12)" }}>
-                  <img src={logoImg} alt="m-aldbani" className="h-9 w-auto object-contain" />
+                <div className="rounded-xl bg-white/10 backdrop-blur-sm p-2.5 group-hover:bg-white/15 transition-colors flex items-center justify-center"
+                  style={{ border: "1px solid rgba(255,255,255,0.12)", width: 48, height: 48 }}>
+                  <LogoMark color="#ffffff" size={28} />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm font-heading">m-aldbani</p>
-                  <p className="text-blue-400 text-[10px] font-semibold uppercase tracking-wider">محمد الدباني</p>
+                  <p className="text-white font-bold text-sm font-heading">MOHAMMED AL-DABBANI</p>
+                  <p className="text-[#C7AC70] text-[10px] font-semibold uppercase tracking-wider">Brand Manager · F&B</p>
                 </div>
               </div>
             </Link>
@@ -195,9 +195,9 @@ export default function Login() {
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 flex items-center gap-3">
             <Link href="/">
-              <div className="rounded-xl bg-white overflow-hidden cursor-pointer"
-                style={{ width: 52, height: 52, border: "1px solid rgba(37,99,235,0.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-                <img src={logoImg} alt="m-aldbani" className="w-full h-full object-contain" />
+              <div className="rounded-xl bg-[#0F0F10] overflow-hidden cursor-pointer flex items-center justify-center"
+                style={{ width: 52, height: 52 }}>
+                <LogoMark color="#F5F5F3" size={32} />
               </div>
             </Link>
             <div>

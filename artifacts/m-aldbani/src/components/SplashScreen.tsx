@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import logoImg from "@assets/Screenshot_2026-07-01_at_3.14.23_AM_1783289663512.png";
+import { LogoMark } from "./Logo";
 
 const SPLASH_KEY = "md_splash_seen";
 const TOTAL_MS   = 3000; // total duration before unmount
@@ -32,7 +32,7 @@ export function SplashScreen() {
     >
       {/* Giant logo watermark — barely visible, gives depth */}
       <div className="splash-logo-bg">
-        <img src={logoImg} alt="" className="splash-logo-img" />
+        <LogoMark color="#0F0F10" size={320} className="splash-logo-img opacity-100" />
       </div>
 
       {/* Content */}
@@ -56,7 +56,7 @@ export function SplashScreen() {
 
       {/* Bottom stamp — small logo + year */}
       <div className="splash-stamp">
-        <img src={logoImg} alt="" className="splash-stamp-logo" />
+        <LogoMark color="#0F0F10" size={28} className="splash-stamp-logo" />
         <span className="splash-stamp-year">Est. 2016</span>
       </div>
     </div>
