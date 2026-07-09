@@ -5,7 +5,7 @@ type Language = "en" | "ar";
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (en: string, ar: string) => string;
+  t: <T,>(en: T, ar: T) => T;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -22,7 +22,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = language;
   }, [language]);
 
-  const t = (en: string, ar: string) => {
+  const t = <T,>(en: T, ar: T): T => {
     return language === "ar" ? ar : en;
   };
 

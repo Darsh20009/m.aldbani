@@ -6,6 +6,7 @@ import { Link } from "wouter";
 import { useListServices } from "@workspace/api-client-react";
 import { ArrowRight, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { LogoMark, LogoInline } from "../components/Logo";
+import { Tilt3D } from "../components/Tilt3D";
 
 /* ── Brand logo imports ─────────────────────────── */
 import fujiLogo      from "@assets/fuji_no_bg.png";
@@ -98,28 +99,34 @@ function WorkCard({
   wide?: boolean; tall?: boolean;
 }) {
   return (
-    <motion.div
-      whileHover={{ y: -6, scale: 1.015 }}
-      transition={{ duration: 0.28, ease: EASE }}
-      className={`rounded-2xl overflow-hidden relative group cursor-pointer ${wide ? "col-span-2" : ""} ${tall ? "row-span-2" : ""}`}
-      style={{ background: bg, border: "1px solid rgba(255,255,255,0.06)" }}
-    >
-      <div className={`flex items-center justify-center p-10 ${tall ? "min-h-[360px]" : "min-h-[200px]"}`}>
-        {logo ? (
-          <img src={logo} alt={name} className="w-full h-full transition-transform duration-500 group-hover:scale-105"
-            style={{ objectFit: logoFit, maxHeight: tall ? 180 : 120, maxWidth: "80%" }} />
-        ) : (
-          <span className="text-3xl font-black" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
-        )}
-      </div>
-      <div className="px-5 pb-5 flex items-center justify-between">
-        <span className="text-sm font-bold" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
-        <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{
-          background: "rgba(255,255,255,0.08)",
-          color: dark ? TITANIUM : GRAPHITE
-        }}>{tag}</span>
-      </div>
-    </motion.div>
+    <Tilt3D className={`${wide ? "col-span-2" : ""} ${tall ? "row-span-2" : ""}`} maxTilt={7}>
+      <motion.div
+        whileHover={{ y: -6, scale: 1.015 }}
+        transition={{ duration: 0.28, ease: EASE }}
+        className="rounded-2xl overflow-hidden relative group cursor-pointer h-full"
+        style={{
+          background: bg,
+          border: "1px solid rgba(255,255,255,0.06)",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.08), 0 12px 28px -8px rgba(0,0,0,0.35)",
+        }}
+      >
+        <div className={`flex items-center justify-center p-10 ${tall ? "min-h-[360px]" : "min-h-[200px]"}`}>
+          {logo ? (
+            <img src={logo} alt={name} className="w-full h-full transition-transform duration-500 group-hover:scale-105"
+              style={{ objectFit: logoFit, maxHeight: tall ? 180 : 120, maxWidth: "80%" }} />
+          ) : (
+            <span className="text-3xl font-black" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
+          )}
+        </div>
+        <div className="px-5 pb-5 flex items-center justify-between">
+          <span className="text-sm font-bold" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
+          <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{
+            background: "rgba(255,255,255,0.08)",
+            color: dark ? TITANIUM : GRAPHITE
+          }}>{tag}</span>
+        </div>
+      </motion.div>
+    </Tilt3D>
   );
 }
 

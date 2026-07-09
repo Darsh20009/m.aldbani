@@ -1,5 +1,7 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="180" height="180" rx="36" fill="#0A1628"/>
-  <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="88" fill="#2563EB">M</text>
-  <text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-weight="400" font-size="22" letter-spacing="4" fill="#B8860B">ALDBANI</text>
+  <rect width="180" height="180" rx="36" fill="#0F0F10"/>
+  <g transform="translate(28,42) scale(0.95)">
+    <polyline points="7,94 7,7 48,58 89,7 89,94" stroke="#C7AC70" stroke-width="13" stroke-linecap="square" stroke-linejoin="miter" fill="none"/>
+    <path d="M89,7 C89,7 124,7 124,50.5 C124,94 89,94 89,94" stroke="#C7AC70" stroke-width="13" stroke-linecap="square" stroke-linejoin="round" fill="none"/>
+  </g>
 </svg>

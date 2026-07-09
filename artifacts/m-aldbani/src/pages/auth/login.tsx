@@ -1,5 +1,5 @@
 import { useLanguage } from "../../hooks/use-language";
-import { useAuth } from "../../hooks/use-auth";
+import { useAuth, type User } from "../../hooks/use-auth";
 import { useLogin } from "@workspace/api-client-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -51,7 +51,7 @@ export default function Login() {
       : { phone: data.identifier, password: data.password };
 
     mut.mutate({ data: payload as any }, {
-      onSuccess: (res) => {
+      onSuccess: (res: { token: string; user: User }) => {
         setAuth(res.token, res.user);
         toast({ title: t("Welcome back!", "مرحباً بعودتك!") });
         setLocation(res.user.role === "admin" ? "/admin" : "/client");

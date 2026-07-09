@@ -50,7 +50,7 @@ export default function Community() {
                     </Avatar>
                     <div>
                       <h3 className="font-bold font-heading">Mohammed Al-Dabbani</h3>
-                      <p className="text-xs text-foreground/50">{format(new Date(post.publishedAt || post.createdAt || Date.now()), 'MMM d, yyyy')}</p>
+                      <p className="text-xs text-foreground/50">{format(new Date(post.publishedAt || Date.now()), 'MMM d, yyyy')}</p>
                     </div>
                   </div>
                   
@@ -68,13 +68,13 @@ export default function Community() {
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div className="flex gap-2">
                       <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-white" onClick={() => handleReact(post.id, '👍')}>
-                        👍 {post.reactions?.find(r => r.emoji === '👍')?.count || 0}
+                        👍 {post.reactions?.find((r: { emoji: string; count: number }) => r.emoji === '👍')?.count || 0}
                       </Button>
                       <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-white" onClick={() => handleReact(post.id, '🚀')}>
-                        🚀 {post.reactions?.find(r => r.emoji === '🚀')?.count || 0}
+                        🚀 {post.reactions?.find((r: { emoji: string; count: number }) => r.emoji === '🚀')?.count || 0}
                       </Button>
                       <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-white" onClick={() => handleReact(post.id, '💡')}>
-                        💡 {post.reactions?.find(r => r.emoji === '💡')?.count || 0}
+                        💡 {post.reactions?.find((r: { emoji: string; count: number }) => r.emoji === '💡')?.count || 0}
                       </Button>
                     </div>
                     <div className="text-sm text-white/40">

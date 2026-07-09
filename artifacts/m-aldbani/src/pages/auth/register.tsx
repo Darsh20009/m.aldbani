@@ -1,5 +1,5 @@
 import { useLanguage } from "../../hooks/use-language";
-import { useAuth } from "../../hooks/use-auth";
+import { useAuth, type User } from "../../hooks/use-auth";
 import { useRegister } from "@workspace/api-client-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -35,7 +35,7 @@ export default function Register() {
 
   const onSubmit = (data: F) => {
     mut.mutate({ data }, {
-      onSuccess: (res) => {
+      onSuccess: (res: { token: string; user: User }) => {
         setAuth(res.token, res.user);
         toast({
           title: t("Account Created", "تم إنشاء الحساب"),

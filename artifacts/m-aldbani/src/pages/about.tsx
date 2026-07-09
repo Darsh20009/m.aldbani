@@ -319,7 +319,7 @@ export default function About() {
                       </p>
 
                       <ul className="space-y-2.5">
-                        {(t(item.pointsEn, item.pointsAr) as string[]).map((point, j) => (
+                        {t(item.pointsEn, item.pointsAr).map((point, j) => (
                           <li key={j} className="flex items-start gap-3 text-sm text-foreground/65 leading-relaxed">
                             <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
                               style={{ background: GOLD }} />
@@ -380,7 +380,7 @@ export default function About() {
             </p>
 
             <ul className="space-y-3">
-              {(t(
+              {t(
                 [
                   "Founded the project from idea to operational launch",
                   "Formulated the brand's vision, mission, and core values",
@@ -395,7 +395,7 @@ export default function About() {
                   "تنفيذ دراسات السوق وتحليل المنافسين والجمهور المستهدف",
                   "بناء الهوية التجارية وتجربة العلامة التجارية",
                 ]
-              ) as string[]).map((point, j) => (
+              ).map((point, j) => (
                 <li key={j} className="flex items-start gap-3 text-sm leading-relaxed"
                   style={{ color: "rgba(240,220,170,0.75)" }}>
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: GOLD }} />

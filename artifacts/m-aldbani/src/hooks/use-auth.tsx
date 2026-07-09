@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useGetMe } from "@workspace/api-client-react";
 
-type User = {
+export type User = {
   id: string;
   name: string;
   email: string;
@@ -20,10 +20,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   
-  const { data: me, isLoading } = useGetMe({
-    query: {
-      retry: false,
-    }
+  // The generated useGetMe hook's query-options type requires a queryKey even though
+  // the client supplies one internally — cast is safe, this is a known codegen quirk.
+  const { data: me, isLoading } = useGetMe<User>({
+    query: { retry: false } as any,
   });
 
   useEffect(() => {

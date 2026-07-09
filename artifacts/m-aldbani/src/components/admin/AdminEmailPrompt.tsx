@@ -139,6 +139,7 @@ export function useAdminEmailPrompt() {
       const t = setTimeout(() => setShow(true), 800);
       return () => clearTimeout(t);
     }
+    return undefined;
   }, []);
 
   return {

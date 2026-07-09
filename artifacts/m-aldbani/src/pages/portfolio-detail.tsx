@@ -68,7 +68,7 @@ export default function PortfolioDetail() {
                   {t("Technologies", "التقنيات المستخدمة")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {project.technologies.map(tech => (
+                  {project.technologies.map((tech: string) => (
                     <span key={tech} className="text-sm text-white/80 bg-primary/10 px-3 py-1.5 rounded-md">
                       {tech}
                     </span>
