@@ -3,7 +3,7 @@ import { useLanguage } from "../hooks/use-language";
 import { useListServices } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { LogoMark } from "../components/Logo";
+import { LogoBrandImage } from "../components/Logo";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 
 const BLACK    = "#0F0F10";
@@ -138,9 +138,10 @@ export default function Services() {
           style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px" }} />
         <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}40, transparent)` }} />
 
-        {/* Large MD watermark */}
-        <div className="absolute right-[-40px] top-1/2 -translate-y-1/2 opacity-[0.04] pointer-events-none select-none">
-          <LogoMark color="#ffffff" size={320} />
+        {/* Large brand watermark */}
+        <div className="absolute right-[-40px] top-1/2 -translate-y-1/2 pointer-events-none select-none"
+          style={{ opacity: 0.04 }}>
+          <LogoBrandImage size={320} style={{ filter: "brightness(0) invert(1)" }} />
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto px-5 text-center">
@@ -201,11 +202,11 @@ export default function Services() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: EASE }}
           >
-            {/* MD monogram */}
+            {/* Brand logo */}
             <div className="flex justify-center mb-8">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                style={{ background: GRAPHITE }}>
-                <LogoMark color={GOLD} size={36} />
+                style={{ background: "linear-gradient(135deg, #08102E, #0F1E56)", boxShadow: "0 4px 20px rgba(37,99,235,0.35)" }}>
+                <LogoBrandImage size={40} style={{ filter: "drop-shadow(0 2px 6px rgba(37,99,235,0.5))" }} />
               </div>
             </div>
 

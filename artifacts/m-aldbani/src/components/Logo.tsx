@@ -1,6 +1,10 @@
-/* ── Mohammed Al-Dabbani · MD Monogram Logo ───────────────────────────────
-   Pure SVG – no image dependencies.
-   Matches the geometric brand identity: bold M + D sharing a vertical stroke.
+/* ── Mohammed Al-Dabbani · MD Brand Logo System ───────────────────────────
+   Real brand image + SVG fallback variants.
+   LogoBrandImage — uses the actual 3D blue logo (PNG)
+   LogoMark       — inline SVG monogram (email / fallback)
+   LogoFull       — mark + wordmark stacked
+   LogoPill       — navbar pill layout
+   LogoInline     — embedded in headlines
 ─────────────────────────────────────────────────────────────────────────── */
 
 interface LogoProps {
@@ -9,7 +13,30 @@ interface LogoProps {
   size?: number;
 }
 
-/** Standalone MD monogram mark */
+/** Real brand image logo — the actual 3D blue gradient MD mark */
+export function LogoBrandImage({
+  size = 44,
+  className = "",
+  style = {},
+}: {
+  size?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <img
+      src="/logo-transparent.png"
+      alt="M-ALDBANI"
+      width={size}
+      height={size}
+      draggable={false}
+      className={`select-none object-contain flex-shrink-0 ${className}`}
+      style={{ width: size, height: size, ...style }}
+    />
+  );
+}
+
+/** Standalone MD monogram mark (SVG — for dark/light backgrounds) */
 export function LogoMark({ className = "", color = "#0F0F10", size = 44 }: LogoProps) {
   const h = Math.round(size * 0.78);
   return (
@@ -22,7 +49,6 @@ export function LogoMark({ className = "", color = "#0F0F10", size = 44 }: LogoP
       className={className}
       aria-label="MD"
     >
-      {/* M — two peaks, angular midpoint */}
       <polyline
         points="7,94 7,7 48,58 89,7 89,94"
         stroke={color}
@@ -31,7 +57,6 @@ export function LogoMark({ className = "", color = "#0F0F10", size = 44 }: LogoP
         strokeLinejoin="miter"
         fill="none"
       />
-      {/* D — smooth curve sharing the right stroke of M */}
       <path
         d="M89,7 C89,7 124,7 124,50.5 C124,94 89,94 89,94"
         stroke={color}
@@ -44,11 +69,11 @@ export function LogoMark({ className = "", color = "#0F0F10", size = 44 }: LogoP
   );
 }
 
-/** Full lockup: MD mark + wordmark stacked */
+/** Full lockup: MD image mark + wordmark stacked */
 export function LogoFull({ className = "", color = "#0F0F10", height = 48 }: { className?: string; color?: string; height?: number }) {
   return (
-    <div className={`flex flex-col items-center gap-0 ${className}`} style={{ height }}>
-      <LogoMark color={color} size={Math.round(height * 0.72)} />
+    <div className={`flex flex-col items-center gap-1 ${className}`} style={{ height }}>
+      <LogoBrandImage size={Math.round(height * 0.72)} />
       <div
         style={{
           color,
@@ -66,11 +91,11 @@ export function LogoFull({ className = "", color = "#0F0F10", height = 48 }: { c
   );
 }
 
-/** Pill-style logo for the navbar: small mark + text side by side — no background box */
+/** Pill-style logo for the navbar: real brand image + text side by side */
 export function LogoPill({ className = "", color = "#0F0F10" }: { className?: string; color?: string }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      <LogoMark color={color} size={30} />
+      <LogoBrandImage size={32} />
       <span className="text-[13px] font-bold tracking-tight leading-none" style={{ color }}>
         M-ALDBANI
       </span>
@@ -78,7 +103,7 @@ export function LogoPill({ className = "", color = "#0F0F10" }: { className?: st
   );
 }
 
-/** Inline logo mark for embedding in headlines — transparent, no background box */
+/** Inline logo mark for embedding in headlines */
 export function LogoInline({
   size = 80,
   dark = true,
@@ -93,7 +118,7 @@ export function LogoInline({
       className={`inline-flex items-center justify-center flex-shrink-0 ${className}`}
       style={{ width: size, height: size }}
     >
-      <LogoMark color={dark ? "#0F0F10" : "#F5F5F3"} size={size} />
+      <LogoBrandImage size={size} />
     </span>
   );
 }

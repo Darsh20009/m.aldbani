@@ -3,13 +3,13 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "../../hooks/use-auth";
 import { useLanguage } from "../../hooks/use-language";
 import { useSiteSettings } from "../../hooks/use-site-settings";
-import { LogoMark } from "../Logo";
+import { LogoBrandImage } from "../Logo";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, CalendarDays, MessageSquare, FolderOpen, Receipt, LogOut, ArrowLeft, ArrowRight } from "lucide-react";
 
 export function ClientLayout({ children }: { children: ReactNode }) {
   const { user, isLoading, logout } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { language, t } = useLanguage();
   const settings = useSiteSettings();
 
@@ -22,9 +22,12 @@ export function ClientLayout({ children }: { children: ReactNode }) {
   if (isLoading || !user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <span className="text-muted-foreground">{t("Loading…", "جارٍ التحميل…")}</span>
+        <div className="flex flex-col items-center gap-4">
+          <LogoBrandImage size={52} className="float-logo opacity-80" />
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            <span className="text-muted-foreground">{t("Loading…", "جارٍ التحميل…")}</span>
+          </div>
         </div>
       </div>
     );
@@ -39,17 +42,27 @@ export function ClientLayout({ children }: { children: ReactNode }) {
   ];
 
   const ArrowIcon = language === "ar" ? ArrowRight : ArrowLeft;
+  const isActive = (href: string) =>
+    href === "/client" ? location === "/client" : location.startsWith(href);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-muted/30 text-foreground">
       {/* Sidebar */}
       <aside className="w-full md:w-64 border-r border-border bg-card flex flex-col shadow-sm">
-        <div className="h-20 flex items-center px-6 border-b border-border">
+        {/* Logo area */}
+        <div
+          className="h-20 flex items-center px-5 border-b border-border/60"
+          style={{ background: "linear-gradient(135deg, #08102E 0%, #0F1E56 100%)" }}
+        >
           <Link href="/" className="flex items-center gap-3 group">
-            <LogoMark color="#0F0F10" size={34} className="shrink-0" />
+            <LogoBrandImage size={38} className="flex-shrink-0 logo-img-nav" />
             <div>
-              <p className="font-heading font-bold text-sm text-foreground leading-none">{language === "ar" ? settings.siteNameAr : settings.siteNameEn}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider">{t("Client Portal", "بوابة العميل")}</p>
+              <p className="font-heading font-bold text-sm text-white leading-none">
+                {language === "ar" ? settings.siteNameAr : settings.siteNameEn}
+              </p>
+              <p className="text-[10px] text-white/40 mt-0.5 uppercase tracking-wider">
+                {t("Client Portal", "بوابة العميل")}
+              </p>
             </div>
           </Link>
         </div>
@@ -57,20 +70,34 @@ export function ClientLayout({ children }: { children: ReactNode }) {
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const active = isActive(item.href);
             return (
               <Link key={item.href} href={item.href}>
-                <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all cursor-pointer text-sm font-medium group">
-                  <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <div
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                    active
+                      ? "text-white shadow-md"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
+                  }`}
+                  style={active ? {
+                    background: "linear-gradient(135deg, #0F1E56, #2563EB)",
+                    boxShadow: "0 4px 16px rgba(37,99,235,0.2)",
+                  } : {}}
+                >
+                  <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${active ? "text-white" : ""}`} />
                   <span>{item.label}</span>
                 </div>
               </Link>
-            )
+            );
           })}
         </nav>
 
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3 mb-3 px-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
+              style={{ background: "linear-gradient(135deg, #0F1E56, #7C3AED)" }}
+            >
               {(user.name ?? user.email ?? "?").charAt(0).toUpperCase()}
             </div>
             <div className="overflow-hidden">
@@ -80,7 +107,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
           </div>
           <Button
             variant="ghost"
-            className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 text-sm"
+            className="w-full justify-start text-muted-foreground hover:text-red-500 hover:bg-red-50 text-sm rounded-xl"
             onClick={() => { logout(); setLocation("/"); }}
           >
             <LogOut className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" />
@@ -93,9 +120,14 @@ export function ClientLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 overflow-auto bg-background/50">
         <header className="h-20 border-b border-border px-6 md:px-8 flex items-center justify-between bg-card shadow-sm sticky top-0 z-10">
           <h1 className="text-xl font-bold font-heading">
-            {t("Welcome back", "مرحباً بعودتك")}, {(user.name ?? "").split(" ")[0]}
+            {t("Welcome back", "مرحباً بعودتك")}, <span className="text-gradient-brand">{(user.name ?? "").split(" ")[0]}</span>
           </h1>
-          <Button variant="outline" size="sm" onClick={() => setLocation("/")} className="text-muted-foreground hover:text-primary text-xs bg-transparent border-border hover:bg-muted/50 transition-colors">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setLocation("/")}
+            className="text-muted-foreground hover:text-blue-600 text-xs bg-transparent border-border hover:border-blue-500/30 hover:bg-blue-50/50 transition-all rounded-full"
+          >
             <ArrowIcon className="w-3 h-3 mr-1 rtl:ml-1 rtl:mr-0" />
             {t("Back to Website", "العودة للموقع")}
           </Button>

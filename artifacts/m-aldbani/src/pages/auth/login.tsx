@@ -9,7 +9,7 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Sparkles, ArrowLeft, ArrowRight, Phone, Mail, Lock, Star } from "lucide-react";
 import { useState } from "react";
-import { LogoMark } from "../../components/Logo";
+import { LogoBrandImage } from "../../components/Logo";
 
 /* ────────────────────────────────────── */
 
@@ -115,7 +115,7 @@ export default function Login() {
           <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <Link href="/">
               <div className="inline-flex items-center gap-3 cursor-pointer group">
-                <LogoMark color="#ffffff" size={40} className="flex-shrink-0" />
+                <LogoBrandImage size={40} className="flex-shrink-0" style={{ filter: "drop-shadow(0 2px 8px rgba(37,99,235,0.5))" }} />
                 <div>
                   <p className="text-white font-bold text-sm font-heading">MOHAMMED AL-DABBANI</p>
                   <p className="text-[#C7AC70] text-[10px] font-semibold uppercase tracking-wider">Brand Manager · F&B</p>
@@ -192,7 +192,7 @@ export default function Login() {
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 flex items-center gap-3">
             <Link href="/">
-              <LogoMark color="#0F0F10" size={44} className="cursor-pointer flex-shrink-0" />
+              <LogoBrandImage size={44} className="cursor-pointer flex-shrink-0" style={{ filter: "drop-shadow(0 2px 8px rgba(37,99,235,0.35))" }} />
             </Link>
             <div>
               <p className="font-bold text-slate-900 text-sm font-heading">m-aldbani</p>

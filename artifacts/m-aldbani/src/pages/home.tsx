@@ -5,7 +5,7 @@ import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
 import { useListServices } from "@workspace/api-client-react";
 import { ArrowRight, ArrowLeft, ArrowUpRight } from "lucide-react";
-import { LogoMark, LogoInline } from "../components/Logo";
+import { LogoBrandImage, LogoInline } from "../components/Logo";
 import { Tilt3D } from "../components/Tilt3D";
 
 /* ── Brand logo imports ─────────────────────────── */
@@ -179,17 +179,25 @@ export default function Home() {
       ══════════════════════════════════════════ */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-24 pb-6"
+        className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-24 pb-6 mesh-bg"
         style={{ background: BG }}
       >
-        {/* Background light rays */}
+        {/* Background: blue/purple brand mesh + subtle conic rays */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[700px] opacity-[0.07]"
+          {/* Conic gold ray */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[700px] opacity-[0.06]"
             style={{
               background: "conic-gradient(from 270deg at 50% -10%, #C7AC70 0deg, transparent 40deg, transparent 320deg, #C7AC70 360deg)",
             }} />
-          <div className="absolute inset-0"
-            style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(199,172,112,0.05) 0%, transparent 70%)" }} />
+          {/* Brand blue glow top-center */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] opacity-[0.06]"
+            style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, #2563EB 0%, transparent 70%)" }} />
+          {/* Brand purple glow bottom-right */}
+          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] opacity-[0.04]"
+            style={{ background: "radial-gradient(ellipse 80% 80% at 100% 100%, #7C3AED 0%, transparent 70%)" }} />
+          {/* Orbit rings for depth */}
+          <div className="orbit-ring absolute" style={{ width: 600, height: 600, top: "50%", left: "50%", transform: "translate(-50%,-60%) rotate(20deg)", animationDuration: "40s" }} />
+          <div className="orbit-ring absolute" style={{ width: 900, height: 900, top: "50%", left: "50%", transform: "translate(-50%,-55%) rotate(-10deg)", animationDuration: "60s", animationDirection: "reverse", borderColor: "rgba(124,58,237,0.06)" }} />
         </div>
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-7xl mx-auto w-full px-6 lg:px-12">
@@ -198,12 +206,12 @@ export default function Home() {
           <motion.div {...fu(0)} className="flex justify-center mb-12">
             <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full text-[13px] font-semibold"
               style={{
-                background: "rgba(255,255,255,0.92)",
-                border: "1px solid rgba(0,0,0,0.07)",
+                background: "rgba(255,255,255,0.94)",
+                border: "1px solid rgba(37,99,235,0.12)",
                 color: GRAPHITE,
-                boxShadow: "0 2px 16px rgba(0,0,0,0.04)",
+                boxShadow: "0 2px 16px rgba(37,99,235,0.08), 0 1px 0 rgba(255,255,255,0.9) inset",
               }}>
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: GOLD }} />
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "linear-gradient(135deg,#2563EB,#7C3AED)", borderRadius: "50%" }} />
               {t("Available for New Projects", "متاح للمشاريع الجديدة")}
               <span className="mx-0.5 opacity-25">·</span>
               {t("Brand Manager · F&B · Saudi Arabia", "مدير علامة · F&B · المملكة")}
@@ -277,10 +285,13 @@ export default function Home() {
           >
             <Link href="/book">
               <motion.button
-                whileHover={{ scale: 1.04, y: -1 }}
+                whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-full text-[14px] font-bold text-white transition-all"
-                style={{ background: BLACK, boxShadow: "0 6px 24px rgba(15,15,16,0.25)" }}
+                style={{
+                  background: "linear-gradient(135deg, #0F1E56, #2563EB, #7C3AED)",
+                  boxShadow: "0 6px 28px rgba(37,99,235,0.35), 0 2px 8px rgba(124,58,237,0.2)",
+                }}
               >
                 {t("Book Consultation", "احجز استشارة")}
                 <Arrow size={15} />
@@ -288,7 +299,7 @@ export default function Home() {
             </Link>
             <Link href="/portfolio">
               <motion.button
-                whileHover={{ scale: 1.02, backgroundColor: "rgba(0,0,0,0.05)" }}
+                whileHover={{ scale: 1.02, borderColor: "rgba(37,99,235,0.3)", color: "#2563EB" }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center gap-2 px-7 py-3.5 rounded-full text-[14px] font-bold border transition-all"
                 style={{ borderColor: "rgba(0,0,0,0.12)", color: GRAPHITE }}
@@ -482,10 +493,13 @@ export default function Home() {
           <motion.div {...fu(0.3)} className="flex justify-center mt-12 md:mt-20">
             <Link href="/book">
               <motion.button
-                whileHover={{ scale: 1.04, y: -1 }}
+                whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center gap-2.5 px-8 py-3.5 rounded-full text-[14px] font-bold text-white transition-all"
-                style={{ background: BLACK, boxShadow: "0 6px 24px rgba(15,15,16,0.2)" }}
+                style={{
+                  background: "linear-gradient(135deg, #0F1E56, #2563EB, #7C3AED)",
+                  boxShadow: "0 6px 28px rgba(37,99,235,0.35), 0 2px 8px rgba(124,58,237,0.2)",
+                }}
               >
                 {t("Start the Process", "ابدأ الآن")} <Arrow size={15} />
               </motion.button>
@@ -577,8 +591,8 @@ export default function Home() {
                 style={{ background: "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(199,172,112,0.1) 0%, transparent 70%)" }} />
 
               <div className="relative z-10 p-12 flex flex-col items-center justify-center h-full text-center min-h-[420px]">
-                {/* Large SVG logo mark */}
-                <LogoMark color="#F5F5F3" size={100} className="mb-6 opacity-90" />
+                {/* Real brand logo mark — 3D blue */}
+                <LogoBrandImage size={100} className="mb-6 float-logo" style={{ filter: "drop-shadow(0 8px 32px rgba(37,99,235,0.5))" }} />
 
                 <div className="space-y-1">
                   <p className="text-white font-black text-2xl tracking-[0.12em] leading-tight">MOHAMMED</p>
@@ -628,10 +642,13 @@ export default function Home() {
               <motion.div {...fu(0.35)} className="mt-10">
                 <Link href="/about">
                   <motion.button
-                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileHover={{ scale: 1.04, y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     className="flex items-center gap-2.5 px-7 py-3.5 rounded-full text-[14px] font-bold text-white transition-all"
-                    style={{ background: BLACK, boxShadow: "0 6px 24px rgba(15,15,16,0.18)" }}
+                    style={{
+                      background: "linear-gradient(135deg, #0F1E56, #2563EB, #7C3AED)",
+                      boxShadow: "0 6px 28px rgba(37,99,235,0.3), 0 2px 8px rgba(124,58,237,0.15)",
+                    }}
                   >
                     {t("Learn More", "اعرف أكثر")} <Arrow size={15} />
                   </motion.button>
@@ -659,9 +676,9 @@ export default function Home() {
             style={{ background: "radial-gradient(ellipse 70% 55% at 50% 60%, rgba(199,172,112,0.07) 0%, transparent 70%)" }} />
         </div>
 
-        {/* MD logo watermark */}
+        {/* Brand logo watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <LogoMark color="#ffffff" size={320} className="opacity-[0.025]" />
+          <LogoBrandImage size={320} style={{ opacity: 0.03, filter: "brightness(0) invert(1)" }} />
         </div>
 
         <motion.div {...fu(0)} className="relative z-10 max-w-3xl">
@@ -690,10 +707,13 @@ export default function Home() {
 
           <Link href="/book">
             <motion.button
-              whileHover={{ scale: 1.04, y: -2, borderColor: "rgba(255,255,255,0.4)" }}
+              whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-3 px-9 py-4 rounded-full text-[14px] font-bold border-2 transition-all"
-              style={{ borderColor: "rgba(255,255,255,0.18)", color: "#fff" }}
+              className="inline-flex items-center gap-3 px-9 py-4 rounded-full text-[14px] font-bold transition-all text-white"
+              style={{
+                background: "linear-gradient(135deg, #0F1E56, #2563EB, #7C3AED)",
+                boxShadow: "0 8px 32px rgba(37,99,235,0.45), 0 2px 8px rgba(124,58,237,0.25)",
+              }}
             >
               {t("Book a free intro call", "احجز مكالمة مجانية")}
               <Arrow size={16} />
@@ -705,7 +725,7 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 px-8 py-5 flex items-center justify-between border-t"
           style={{ borderColor: "rgba(255,255,255,0.06)" }}>
           <div className="flex items-center gap-2.5">
-            <LogoMark color="#F5F5F3" size={22} className="opacity-60" />
+            <LogoBrandImage size={22} style={{ opacity: 0.5, filter: "brightness(0) invert(1)" }} />
             <span className="text-[11px] font-semibold tracking-[0.15em] opacity-40" style={{ color: "#fff" }}>
               © {new Date().getFullYear()} MOHAMMED AL-DABBANI
             </span>

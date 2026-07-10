@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Linkedin, Twitter, Instagram, CheckCircle } from "lucide-react";
 import { useState } from "react";
-import { LogoMark } from "../components/Logo";
+import { LogoBrandImage } from "../components/Logo";
 
 const BLACK    = "#0F0F10";
 const GRAPHITE = "#3A3A3A";
@@ -209,8 +209,9 @@ export default function Contact() {
                 className="rounded-xl p-5 flex items-center gap-4"
                 style={{ background: GRAPHITE, border: `1px solid rgba(199,172,112,0.2)` }}
               >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: BLACK }}>
-                  <LogoMark color={GOLD} size={24} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: "linear-gradient(135deg, #08102E, #0F1E56)", boxShadow: "0 2px 10px rgba(37,99,235,0.3)" }}>
+                  <LogoBrandImage size={28} style={{ filter: "drop-shadow(0 1px 4px rgba(37,99,235,0.4))" }} />
                 </div>
                 <div>
                   <p className="text-xs font-black" style={{ color: OFF_WHITE }}>Mohammed Al-Dabbani</p>

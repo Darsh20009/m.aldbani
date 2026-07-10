@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "../../hooks/use-auth";
 import { useLanguage } from "../../hooks/use-language";
 import { AdminEmailPrompt, useAdminEmailPrompt } from "../admin/AdminEmailPrompt";
-import { LogoMark } from "../../components/Logo";
+import { LogoBrandImage } from "../../components/Logo";
 import { useSiteSettings } from "../../hooks/use-site-settings";
 import {
   LayoutDashboard,
@@ -53,9 +53,12 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   if (isLoading || !user || user.role !== "admin") {
     return (
       <div className="min-h-screen bg-[#FAF8F4] flex items-center justify-center">
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <span className="text-muted-foreground text-sm">Loading…</span>
+        <div className="flex flex-col items-center gap-4">
+          <LogoBrandImage size={52} className="float-logo opacity-80" />
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            <span className="text-muted-foreground text-sm">Loading…</span>
+          </div>
         </div>
       </div>
     );
@@ -67,16 +70,17 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="h-16 flex items-center px-5 border-b border-border/60 shrink-0">
+      <div className="h-[68px] flex items-center px-4 border-b border-border/60 shrink-0"
+        style={{ background: "linear-gradient(135deg, #08102E 0%, #0F1E56 100%)" }}>
         <Link href="/" className="flex items-center gap-3 group">
-          <LogoMark color="#0F0F10" size={30} className="shrink-0" />
+          <LogoBrandImage size={34} className="flex-shrink-0 logo-img-nav" />
           <div>
-            <p className="font-heading font-bold text-sm text-primary leading-none">M-ALDBANI</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5 tracking-wide uppercase">Admin CRM</p>
+            <p className="font-heading font-bold text-sm text-white leading-none tracking-wide">M-ALDBANI</p>
+            <p className="text-[10px] text-white/40 mt-0.5 tracking-wider uppercase">Admin CRM</p>
           </div>
         </Link>
         <button
-          className="ml-auto md:hidden text-muted-foreground hover:text-foreground"
+          className="ml-auto md:hidden text-white/50 hover:text-white transition-colors"
           onClick={() => setSidebarOpen(false)}
         >
           <X size={18} />
@@ -91,14 +95,21 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           return (
             <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}>
               <div
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   active
-                    ? "bg-primary text-white shadow-sm shadow-primary/25"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    ? "text-white shadow-md"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                 }`}
+                style={active ? {
+                  background: "linear-gradient(135deg, #0F1E56, #2563EB)",
+                  boxShadow: "0 4px 16px rgba(37,99,235,0.25)",
+                } : {}}
               >
                 <Icon size={16} className={active ? "text-white" : "text-muted-foreground"} />
                 <span>{t(item.label, item.labelAr)}</span>
+                {active && (
+                  <div className="ml-auto w-1 h-4 rounded-full bg-white/40" />
+                )}
               </div>
             </Link>
           );
@@ -107,12 +118,15 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
       {/* Footer */}
       <div className="p-3 border-t border-border/60 shrink-0">
-        <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all mb-1">
+        <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-muted-foreground hover:text-blue-600 hover:bg-blue-50 transition-all mb-1">
           <Globe size={15} />
           <span>{t("View Website", "عرض الموقع")}</span>
         </Link>
         <div className="flex items-center gap-2.5 px-3 py-2 mt-2 border-t border-border/40 pt-3">
-          <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
+            style={{ background: "linear-gradient(135deg, #0F1E56, #7C3AED)" }}
+          >
             {(user.name ?? "A").charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
@@ -121,7 +135,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           </div>
           <button
             onClick={() => { logout(); setLocation("/"); }}
-            className="text-muted-foreground hover:text-destructive transition-colors p-1 rounded"
+            className="text-muted-foreground hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-50"
             title="Logout"
           >
             <LogOut size={15} />
@@ -136,7 +150,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-20 md:hidden"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -166,7 +180,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
-            <LogoMark color="#0F0F10" size={24} />
+            <LogoBrandImage size={28} className="logo-img-nav" />
             <span className="font-heading font-bold text-sm text-primary">M-ALDBANI</span>
           </div>
         </header>

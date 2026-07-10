@@ -3,7 +3,7 @@ import { useLanguage } from "../hooks/use-language";
 import { useListProjects } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { LogoMark } from "../components/Logo";
+import { LogoBrandImage } from "../components/Logo";
 import { ExternalLink } from "lucide-react";
 
 import fujiLogo      from "@assets/fuji_no_bg.png";
@@ -94,7 +94,7 @@ function BrandCard({ brand, i }: { brand: typeof FEATURED_BRANDS[0]; i: number }
           />
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <LogoMark color={GOLD} size={52} />
+            <LogoBrandImage size={52} style={{ filter: "drop-shadow(0 4px 16px rgba(37,99,235,0.4))" }} />
             <span className="text-xl font-black" style={{ color: GOLD }}>{t(brand.nameEn, brand.nameAr)}</span>
           </div>
         )}
@@ -135,8 +135,8 @@ function ProjectCard({ project, i }: { project: any; i: number }) {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             ) : (
               <div className="w-full h-full flex items-center justify-center"
-                style={{ background: "#1a1a1a" }}>
-                <LogoMark color={GOLD} size={48} />
+                style={{ background: "linear-gradient(135deg, #08102E, #0F1E56)" }}>
+                <LogoBrandImage size={64} style={{ filter: "drop-shadow(0 4px 20px rgba(37,99,235,0.5))" }} />
               </div>
             )}
             {project.category && (

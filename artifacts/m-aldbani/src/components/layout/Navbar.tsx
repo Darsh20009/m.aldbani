@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/use-auth";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { LogoMark } from "../Logo";
+import { LogoBrandImage } from "../Logo";
 
 const navLinks = [
   { href: "/about",     en: "About",      ar: "من أنا"    },
@@ -45,10 +45,12 @@ export function Navbar() {
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
-              className="navbar-pill flex items-center gap-2.5 cursor-pointer"
+              className="navbar-pill flex items-center gap-2 cursor-pointer"
             >
-              {/* SVG logo mark — transparent, no background */}
-              <LogoMark color="#0F0F10" size={30} className="flex-shrink-0" />
+              <LogoBrandImage
+                size={36}
+                className="flex-shrink-0 logo-img-nav"
+              />
               <span className="text-[13px] font-bold text-[#0F0F10] tracking-tight pr-1">
                 M-ALDBANI
               </span>
@@ -61,7 +63,7 @@ export function Navbar() {
             <motion.button
               whileTap={{ scale: 0.92 }}
               onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-              className="px-3 py-1.5 rounded-full text-xs font-bold border border-black/10 bg-white/90 text-[#3A3A3A] hover:border-black/25 transition-all backdrop-blur-md"
+              className="px-3 py-1.5 rounded-full text-xs font-bold border border-black/10 bg-white/90 text-[#3A3A3A] hover:border-blue-500/30 hover:text-blue-600 transition-all backdrop-blur-md"
             >
               {language === "en" ? "عربي" : "EN"}
             </motion.button>
@@ -70,16 +72,20 @@ export function Navbar() {
             <motion.button
               whileTap={{ scale: 0.92 }}
               onClick={() => setMenuOpen(!menuOpen)}
-              className="w-10 h-10 rounded-full bg-[#0F0F10] text-white flex items-center justify-center transition-all hover:bg-[#3A3A3A]"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-90"
+              style={{
+                background: "linear-gradient(135deg, #0F1E56, #1a1060)",
+                boxShadow: "0 4px 16px rgba(37,99,235,0.25)",
+              }}
               aria-label="Menu"
             >
               {menuOpen ? (
-                <X size={16} />
+                <X size={16} color="white" />
               ) : (
                 <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
                   <rect x="0" y="0"  width="16" height="2" rx="1" fill="white" />
                   <rect x="0" y="5"  width="12" height="2" rx="1" fill="white" />
-                  <rect x="0" y="10" width="8"  height="2" rx="1" fill="white" />
+                  <rect x="0" y="10" width="8"  height="2" rx="1" fill="rgba(255,255,255,0.6)" />
                 </svg>
               )}
             </motion.button>
@@ -92,26 +98,27 @@ export function Navbar() {
         {menuOpen && (
           <motion.div
             data-menu
-            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            initial={{ opacity: 0, y: -8, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
-            className={`fixed top-[72px] z-40 w-60 rounded-2xl shadow-2xl overflow-hidden ${isRTL ? "left-5" : "right-5"}`}
+            exit={{ opacity: 0, y: -8, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            className={`fixed top-[76px] z-40 w-64 rounded-2xl overflow-hidden ${isRTL ? "left-5" : "right-5"}`}
             style={{
-              background: "rgba(255,255,255,0.98)",
-              border: "1px solid rgba(0,0,0,0.08)",
-              backdropFilter: "blur(20px)",
+              background: "rgba(255,255,255,0.97)",
+              border: "1px solid rgba(255,255,255,0.6)",
+              backdropFilter: "blur(28px) saturate(200%)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)",
             }}
           >
-            {/* Gold top strip */}
-            <div className="h-[2px] w-full" style={{ background: "linear-gradient(90deg, #C7AC70, #8C9198)" }} />
+            {/* Gradient top strip */}
+            <div className="h-[2.5px] w-full" style={{ background: "linear-gradient(90deg, #2563EB, #7C3AED)" }} />
 
             {/* Menu logo header */}
-            <div className="px-4 pt-4 pb-3 flex items-center gap-2.5 border-b border-black/5">
-              <LogoMark color="#0F0F10" size={26} className="flex-shrink-0" />
+            <div className="px-4 pt-4 pb-3 flex items-center gap-3 border-b border-black/5">
+              <LogoBrandImage size={38} className="flex-shrink-0 logo-img-nav" />
               <div>
                 <p className="text-[11px] font-black text-[#0F0F10] tracking-wide leading-tight">MOHAMMED AL-DABBANI</p>
-                <p className="text-[9px] text-[#8C9198] tracking-[0.15em] uppercase">Brand Manager · F&B</p>
+                <p className="text-[9px] text-[#8C9198] tracking-[0.15em] uppercase mt-0.5">Brand Manager · F&B</p>
               </div>
             </div>
 
@@ -119,16 +126,19 @@ export function Navbar() {
               {navLinks.map((item) => (
                 <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
                   <motion.div
-                    whileHover={{ x: isRTL ? -4 : 4, backgroundColor: "rgba(0,0,0,0.04)" }}
+                    whileHover={{ x: isRTL ? -4 : 4, backgroundColor: "rgba(37,99,235,0.05)" }}
                     className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-semibold cursor-pointer transition-colors ${
                       location === item.href
-                        ? "text-[#C7AC70] bg-[#C7AC70]/8"
+                        ? "text-[#2563EB] bg-[#2563EB]/8"
                         : "text-[#0F0F10]"
                     }`}
                   >
                     {t(item.en, item.ar)}
                     {location === item.href && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#C7AC70]" />
+                      <div
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ background: "linear-gradient(135deg, #2563EB, #7C3AED)" }}
+                      />
                     )}
                   </motion.div>
                 </Link>
@@ -139,7 +149,13 @@ export function Navbar() {
 
               {/* CTA */}
               <Link href="/book" onClick={() => setMenuOpen(false)}>
-                <div className="mx-2 mb-1 py-2.5 px-4 rounded-xl bg-[#0F0F10] text-white text-[13px] font-bold text-center cursor-pointer hover:bg-[#3A3A3A] transition-colors">
+                <div
+                  className="mx-2 mb-1 py-2.5 px-4 rounded-xl text-white text-[13px] font-bold text-center cursor-pointer transition-all hover:opacity-90 hover:shadow-lg"
+                  style={{
+                    background: "linear-gradient(135deg, #0F1E56, #2563EB, #7C3AED)",
+                    boxShadow: "0 4px 16px rgba(37,99,235,0.25)",
+                  }}
+                >
                   {t("Book Consultation", "احجز استشارة")}
                 </div>
               </Link>
