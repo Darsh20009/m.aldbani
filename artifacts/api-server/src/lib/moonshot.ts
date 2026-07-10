@@ -1,5 +1,5 @@
-const MOONSHOT_BASE = "https://api.moonshot.cn/v1";
-export const MOONSHOT_MODEL = "moonshot-v1-32k";
+const MOONSHOT_BASE = process.env.MOONSHOT_BASE_URL || "https://api.moonshot.ai/v1";
+export const MOONSHOT_MODEL = process.env.MOONSHOT_MODEL || "kimi-k2-0711-preview";
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant" | "tool";

@@ -1,7 +1,7 @@
 import { useLanguage } from "../../hooks/use-language";
 import { useAuth, type User } from "../../hooks/use-auth";
 import { useLogin } from "@workspace/api-client-react";
-import { GoogleLoginButton } from "../../components/ai/GoogleLoginButton";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,8 +9,43 @@ import { useToast } from "@/hooks/use-toast";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Sparkles, ArrowLeft, ArrowRight, Phone, Mail, Lock, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LogoBrandImage } from "../../components/Logo";
+
+declare global {
+  interface Window {
+    AppleID?: {
+      auth: {
+        init: (config: {
+          clientId: string;
+          scope: string;
+          redirectURI: string;
+          usePopup: boolean;
+        }) => void;
+        signIn: () => Promise<{
+          authorization: { id_token: string; code: string };
+          user?: { name?: { firstName?: string; lastName?: string }; email?: string };
+        }>;
+      };
+    };
+  }
+}
+
+async function callAppleAuth(
+  id_token: string,
+  user?: { name?: { firstName?: string; lastName?: string }; email?: string }
+): Promise<{ token: string; user: User }> {
+  const res = await fetch("/api/auth/apple", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id_token, user }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error || "فشل تسجيل الدخول بـApple");
+  }
+  return res.json() as Promise<{ token: string; user: User }>;
+}
 
 type Mode = "phone" | "email";
 
@@ -46,7 +81,10 @@ export default function Login() {
   const [showPwd, setShowPwd] = useState(false);
   const [mode, setMode] = useState<Mode>("phone");
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
   const hasGoogleClientId = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
+  const appleClientId = import.meta.env.VITE_APPLE_CLIENT_ID as string | undefined;
+  const hasAppleClientId = Boolean(appleClientId);
   const isRTL = language === "ar";
   const ArrowBack = isRTL ? ArrowRight : ArrowLeft;
 
@@ -100,11 +138,54 @@ export default function Login() {
     toast({ title: "تعذّر فتح نافذة Google", description: "تأكد من السماح بالنوافذ المنبثقة", variant: "destructive" });
   };
 
-  const handleApple = () => {
-    toast({
-      title: "تسجيل Apple غير مفعّل بعد",
-      description: "يتطلب Apple Developer Account + إعداد Service ID. راجع التعليمات.",
-    });
+  const googleLogin = useGoogleLogin({
+    onSuccess: (r) => handleGoogleSuccess(r.access_token),
+    onError: handleGoogleError,
+  });
+
+  useEffect(() => {
+    if (!hasAppleClientId || !appleClientId) return;
+    const init = () => {
+      window.AppleID?.auth.init({
+        clientId: appleClientId,
+        scope: "name email",
+        redirectURI: window.location.origin,
+        usePopup: true,
+      });
+    };
+    if (window.AppleID) init();
+    else {
+      const t = setInterval(() => {
+        if (window.AppleID) { init(); clearInterval(t); }
+      }, 200);
+      return () => clearInterval(t);
+    }
+  }, [appleClientId, hasAppleClientId]);
+
+  const handleApple = async () => {
+    if (!hasAppleClientId) {
+      toast({
+        title: "تسجيل Apple غير مفعّل بعد",
+        description: "يتطلب Apple Developer Account + إعداد Service ID. راجع التعليمات.",
+      });
+      return;
+    }
+    setAppleLoading(true);
+    try {
+      const data = await window.AppleID!.auth.signIn();
+      const result = await callAppleAuth(data.authorization.id_token, data.user);
+      setAuth(result.token, result.user);
+      toast({ title: "مرحباً بك!", description: `أهلاً ${result.user.name}` });
+      setLocation(result.user.role === "admin" ? "/admin" : "/client");
+    } catch (err) {
+      toast({
+        title: "فشل تسجيل الدخول",
+        description: err instanceof Error ? err.message : "حاول مجدداً",
+        variant: "destructive",
+      });
+    } finally {
+      setAppleLoading(false);
+    }
   };
 
   return (
@@ -249,14 +330,19 @@ export default function Login() {
               type="button"
               whileHover={{ scale: 1.01, y: -1 }}
               whileTap={{ scale: 0.98 }}
+              disabled={appleLoading}
               onClick={handleApple}
-              className="w-full flex items-center justify-center gap-3 h-12 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+              className="w-full flex items-center justify-center gap-3 h-12 rounded-xl font-semibold text-sm transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background: "#000", color: "white" }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-              </svg>
-              {t("Continue with Apple", "المتابعة بـ Apple")}
+              {appleLoading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+              )}
+              {appleLoading ? t("Signing in…", "جاري التحقق…") : t("Continue with Apple", "المتابعة بـ Apple")}
             </motion.button>
           </div>
 
