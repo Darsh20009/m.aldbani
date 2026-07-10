@@ -5,21 +5,10 @@ import { useLanguage } from "../../hooks/use-language";
 import { AdminEmailPrompt, useAdminEmailPrompt } from "../admin/AdminEmailPrompt";
 import { LogoBrandImage } from "../../components/Logo";
 import { useSiteSettings } from "../../hooks/use-site-settings";
+import { AdminAIAgent } from "../ai/AdminAIAgent";
 import {
-  LayoutDashboard,
-  Target,
-  Users,
-  CalendarDays,
-  Briefcase,
-  FileText,
-  Settings,
-  BarChart3,
-  LogOut,
-  Menu,
-  X,
-  Globe,
-  SlidersHorizontal,
-  Mail,
+  LayoutDashboard, Target, Users, CalendarDays, Briefcase, FileText,
+  Settings, BarChart3, LogOut, Menu, X, Globe, SlidersHorizontal, Mail,
 } from "lucide-react";
 
 const navItems = [
@@ -107,9 +96,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               >
                 <Icon size={16} className={active ? "text-white" : "text-muted-foreground"} />
                 <span>{t(item.label, item.labelAr)}</span>
-                {active && (
-                  <div className="ml-auto w-1 h-4 rounded-full bg-white/40" />
-                )}
+                {active && <div className="ml-auto w-1 h-4 rounded-full bg-white/40" />}
               </div>
             </Link>
           );
@@ -173,10 +160,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <div className="flex-1 ml-0 md:ml-60 flex flex-col min-h-screen">
         {/* Top bar (mobile) */}
         <header className="md:hidden h-14 bg-white border-b border-border/60 flex items-center px-4 gap-3 shadow-sm">
-          <button
-            className="text-muted-foreground hover:text-foreground"
-            onClick={() => setSidebarOpen(true)}
-          >
+          <button className="text-muted-foreground hover:text-foreground" onClick={() => setSidebarOpen(true)}>
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
@@ -193,6 +177,9 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       {showEmailPrompt && user?.role === "admin" && (
         <AdminEmailPrompt onDone={dismissEmailPrompt} />
       )}
+
+      {/* ── دباني AI Agent ────────────────────── */}
+      <AdminAIAgent />
     </div>
   );
 }

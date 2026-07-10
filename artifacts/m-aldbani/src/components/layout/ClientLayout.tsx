@@ -5,7 +5,11 @@ import { useLanguage } from "../../hooks/use-language";
 import { useSiteSettings } from "../../hooks/use-site-settings";
 import { LogoBrandImage } from "../Logo";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, CalendarDays, MessageSquare, FolderOpen, Receipt, LogOut, ArrowLeft, ArrowRight } from "lucide-react";
+import { ClientAIChat } from "../ai/ClientAIChat";
+import {
+  LayoutDashboard, CalendarDays, MessageSquare, FolderOpen, Receipt,
+  LogOut, ArrowLeft, ArrowRight,
+} from "lucide-react";
 
 export function ClientLayout({ children }: { children: ReactNode }) {
   const { user, isLoading, logout } = useAuth();
@@ -14,9 +18,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
   const settings = useSiteSettings();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      setLocation("/auth/login");
-    }
+    if (!isLoading && !user) setLocation("/auth/login");
   }, [user, isLoading, setLocation]);
 
   if (isLoading || !user) {
@@ -34,11 +36,11 @@ export function ClientLayout({ children }: { children: ReactNode }) {
   }
 
   const navItems = [
-    { href: "/client",               label: t("Dashboard",      "الرئيسية"),  icon: LayoutDashboard },
+    { href: "/client",               label: t("Dashboard",      "الرئيسية"),   icon: LayoutDashboard },
     { href: "/client/consultations", label: t("Consultations",  "الاستشارات"), icon: CalendarDays },
-    { href: "/client/messages",      label: t("Messages",       "الرسائل"),   icon: MessageSquare },
-    { href: "/client/files",         label: t("Files",          "الملفات"),   icon: FolderOpen },
-    { href: "/client/invoices",      label: t("Invoices",       "الفواتير"),  icon: Receipt },
+    { href: "/client/messages",      label: t("Messages",       "الرسائل"),    icon: MessageSquare },
+    { href: "/client/files",         label: t("Files",          "الملفات"),    icon: FolderOpen },
+    { href: "/client/invoices",      label: t("Invoices",       "الفواتير"),   icon: Receipt },
   ];
 
   const ArrowIcon = language === "ar" ? ArrowRight : ArrowLeft;
@@ -49,11 +51,9 @@ export function ClientLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex flex-col md:flex-row bg-muted/30 text-foreground">
       {/* Sidebar */}
       <aside className="w-full md:w-64 border-r border-border bg-card flex flex-col shadow-sm">
-        {/* Logo area */}
-        <div
-          className="h-20 flex items-center px-5 border-b border-border/60"
-          style={{ background: "linear-gradient(135deg, #08102E 0%, #0F1E56 100%)" }}
-        >
+        {/* Logo */}
+        <div className="h-20 flex items-center px-5 border-b border-border/60"
+          style={{ background: "linear-gradient(135deg, #08102E 0%, #0F1E56 100%)" }}>
           <Link href="/" className="flex items-center gap-3 group">
             <LogoBrandImage size={38} className="flex-shrink-0 logo-img-nav" />
             <div>
@@ -73,17 +73,13 @@ export function ClientLayout({ children }: { children: ReactNode }) {
             const active = isActive(item.href);
             return (
               <Link key={item.href} href={item.href}>
-                <div
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
-                    active
-                      ? "text-white shadow-md"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
-                  }`}
+                <div className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                  active ? "text-white shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
+                }`}
                   style={active ? {
                     background: "linear-gradient(135deg, #0F1E56, #2563EB)",
                     boxShadow: "0 4px 16px rgba(37,99,235,0.2)",
-                  } : {}}
-                >
+                  } : {}}>
                   <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${active ? "text-white" : ""}`} />
                   <span>{item.label}</span>
                 </div>
@@ -94,10 +90,8 @@ export function ClientLayout({ children }: { children: ReactNode }) {
 
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3 mb-3 px-2">
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
-              style={{ background: "linear-gradient(135deg, #0F1E56, #7C3AED)" }}
-            >
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
+              style={{ background: "linear-gradient(135deg, #0F1E56, #7C3AED)" }}>
               {(user.name ?? user.email ?? "?").charAt(0).toUpperCase()}
             </div>
             <div className="overflow-hidden">
@@ -105,11 +99,9 @@ export function ClientLayout({ children }: { children: ReactNode }) {
               <p className="text-xs text-muted-foreground truncate">{user.email}</p>
             </div>
           </div>
-          <Button
-            variant="ghost"
+          <Button variant="ghost"
             className="w-full justify-start text-muted-foreground hover:text-red-500 hover:bg-red-50 text-sm rounded-xl"
-            onClick={() => { logout(); setLocation("/"); }}
-          >
+            onClick={() => { logout(); setLocation("/"); }}>
             <LogOut className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" />
             {t("Logout", "تسجيل خروج")}
           </Button>
@@ -120,14 +112,11 @@ export function ClientLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 overflow-auto bg-background/50">
         <header className="h-20 border-b border-border px-6 md:px-8 flex items-center justify-between bg-card shadow-sm sticky top-0 z-10">
           <h1 className="text-xl font-bold font-heading">
-            {t("Welcome back", "مرحباً بعودتك")}, <span className="text-gradient-brand">{(user.name ?? "").split(" ")[0]}</span>
+            {t("Welcome back", "مرحباً بعودتك")},{" "}
+            <span className="text-gradient-brand">{(user.name ?? "").split(" ")[0]}</span>
           </h1>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setLocation("/")}
-            className="text-muted-foreground hover:text-blue-600 text-xs bg-transparent border-border hover:border-blue-500/30 hover:bg-blue-50/50 transition-all rounded-full"
-          >
+          <Button variant="outline" size="sm" onClick={() => setLocation("/")}
+            className="text-muted-foreground hover:text-blue-600 text-xs bg-transparent border-border hover:border-blue-500/30 hover:bg-blue-50/50 transition-all rounded-full">
             <ArrowIcon className="w-3 h-3 mr-1 rtl:ml-1 rtl:mr-0" />
             {t("Back to Website", "العودة للموقع")}
           </Button>
@@ -136,6 +125,9 @@ export function ClientLayout({ children }: { children: ReactNode }) {
           {children}
         </div>
       </main>
+
+      {/* ── مساعد العميل الذكي ─────────────── */}
+      <ClientAIChat />
     </div>
   );
 }
