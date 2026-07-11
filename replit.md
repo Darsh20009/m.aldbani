@@ -55,6 +55,20 @@ Personal brand platform for Mohammed Al-Dabbani — bilingual (AR/EN) consulting
 - GitHub push requires a project task (main agent git operations are sandboxed). Task #1 created for this.
 - Admin login: `admin@m-aldbani.com` / `Admin@2024`
 
+## Auth: Google & Apple Sign In
+
+- Google: server-verified OAuth (`google-auth-library`), not client-only JS. Client ID stored in `GOOGLE_CLIENT_ID` (backend) and `VITE_GOOGLE_CLIENT_ID` (frontend) — same public value, no client secret needed/stored.
+- Apple: Sign in with Apple JS SDK loaded in `index.html`, wired in `src/pages/auth/login.tsx`. Services ID stored in `APPLE_CLIENT_ID` (backend) and `VITE_APPLE_CLIENT_ID` (frontend) — currently `maldbani.site`.
+- Apple Developer domain/Return URL association must be kept in sync with the live Replit domain (or custom domain) whenever it changes, or Apple Sign In will fail silently.
+
+## AI Assistant ("دباني AI")
+
+- Backend: `artifacts/api-server/src/lib/moonshot.ts` (Moonshot/Kimi client) + `artifacts/api-server/src/routes/ai.ts` (client + admin agent routes).
+- Client chat (`/api/ai/client-chat`): friendly Gulf-Arabic brand assistant, streaming, no tools.
+- Admin chat (`/api/ai/admin-chat`, admin-only): full agentic assistant with tool-calling over leads/clients/consultations/messages/dashboard stats — can query and act on the DB directly.
+- Both are Arabic-only Gulf tone by design (system prompts explicitly forbid non-Arabic words).
+- Uses `MOONSHOT_API_KEY` secret + `api.moonshot.ai` (international endpoint, not `.cn`).
+
 ## Pointers
 
 - See `pnpm-workspace` skill for workspace structure
