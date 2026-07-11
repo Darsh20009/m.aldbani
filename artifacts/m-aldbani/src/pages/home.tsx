@@ -347,6 +347,8 @@ function ProcessCard({
       style={{
         background: "#ffffff",
         border: "1px solid rgba(0,0,0,0.07)",
+        left: "calc(50% - 145px)",
+        top: "60px",
         transform: `rotate(${rotate}) translate(${translate})`,
         zIndex,
         width: "290px",
