@@ -336,6 +336,10 @@ function ProcessCard({
   num: string; title: string; desc: string;
   rotate?: string; left?: string; top?: string; zIndex?: number;
 }) {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+  const ruqaa = isAr ? { fontFamily: "'Aref Ruqaa', serif" } : {};
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -356,8 +360,8 @@ function ProcessCard({
       }}
     >
       <span className="text-[4.5rem] font-black leading-none block" style={{ color: BLACK }}>{num}</span>
-      <h3 className="mt-3 text-lg font-bold" style={{ color: BLACK }}>{title}</h3>
-      <p className="mt-1.5 text-sm leading-relaxed" style={{ color: TITANIUM }}>{desc}</p>
+      <h3 className="mt-3 text-xl font-bold" style={{ color: BLACK, ...ruqaa }}>{title}</h3>
+      <p className="mt-1.5 text-sm leading-relaxed" style={{ color: TITANIUM, ...ruqaa }}>{desc}</p>
     </motion.div>
   );
 }
@@ -883,37 +887,36 @@ export default function Home() {
             ))}
           </div>
 
-          {/* DESKTOP: tilted / overlapping */}
-          <div className="hidden md:flex justify-center relative" style={{ height: 360 }}>
-            {/* Centered group */}
-            <div className="relative" style={{ width: 700 }}>
+          {/* DESKTOP: tilted / spread */}
+          <div className="hidden md:flex justify-center relative" style={{ height: 380 }}>
+            <div className="relative" style={{ width: 980 }}>
               <ProcessCard
                 num="1" zIndex={1}
-                rotate="-6deg" left="20px" top="70px"
+                rotate="-6deg" left="0px" top="70px"
                 title={t("Connect", "التواصل")}
                 desc={t("Book a free intro call to discuss your vision and goals.", "احجز مكالمة مجانية لمناقشة رؤيتك وأهدافك.")}
               />
               <ProcessCard
                 num="2" zIndex={3}
-                rotate="1.5deg" left="calc(50% - 145px)" top="40px"
+                rotate="1.5deg" left="calc(50% - 145px)" top="35px"
                 title={t("Strategize", "التخطيط")}
                 desc={t("We build a tailored action plan aligned with your brand objectives.", "نبني خطة عمل مصممة لأهداف علامتك التجارية.")}
               />
               <ProcessCard
                 num="3" zIndex={2}
-                rotate="-2.5deg" left="calc(100% - 310px)" top="65px"
+                rotate="-2.5deg" left="calc(100% - 290px)" top="65px"
                 title={t("Execute", "التنفيذ")}
                 desc={t("Full execution — systems, operations, brand, results.", "تنفيذ كامل: أنظمة، عمليات، علامة تجارية، نتائج.")}
               />
               {/* SVG connector curves */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 700 360" fill="none">
-                <path d="M 180 150 C 260 100, 330 120, 360 105"
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 980 380" fill="none">
+                <path d="M 290 160 C 380 110, 440 120, 490 115"
                   stroke={GOLD} strokeWidth="1.5" fill="none" strokeDasharray="5 5" opacity="0.45" />
-                <path d="M 360 105 C 400 92, 460 115, 530 145"
+                <path d="M 490 115 C 545 108, 610 130, 690 158"
                   stroke={GOLD} strokeWidth="1.5" fill="none" strokeDasharray="5 5" opacity="0.45" />
-                <circle cx="180" cy="150" r="4.5" fill={GOLD} opacity="0.55" />
-                <circle cx="360" cy="105" r="4.5" fill={GOLD} opacity="0.55" />
-                <circle cx="530" cy="145" r="4.5" fill={GOLD} opacity="0.55" />
+                <circle cx="290" cy="160" r="4.5" fill={GOLD} opacity="0.55" />
+                <circle cx="490" cy="115" r="4.5" fill={GOLD} opacity="0.55" />
+                <circle cx="690" cy="158" r="4.5" fill={GOLD} opacity="0.55" />
               </svg>
             </div>
           </div>
