@@ -1,10 +1,12 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
 import appleSignin from "apple-signin-auth";
 import { User } from "../models/User";
 import { signToken, requireAuth, AuthRequest } from "../middlewares/auth";
 import { logger } from "../lib/logger";
+import { sendEmail, renderBrandedEmail } from "../lib/email";
 
 const router = Router();
 
@@ -242,6 +244,103 @@ router.post("/apple", async (req: Request, res: Response) => {
   } catch (err) {
     logger.error({ err }, "Apple Sign In error");
     res.status(401).json({ error: "فشل التحقق من حساب Apple" });
+  }
+});
+
+/* ── Forgot Password ──────────────────────────── */
+router.post("/forgot-password", async (req: Request, res: Response) => {
+  const { email } = req.body as { email?: string };
+  if (!email) { res.status(400).json({ error: "البريد الإلكتروني مطلوب" }); return; }
+
+  // Always respond with 200 so we don't leak whether the email exists
+  res.json({ message: "إذا كان البريد مسجلاً، ستصلك رسالة خلال دقائق" });
+
+  try {
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user || user.provider !== "local") return; // only local accounts can reset password
+
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    await user.save();
+
+    const proto = (req.headers["x-forwarded-proto"] as string) || req.protocol;
+    const host  = (req.headers["x-forwarded-host"] as string) || req.get("host");
+    const resetUrl = `${proto}://${host}/auth/reset-password?token=${token}`;
+
+    const html = renderBrandedEmail({
+      dir: "rtl", lang: "ar",
+      title: "إعادة تعيين كلمة المرور",
+      preheader: "طلبت إعادة تعيين كلمة المرور لحسابك",
+      bodyHtml: `
+        <p style="margin:0 0 20px;color:#3a3733;font-size:16px;line-height:1.8;font-family:Arial,sans-serif">
+          مرحباً <strong>${user.name}</strong>،
+        </p>
+        <p style="margin:0 0 28px;color:#3a3733;font-size:15px;line-height:1.75;font-family:Arial,sans-serif">
+          تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك. انقر على الزر أدناه لاختيار كلمة مرور جديدة.
+          الرابط صالح لمدة <strong>ساعة واحدة</strong> فقط.
+        </p>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 32px">
+          <tr>
+            <td style="border-radius:12px;background:linear-gradient(135deg,#2563EB,#7C3AED);text-align:center">
+              <a href="${resetUrl}"
+                style="display:inline-block;padding:14px 36px;color:#ffffff;font-size:15px;font-weight:700;
+                       text-decoration:none;font-family:Arial,sans-serif;letter-spacing:0.02em">
+                إعادة تعيين كلمة المرور
+              </a>
+            </td>
+          </tr>
+        </table>
+        <p style="margin:0 0 8px;color:#9a9590;font-size:12px;line-height:1.6;font-family:Arial,sans-serif">
+          إذا لم تطلب إعادة التعيين، تجاهل هذه الرسالة — حسابك بأمان تام.
+        </p>
+        <p style="margin:0;color:#b8b3ac;font-size:11px;font-family:Arial,sans-serif;word-break:break-all">
+          ${resetUrl}
+        </p>
+      `,
+    });
+
+    await sendEmail({
+      to: user.email,
+      subject: "إعادة تعيين كلمة المرور — منصة محمد الدباني",
+      html,
+      text: `إعادة تعيين كلمة المرور\n\nانقر هنا: ${resetUrl}\n\nالرابط صالح لساعة واحدة.`,
+    });
+
+    logger.info({ email: user.email }, "Password reset email sent");
+  } catch (err) {
+    logger.error({ err }, "Forgot password error");
+  }
+});
+
+/* ── Reset Password ───────────────────────────── */
+router.post("/reset-password", async (req: Request, res: Response) => {
+  const { token, password } = req.body as { token?: string; password?: string };
+  if (!token || !password) { res.status(400).json({ error: "البيانات مطلوبة" }); return; }
+  if (password.length < 8) { res.status(400).json({ error: "كلمة المرور يجب أن تكون 8 أحرف على الأقل" }); return; }
+
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      res.status(400).json({ error: "الرابط غير صالح أو انتهت صلاحيته. اطلب رابطاً جديداً." });
+      return;
+    }
+
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    user.tokenVersion = (user.tokenVersion ?? 0) + 1; // invalidate all existing sessions
+    await user.save();
+
+    logger.info({ userId: user.id }, "Password reset successfully");
+    res.json({ message: "تم إعادة تعيين كلمة المرور بنجاح" });
+  } catch (err) {
+    logger.error({ err }, "Reset password error");
+    res.status(500).json({ error: "خطأ في الخادم" });
   }
 });
 

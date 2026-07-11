@@ -23,9 +23,11 @@ const Community       = lazy(() => import("@/pages/community"));
 const NotFound        = lazy(() => import("@/pages/not-found"));
 
 // ── Auth pages ────────────────────────────────────────────────────────────────
-const Login        = lazy(() => import("@/pages/auth/login"));
-const Register     = lazy(() => import("@/pages/auth/register"));
-const AuthCallback = lazy(() => import("@/pages/auth/callback"));
+const Login           = lazy(() => import("@/pages/auth/login"));
+const Register        = lazy(() => import("@/pages/auth/register"));
+const AuthCallback    = lazy(() => import("@/pages/auth/callback"));
+const ForgotPassword  = lazy(() => import("@/pages/auth/forgot-password"));
+const ResetPassword   = lazy(() => import("@/pages/auth/reset-password"));
 
 // ── Client pages ──────────────────────────────────────────────────────────────
 const ClientDashboard     = lazy(() => import("@/pages/client/dashboard"));
@@ -88,6 +90,8 @@ function Router() {
           <Route path="/auth/login" component={Login} />
           <Route path="/auth/register" component={Register} />
           <Route path="/auth/callback" component={AuthCallback} />
+          <Route path="/auth/forgot-password" component={ForgotPassword} />
+          <Route path="/auth/reset-password" component={ResetPassword} />
 
           {/* Client */}
           <Route path="/client" component={ClientDashboard} />

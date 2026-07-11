@@ -12,6 +12,8 @@ export interface IUser extends Document {
   appleId?: string;
   provider: "local" | "google" | "apple";
   tokenVersion: number;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt: Date;
   comparePassword(password: string): Promise<boolean>;
 }
@@ -26,8 +28,10 @@ const UserSchema = new Schema<IUser>(
     avatar:   { type: String },
     googleId: { type: String, sparse: true },
     appleId:  { type: String, sparse: true },
-    provider:     { type: String, enum: ["local", "google", "apple"], default: "local" },
-    tokenVersion: { type: Number, default: 0 },
+    provider:             { type: String, enum: ["local", "google", "apple"], default: "local" },
+    tokenVersion:         { type: Number, default: 0 },
+    resetPasswordToken:   { type: String },
+    resetPasswordExpires: { type: Date },
   },
   { timestamps: true }
 );
