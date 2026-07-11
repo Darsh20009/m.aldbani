@@ -3,3 +3,4 @@
 - [Frontend hook import paths](frontend-paths.md) — hooks in src/hooks/; layout components use ../../hooks/ not ../hooks/
 - [Git push via project task](git-push-task.md) — main agent git operations sandboxed; use project tasks for git commit/push to external remotes
 - [Duplicate artifact workflows](artifact-workflow-duplicates.md) — plain .replit workflows and artifact/* canvas workflows conflict on same ports; fix by removing plain ones via removeWorkflow() so artifact workflows can claim the ports
+- [Mongoose .lean() skips defaults](mongoose-lean-defaults.md) — fields missing on old documents read as undefined via .lean(), breaking equality checks like tokenVersion auth comparisons
