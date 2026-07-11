@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "./hooks/use-auth";
 import { LanguageProvider } from "./hooks/use-language";
 import { SplashScreen } from "./components/SplashScreen";
+import { ChunkErrorBoundary } from "./components/ChunkErrorBoundary";
 
 // ── Public pages — loaded on demand ──────────────────────────────────────────
 const Home            = lazy(() => import("@/pages/home"));
@@ -67,6 +68,7 @@ function PageLoader() {
 
 function Router() {
   return (
+    <ChunkErrorBoundary>
     <Suspense fallback={<PageLoader />}>
       <Switch>
         {/* Public */}
@@ -109,6 +111,7 @@ function Router() {
         <Route component={NotFound} />
       </Switch>
     </Suspense>
+    </ChunkErrorBoundary>
   );
 }
 

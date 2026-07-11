@@ -17,16 +17,10 @@ app.use(
     logger,
     serializers: {
       req(req) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
+        return { id: req.id, method: req.method, url: req.url?.split("?")[0] };
       },
       res(res) {
-        return {
-          statusCode: res.statusCode,
-        };
+        return { statusCode: res.statusCode };
       },
     },
   }),
@@ -47,11 +41,35 @@ app.use("/uploads", express.static(uploadsDir));
 
 app.use("/api", router);
 
-// Serve frontend static files in production
+// ── Serve frontend static files in production ─────────────────────────────────
 if (process.env.NODE_ENV === "production") {
   const frontendDist = path.resolve(__dirname, "../../m-aldbani/dist/public");
-  app.use(express.static(frontendDist));
+
+  // Static assets (JS/CSS/images with content-hash in filename):
+  //   → cache forever (immutable). Filenames change on every build so no staleness.
+  // index.html:
+  //   → never cache. Must always be fresh so the browser fetches the latest chunk map.
+  app.use(
+    express.static(frontendDist, {
+      setHeaders(res, filePath) {
+        if (filePath.endsWith("index.html")) {
+          res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+          res.setHeader("Pragma", "no-cache");
+          res.setHeader("Expires", "0");
+        } else if (/\/assets\//.test(filePath)) {
+          // Vite hashes all filenames in /assets — safe to cache forever
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        }
+      },
+    }),
+  );
+
+  // SPA fallback: any non-API path that didn't match a static file gets index.html.
+  // Never cache it — same reason as above.
   app.get("/{*path}", (_req, res) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
     res.sendFile(path.join(frontendDist, "index.html"));
   });
 }
