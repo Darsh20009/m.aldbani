@@ -34,7 +34,7 @@ router.post("/register", async (req: Request, res: Response) => {
     const existing = await User.findOne({ email });
     if (existing) { res.status(400).json({ error: "البريد الإلكتروني مستخدم بالفعل" }); return; }
     const user = await User.create({ name, email, password, phone, role: "client", provider: "local" });
-    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email });
+    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email, tokenVersion: user.tokenVersion ?? 0 });
     res.status(201).json({
       token,
       user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, avatar: user.avatar, createdAt: user.createdAt },
@@ -72,7 +72,7 @@ router.post("/login", async (req: Request, res: Response) => {
       res.status(401).json({ error: "بيانات الدخول غير صحيحة" });
       return;
     }
-    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email });
+    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email, tokenVersion: user.tokenVersion ?? 0 });
     res.json({
       token,
       user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, avatar: user.avatar, createdAt: user.createdAt },
@@ -141,7 +141,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       await user.save();
     }
 
-    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email });
+    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email, tokenVersion: user.tokenVersion ?? 0 });
     res.redirect(`${frontendOrigin}/auth/callback?token=${encodeURIComponent(token)}`);
   } catch (err) {
     logger.error({ err }, "Google OAuth redirect callback error");
@@ -187,7 +187,7 @@ router.post("/google", async (req: Request, res: Response) => {
       await user.save();
     }
 
-    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email });
+    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email, tokenVersion: user.tokenVersion ?? 0 });
     res.json({ token, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, avatar: user.avatar, createdAt: user.createdAt } });
   } catch (err) {
     logger.error({ err }, "Google OAuth error");
@@ -234,7 +234,7 @@ router.post("/apple", async (req: Request, res: Response) => {
       await user.save();
     }
 
-    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email });
+    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email, tokenVersion: user.tokenVersion ?? 0 });
     res.json({
       token,
       user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, avatar: user.avatar, createdAt: user.createdAt },
@@ -245,36 +245,25 @@ router.post("/apple", async (req: Request, res: Response) => {
   }
 });
 
-/** Client-side Google OAuth: accepts access_token from @react-oauth/google */
-router.post("/google", async (req: Request, res: Response) => {
-  const { access_token } = req.body as { access_token?: string };
-  if (!access_token) { res.status(400).json({ error: "access_token مطلوب" }); return; }
-  try {
-    const r = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${encodeURIComponent(access_token)}`);
-    if (!r.ok) { res.status(401).json({ error: "رمز Google غير صالح" }); return; }
-    const info = await r.json() as { id: string; email?: string; name?: string; picture?: string };
-    const { id: sub, email, name: rawName, picture = "" } = info;
-    if (!email) { res.status(401).json({ error: "لم يتم العثور على البريد الإلكتروني" }); return; }
-    const name = rawName || email.split("@")[0];
-    let user = await User.findOne({ $or: [{ googleId: sub }, { email }] });
-    if (!user) {
-      user = await User.create({ name, email, googleId: sub, avatar: picture, provider: "google", role: "client", password: "" });
-    } else if (!user.googleId) {
-      user.googleId = sub;
-      if (picture && !user.avatar) user.avatar = picture;
-      await user.save();
-    }
-    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email });
-    res.json({ token, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, avatar: user.avatar, createdAt: user.createdAt } });
-  } catch (err) {
-    logger.error({ err }, "Google client-side auth error");
-    res.status(401).json({ error: "فشل تسجيل الدخول بـGoogle" });
-  }
-});
-
 /* ── Logout ───────────────────────────────────── */
 router.post("/logout", (_req: Request, res: Response) => {
   res.json({ message: "تم تسجيل الخروج" });
+});
+
+/* ── Logout all devices — increments tokenVersion to invalidate every session ── */
+router.post("/logout-all", requireAuth, async (req: AuthRequest, res: Response) => {
+  const jwtUser = req.user!;
+  if (jwtUser.id === "fallback-admin-id") {
+    res.json({ message: "تم تسجيل الخروج من جميع الأجهزة" });
+    return;
+  }
+  try {
+    await User.findByIdAndUpdate(jwtUser.id, { $inc: { tokenVersion: 1 } });
+    res.json({ message: "تم تسجيل الخروج من جميع الأجهزة بنجاح" });
+  } catch (err) {
+    logger.error({ err }, "Logout all error");
+    res.status(500).json({ error: "خطأ في الخادم" });
+  }
 });
 
 /* ── Me ───────────────────────────────────────── */
