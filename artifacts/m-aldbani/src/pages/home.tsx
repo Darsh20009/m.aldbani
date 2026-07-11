@@ -509,6 +509,101 @@ function Eyebrow({ en, ar, t, gold = false }: { en: string; ar: string; t: (e: s
   );
 }
 
+/* ── Service row (accordion) ─────────────────────── */
+function ServiceRow({
+  svc, i, isRTL, t,
+}: {
+  svc: any; i: number;
+  isRTL: boolean;
+  t: (e: string, a: string) => string;
+}) {
+  const [open, setOpen] = useState(false);
+  const title = isRTL ? (svc.titleAr || svc.title) : svc.title;
+  const desc  = isRTL ? (svc.descriptionAr || svc.description) : svc.description;
+
+  return (
+    <motion.div
+      {...fu(i * 0.07)}
+      onClick={() => setOpen(o => !o)}
+      className="group cursor-pointer select-none"
+    >
+      {/* ── row ── */}
+      <div
+        className="flex items-center justify-between py-6 md:py-7 gap-4 transition-colors duration-200"
+        style={{ borderBottom: "1px solid rgba(0,0,0,0.08)" }}
+      >
+        {/* index */}
+        <span
+          className="text-[11px] font-bold tabular-nums shrink-0 w-7 transition-colors duration-200"
+          style={{ color: open ? GOLD : "rgba(0,0,0,0.2)" }}
+        >
+          {String(i + 1).padStart(2, "0")}
+        </span>
+
+        {/* icon + title */}
+        <div className={`flex items-center gap-3 flex-1 min-w-0 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <span className="text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110">
+            {svc.icon || "⚡"}
+          </span>
+          <h3
+            className="text-xl md:text-2xl font-black truncate transition-colors duration-200"
+            style={{ color: open ? BLACK : GRAPHITE }}
+          >
+            {title}
+          </h3>
+        </div>
+
+        {/* featured + arrow */}
+        <div className={`flex items-center gap-3 shrink-0 ${isRTL ? "flex-row-reverse" : ""}`}>
+          {svc.featured && (
+            <span
+              className="hidden sm:inline text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide"
+              style={{ background: GOLD + "22", color: GOLD }}
+            >
+              {t("Featured", "مميز")}
+            </span>
+          )}
+          <motion.div
+            animate={{ rotate: open ? 45 : 0 }}
+            transition={{ duration: 0.25, ease: EASE }}
+            className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0 transition-colors duration-200"
+            style={{
+              borderColor: open ? GOLD : "rgba(0,0,0,0.12)",
+              color: open ? GOLD : GRAPHITE,
+            }}
+          >
+            <ArrowUpRight size={14} />
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ── expandable description ── */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="desc"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.32, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <div
+              className={`flex gap-10 pb-7 pt-3 ${isRTL ? "flex-row-reverse" : ""}`}
+            >
+              {/* gold accent bar */}
+              <div className="w-px shrink-0 ml-7 self-stretch rounded-full" style={{ background: GOLD, opacity: 0.5 }} />
+              <p className="text-sm md:text-base leading-relaxed flex-1" style={{ color: TITANIUM }}>
+                {desc}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════
    HOME PAGE
 ═══════════════════════════════════════════════════ */
@@ -866,31 +961,12 @@ export default function Home() {
               </Link>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="relative">
+              {/* top rule */}
+              <div className="h-px w-full mb-0" style={{ background: "rgba(0,0,0,0.08)" }} />
+
               {services.map((svc: any, i: number) => (
-                <motion.div
-                  key={svc.id || i}
-                  {...fu(i * 0.06)}
-                  whileHover={{ y: -4, boxShadow: "0 24px 52px rgba(0,0,0,0.07)" }}
-                  className="p-7 rounded-2xl border transition-all cursor-default group"
-                  style={{ border: "1px solid rgba(0,0,0,0.06)", background: BG }}
-                >
-                  <div className="flex items-start justify-between mb-5">
-                    <span className="text-3xl">{svc.icon || "⚡"}</span>
-                    {svc.featured && (
-                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide"
-                        style={{ background: GOLD + "22", color: GOLD }}>
-                        {t("Featured", "مميز")}
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-bold mb-2.5" style={{ color: BLACK }}>
-                    {isRTL ? svc.titleAr : svc.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: TITANIUM }}>
-                    {isRTL ? svc.descriptionAr : svc.description}
-                  </p>
-                </motion.div>
+                <ServiceRow key={svc.id || i} svc={svc} i={i} isRTL={isRTL} t={t} />
               ))}
             </div>
           </div>
