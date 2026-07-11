@@ -575,22 +575,6 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {/* Partners — compact iPad 3D row */}
-          <motion.div {...fu(0.25)} className="mt-16 w-full">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(0,0,0,0.12))" }} />
-              <p className="text-[10px] font-bold uppercase tracking-[0.3em] whitespace-nowrap" style={{ color: TITANIUM }}>
-                {t("Brands I've Worked With", "علامات عملت معها")}
-              </p>
-              <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(0,0,0,0.12), transparent)" }} />
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 justify-items-center">
-              <IpadPartnerCard name="Fuji Cafe"    logo={fujiLogo}      url="https://www.fuji.cafe/"           screenBg="#ffffff" invert={false} compact delay={0}    />
-              <IpadPartnerCard name="QIROX Studio" logo={qiroxLogo}     url="https://qiroxstudio.online/"      screenBg="#0a0a0a" invert={false} compact delay={0.06} />
-              <IpadPartnerCard name="Community"    logo={communityLogo} url="https://mmt-community.site/"      screenBg="#0f1e3d" invert={false} compact delay={0.12} />
-              <IpadPartnerCard name="GEN M&Z"      logo={genmzImg}      url="https://www.genmz.store/"         screenBg="#111111" invert={true}  compact delay={0.18} />
-            </div>
-          </motion.div>
         </motion.div>
 
         {/* Scroll cue */}
