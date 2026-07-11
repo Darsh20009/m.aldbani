@@ -99,6 +99,233 @@ function Marquee({ items, rtl = false }: { items: string[]; rtl?: boolean }) {
   );
 }
 
+/* ── iPad 3D partner card ────────────────────────── */
+function IpadPartnerCard({
+  name, logo, url, screenBg = "#0a0a0a", invert = false, delay = 0,
+}: {
+  name: string; logo?: string; url: string;
+  screenBg?: string; invert?: boolean; delay?: number;
+}) {
+  const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <>
+      <motion.div
+        {...fu(delay)}
+        className="flex flex-col items-center gap-5 cursor-pointer group select-none"
+        onClick={() => { setOpen(true); setLoaded(false); }}
+      >
+        {/* 3-D iPad Pro shell */}
+        <div style={{ perspective: "900px", perspectiveOrigin: "50% 50%" }}>
+          <div
+            className="relative transition-all duration-500 ease-out group-hover:[transform:rotateY(0deg)_rotateX(0deg)_scale(1.06)]"
+            style={{
+              transform: "rotateY(-18deg) rotateX(7deg)",
+              transformStyle: "preserve-3d",
+              width: 170,
+              height: 238,
+            }}
+          >
+            {/* ── Front face ── */}
+            <div
+              className="absolute inset-0 rounded-[22px] overflow-hidden"
+              style={{
+                background: "linear-gradient(145deg, #2c2c2e, #1a1a1c)",
+                boxShadow:
+                  "0 28px 70px rgba(0,0,0,0.55), 0 6px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.09)",
+              }}
+            >
+              {/* Screen */}
+              <div
+                className="absolute rounded-[14px] flex items-center justify-center overflow-hidden"
+                style={{ inset: 10, background: screenBg }}
+              >
+                {logo && (
+                  <img
+                    src={logo}
+                    alt={name}
+                    style={{
+                      maxWidth: "68%",
+                      maxHeight: "48%",
+                      objectFit: "contain",
+                      filter: invert ? "brightness(0) invert(1)" : "none",
+                    }}
+                  />
+                )}
+                {/* Glare */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%)",
+                  }}
+                />
+              </div>
+              {/* Front camera */}
+              <div
+                className="absolute"
+                style={{
+                  top: 5,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "#3a3a3c",
+                  boxShadow: "inset 0 1px 2px rgba(0,0,0,0.8)",
+                }}
+              />
+            </div>
+            {/* ── Right edge (depth) ── */}
+            <div
+              className="absolute"
+              style={{
+                top: 10,
+                bottom: 10,
+                right: -7,
+                width: 7,
+                background: "linear-gradient(to bottom, #1a1a1c, #111)",
+                borderRadius: "0 3px 3px 0",
+                transform: "rotateY(90deg)",
+                transformOrigin: "left center",
+              }}
+            />
+            {/* ── Bottom edge (depth) ── */}
+            <div
+              className="absolute"
+              style={{
+                bottom: -5,
+                left: 10,
+                right: 10,
+                height: 5,
+                background: "#111",
+                borderRadius: "0 0 3px 3px",
+                transform: "rotateX(-90deg)",
+                transformOrigin: "top center",
+              }}
+            />
+            {/* ── Power button on right edge ── */}
+            <div
+              className="absolute"
+              style={{
+                top: 56,
+                right: -10,
+                width: 3,
+                height: 28,
+                background: "#111",
+                borderRadius: 2,
+                transform: "rotateY(90deg) translateZ(-1px)",
+                transformOrigin: "left center",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Label */}
+        <div className="text-center">
+          <p
+            className="text-sm font-bold transition-colors duration-300 group-hover:text-blue-600"
+            style={{ color: BLACK }}
+          >
+            {name}
+          </p>
+          <p className="text-[11px] mt-0.5 transition-opacity duration-300 group-hover:opacity-100 opacity-60" style={{ color: TITANIUM }}>
+            اضغط للزيارة ↗
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Iframe modal ── */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center p-3 md:p-8"
+            style={{ background: "rgba(0,0,0,0.88)", backdropFilter: "blur(14px)" }}
+            onClick={() => setOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.88, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.88, opacity: 0, y: 20 }}
+              transition={{ duration: 0.38, ease: EASE }}
+              className="relative w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+              style={{ maxWidth: 1000, height: "85vh", background: "#fff" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal header */}
+              <div
+                className="flex items-center justify-between px-4 py-2.5 shrink-0"
+                style={{
+                  background: "rgba(10,10,10,0.95)",
+                  backdropFilter: "blur(8px)",
+                }}
+              >
+                <div className="flex items-center gap-2.5">
+                  {logo && (
+                    <img
+                      src={logo}
+                      alt={name}
+                      className="h-5 object-contain"
+                      style={{ maxWidth: 72, filter: "brightness(0) invert(1)" }}
+                    />
+                  )}
+                  <span className="text-white text-sm font-semibold">{name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[12px] px-3 py-1 rounded-full font-semibold text-white"
+                    style={{ background: "rgba(255,255,255,0.14)" }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    فتح ↗
+                  </a>
+                  <button
+                    onClick={() => setOpen(false)}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-base leading-none"
+                    style={{ background: "rgba(255,255,255,0.14)" }}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              {/* Loading spinner */}
+              {!loaded && (
+                <div className="absolute inset-0 flex items-center justify-center" style={{ paddingTop: 44 }}>
+                  <div className="text-center">
+                    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                    <p className="text-sm text-gray-400">جاري التحميل…</p>
+                  </div>
+                </div>
+              )}
+
+              <iframe
+                src={url}
+                title={name}
+                className="flex-1 w-full"
+                style={{
+                  border: "none",
+                  opacity: loaded ? 1 : 0,
+                  transition: "opacity 0.35s",
+                }}
+                onLoad={() => setLoaded(true)}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
 /* ── Process card (tilted) ──────────────────────── */
 function ProcessCard({
   num, title, desc, rotate = "0deg", translate = "0px,0px", zIndex = 0,
@@ -541,6 +768,63 @@ export default function Home() {
               </motion.button>
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          3.5. PARTNERS — iPad 3D showcase
+      ══════════════════════════════════════════ */}
+      <section className="py-24 overflow-hidden" style={{ background: "#fff" }}>
+        <div className="max-w-6xl mx-auto px-6 lg:px-12">
+
+          <motion.div {...fu(0)} className="text-center mb-16">
+            <Eyebrow en="Our Partners" ar="شركاؤنا" t={t} />
+            <h2 className="text-4xl md:text-5xl font-black mt-2" style={{ color: BLACK }}>
+              {t("Brands We've Built Together", "علامات بنيناها معاً")}
+            </h2>
+            <p className="mt-4 text-[15px] max-w-xl mx-auto" style={{ color: TITANIUM }}>
+              {t(
+                "Click any brand to explore their world.",
+                "اضغط على أي علامة لاستكشاف عالمها.",
+              )}
+            </p>
+          </motion.div>
+
+          {/* 2-col on mobile, 4-col on desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-6 justify-items-center">
+            <IpadPartnerCard
+              name="Fuji Cafe"
+              logo={fujiLogo}
+              url="https://www.fuji.cafe/"
+              screenBg="#ffffff"
+              invert={false}
+              delay={0}
+            />
+            <IpadPartnerCard
+              name="QIROX Studio"
+              logo={qiroxLogo}
+              url="https://qiroxstudio.online/"
+              screenBg="#0a0a0a"
+              invert={false}
+              delay={0.08}
+            />
+            <IpadPartnerCard
+              name="Community"
+              logo={communityLogo}
+              url="https://mmt-community.site/"
+              screenBg="#0f1e3d"
+              invert={false}
+              delay={0.16}
+            />
+            <IpadPartnerCard
+              name="GEN M&Z"
+              logo={genmzImg}
+              url="https://www.genmz.store/"
+              screenBg="#111111"
+              invert={true}
+              delay={0.24}
+            />
+          </div>
         </div>
       </section>
 
