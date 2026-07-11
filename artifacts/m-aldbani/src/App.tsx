@@ -22,6 +22,7 @@ import NotFound from "@/pages/not-found";
 // Auth pages
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
+import AuthCallback from "@/pages/auth/callback";
 
 // Client pages
 import ClientDashboard from "@/pages/client/dashboard";
@@ -68,6 +69,7 @@ function Router() {
       
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
+      <Route path="/auth/callback" component={AuthCallback} />
 
       <Route path="/client" component={ClientDashboard} />
       <Route path="/client/consultations" component={ClientConsultations} />

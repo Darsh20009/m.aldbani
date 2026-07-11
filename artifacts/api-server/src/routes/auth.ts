@@ -83,7 +83,72 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-/* ── Google OAuth ─────────────────────────────── */
+/* ── Google OAuth (server-side redirect flow — Authorized redirect URIs) ── */
+function googleRedirectClient(req: Request) {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (!clientId || !clientSecret) return null;
+  const proto = (req.headers["x-forwarded-proto"] as string) || req.protocol;
+  const host = (req.headers["x-forwarded-host"] as string) || req.get("host");
+  const redirectUri = `${proto}://${host}/api/auth/google/callback`;
+  return { client: new OAuth2Client({ clientId, clientSecret, redirectUri }), redirectUri };
+}
+
+/** Step 1: redirect the browser to Google's consent screen. */
+router.get("/google", (req: Request, res: Response) => {
+  const ctx = googleRedirectClient(req);
+  if (!ctx) { res.status(503).send("تسجيل الدخول بـGoogle غير مفعّل حالياً"); return; }
+  const url = ctx.client.generateAuthUrl({
+    access_type: "online",
+    scope: ["openid", "email", "profile"],
+    prompt: "select_account",
+  });
+  res.redirect(url);
+});
+
+/** Step 2: Google redirects back here with ?code=... (Authorized redirect URI). */
+router.get("/google/callback", async (req: Request, res: Response) => {
+  const proto = (req.headers["x-forwarded-proto"] as string) || req.protocol;
+  const host = (req.headers["x-forwarded-host"] as string) || req.get("host");
+  const frontendOrigin = `${proto}://${host}`;
+  const ctx = googleRedirectClient(req);
+  const code = req.query.code as string | undefined;
+  const oauthError = req.query.error as string | undefined;
+
+  if (!ctx || oauthError || !code) {
+    res.redirect(`${frontendOrigin}/auth/login?error=google`);
+    return;
+  }
+
+  try {
+    const { tokens } = await ctx.client.getToken(code);
+    if (!tokens.id_token) throw new Error("no id_token returned");
+    const ticket = await ctx.client.verifyIdToken({ idToken: tokens.id_token, audience: process.env.GOOGLE_CLIENT_ID });
+    const payload = ticket.getPayload();
+    if (!payload?.email) throw new Error("no email in payload");
+
+    const email = payload.email;
+    const name = payload.name || email.split("@")[0];
+    const picture = payload.picture || "";
+    const sub = payload.sub;
+
+    let user = await User.findOne({ $or: [{ googleId: sub }, { email }] });
+    if (!user) {
+      user = await User.create({ name, email, googleId: sub, avatar: picture, provider: "google", role: "client", password: "" });
+    } else if (!user.googleId) {
+      user.googleId = sub;
+      if (picture && !user.avatar) user.avatar = picture;
+      await user.save();
+    }
+
+    const token = signToken({ id: user.id, role: user.role, name: user.name, email: user.email });
+    res.redirect(`${frontendOrigin}/auth/callback?token=${encodeURIComponent(token)}`);
+  } catch (err) {
+    logger.error({ err }, "Google OAuth redirect callback error");
+    res.redirect(`${frontendOrigin}/auth/login?error=google`);
+  }
+});
+
 router.post("/google", async (req: Request, res: Response) => {
   try {
     const { credential, access_token } = req.body as { credential?: string; access_token?: string };
