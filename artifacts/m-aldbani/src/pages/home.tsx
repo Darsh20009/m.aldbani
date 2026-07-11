@@ -629,7 +629,6 @@ export default function Home() {
     { role: t("Business Development", "تطوير أعمال"), company: "QIROX",        period: "2024 → Now" },
     { role: t("Brand Manager",        "مدير علامة"),  company: "Fuji Cafe",     period: "2023 → 2024" },
     { role: t("Operations Manager",   "مدير عمليات"), company: "F&B Group",     period: "2019 → 2023" },
-    { role: t("Brand Consultant",     "مستشار ماركة"), company: "Freelance",    period: "2016 → 2019" },
   ];
 
   return (
