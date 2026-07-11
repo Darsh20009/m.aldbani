@@ -42,6 +42,10 @@ PORT = "5000"
 API_PORT = "8080"
 MOONSHOT_API_KEY = "mongodb+srv://maldbani:ASDqwe123@m-aldbani.zr41qae.mongodb.net/?appName=m-aldbani"
 MONGODB_URI = "mongodb+srv://maldbani:ASDqwe123@m-aldbani.zr41qae.mongodb.net/?appName=m-aldbani"
+APPLE_CLIENT_ID = "maldbani.site"
+GOOGLE_CLIENT_ID = "816620217030-s0bt7h5nijaslp5sl62a0nspmq4a82sp.apps.googleusercontent.com"
+VITE_APPLE_CLIENT_ID = "maldbani.site"
+VITE_GOOGLE_CLIENT_ID = "816620217030-s0bt7h5nijaslp5sl62a0nspmq4a82sp.apps.googleusercontent.com"
 
 [nix]
 channel = "stable-25_05"
