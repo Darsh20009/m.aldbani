@@ -4,7 +4,7 @@ import { useLanguage } from "../hooks/use-language";
 import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
 import { useListServices } from "@workspace/api-client-react";
-import { ArrowRight, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowLeft, ArrowUpRight, ExternalLink, X } from "lucide-react";
 import { LogoBrandImage, LogoInline } from "../components/Logo";
 import { Tilt3D } from "../components/Tilt3D";
 import { LuxuryConnectPanel } from "../components/LuxuryConnectPanel";
@@ -365,24 +365,109 @@ function ProcessCard({
 /* ── Work showcase card ─────────────────────────── */
 function WorkCard({
   logo, name, tag, bg = "#1a1a1a", logoFit = "contain", dark = true,
-  wide = false, tall = false,
+  wide = false, tall = false, url,
 }: {
   logo?: string; name: string; tag: string; bg?: string;
   logoFit?: "contain" | "cover"; dark?: boolean;
-  wide?: boolean; tall?: boolean;
+  wide?: boolean; tall?: boolean; url?: string;
 }) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [blocked, setBlocked] = useState(false);
+
+  const handleOpen = () => {
+    if (!url) return;
+    setOpen(true);
+    setLoading(true);
+    setBlocked(false);
+  };
+
   return (
-    <Tilt3D className={`${wide ? "col-span-2" : ""} ${tall ? "row-span-2" : ""}`} maxTilt={7}>
+    <Tilt3D className={`${wide ? "col-span-2" : ""} ${tall ? "row-span-2" : ""}`} maxTilt={open ? 0 : 7}>
       <motion.div
-        whileHover={{ y: -6, scale: 1.015 }}
+        whileHover={open ? {} : { y: -6, scale: 1.015 }}
         transition={{ duration: 0.28, ease: EASE }}
-        className="rounded-2xl overflow-hidden relative group cursor-pointer h-full"
+        onClick={!open ? handleOpen : undefined}
+        className="rounded-2xl overflow-hidden relative group h-full"
         style={{
           background: bg,
           border: "1px solid rgba(255,255,255,0.06)",
           boxShadow: "0 1px 2px rgba(0,0,0,0.08), 0 12px 28px -8px rgba(0,0,0,0.35)",
+          cursor: url && !open ? "pointer" : "default",
         }}
       >
+        {/* ── iframe overlay ── */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="absolute inset-0 z-20 flex flex-col"
+              style={{ background: bg }}
+            >
+              {/* top bar */}
+              <div className="flex items-center justify-between px-3 py-2 shrink-0"
+                style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)" }}>
+                <span className="text-[11px] font-semibold truncate" style={{ color: "rgba(255,255,255,0.7)" }}>
+                  {url}
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setOpen(false); }}
+                  className="ml-2 shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors hover:bg-white/20"
+                  style={{ color: "#fff" }}
+                >
+                  <X size={13} />
+                </button>
+              </div>
+
+              {/* iframe area */}
+              <div className="relative flex-1 overflow-hidden">
+                {loading && !blocked && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 0.9, ease: "linear" }}
+                      className="w-7 h-7 rounded-full border-2 border-t-transparent"
+                      style={{ borderColor: `${GOLD} transparent ${GOLD} ${GOLD}` }}
+                    />
+                    <span className="text-[11px]" style={{ color: TITANIUM }}>جارٍ التحميل…</span>
+                  </div>
+                )}
+                {blocked ? (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+                    <ExternalLink size={28} style={{ color: GOLD }} />
+                    <p className="text-[13px] font-semibold" style={{ color: "#fff" }}>{name}</p>
+                    <p className="text-[11px]" style={{ color: TITANIUM }}>
+                      الموقع لا يسمح بالعرض المدمج
+                    </p>
+                    <a
+                      href={url} target="_blank" rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="mt-1 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[12px] font-bold transition-all hover:opacity-80"
+                      style={{ background: GOLD, color: "#fff" }}
+                    >
+                      فتح الموقع <ExternalLink size={11} />
+                    </a>
+                  </div>
+                ) : (
+                  <iframe
+                    src={url}
+                    title={name}
+                    className="w-full h-full border-0"
+                    onLoad={() => setLoading(false)}
+                    onError={() => { setLoading(false); setBlocked(true); }}
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                    style={{ opacity: loading ? 0 : 1, transition: "opacity 0.3s" }}
+                  />
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── default card face ── */}
         <div className={`flex items-center justify-center p-10 ${tall ? "min-h-[360px]" : "min-h-[200px]"}`}>
           {logo ? (
             <img src={logo} alt={name} className="w-full h-full transition-transform duration-500 group-hover:scale-105"
@@ -393,10 +478,18 @@ function WorkCard({
         </div>
         <div className="px-5 pb-5 flex items-center justify-between">
           <span className="text-sm font-bold" style={{ color: dark ? "#fff" : BLACK }}>{name}</span>
-          <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{
-            background: "rgba(255,255,255,0.08)",
-            color: dark ? TITANIUM : GRAPHITE
-          }}>{tag}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{
+              background: "rgba(255,255,255,0.08)",
+              color: dark ? TITANIUM : GRAPHITE
+            }}>{tag}</span>
+            {url && (
+              <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold flex items-center gap-1"
+                style={{ background: `rgba(199,172,112,0.18)`, color: GOLD }}>
+                <ExternalLink size={10} /> عرض
+              </span>
+            )}
+          </div>
         </div>
       </motion.div>
     </Tilt3D>
@@ -628,16 +721,16 @@ export default function Home() {
           {/* Bento-style work grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <motion.div {...fu(0)}>
-              <WorkCard logo={fujiLogo} name="Fuji Cafe" tag={t("F&B Brand","علامة F&B")} bg="#ffffff" dark={false} logoFit="contain" tall />
+              <WorkCard logo={fujiLogo} name="Fuji Cafe" tag={t("F&B Brand","علامة F&B")} bg="#ffffff" dark={false} logoFit="contain" tall url="https://www.fuji.cafe/" />
             </motion.div>
             <motion.div {...fu(0.06)}>
-              <WorkCard logo={qiroxLogo} name="QIROX" tag={t("Systems","أنظمة")} bg="#111111" logoFit="contain" />
+              <WorkCard logo={qiroxLogo} name="QIROX" tag={t("Systems","أنظمة")} bg="#111111" logoFit="contain" url="https://qiroxstudio.online/" />
             </motion.div>
             <motion.div {...fu(0.1)}>
-              <WorkCard logo={communityLogo} name={t("Community","المجتمع")} tag={t("Marketing","تسويق")} bg="#1a2e5a" logoFit="contain" />
+              <WorkCard logo={communityLogo} name={t("Community","المجتمع")} tag={t("Marketing","تسويق")} bg="#1a2e5a" logoFit="contain" url="https://mmt-community.site/" />
             </motion.div>
             <motion.div {...fu(0.14)}>
-              <WorkCard logo={genmzImg} name="GEN M&Z" tag={t("Fashion","أزياء")} bg="#1a1a1a" logoFit="cover" />
+              <WorkCard logo={genmzImg} name="GEN M&Z" tag={t("Fashion","أزياء")} bg="#1a1a1a" logoFit="cover" url="https://www.genmz.store/" />
             </motion.div>
             <motion.div {...fu(0.18)}>
               <WorkCard name={t("Matcha Power","ماتشا باور")} tag={t("Beverages","مشروبات")} bg="#2d6a4f" />
