@@ -7,6 +7,7 @@ import { AuthProvider } from "./hooks/use-auth";
 import { LanguageProvider } from "./hooks/use-language";
 import { SplashScreen } from "./components/SplashScreen";
 import { ChunkErrorBoundary } from "./components/ChunkErrorBoundary";
+import { ServerWakeup } from "./components/ServerWakeup";
 
 // ── Public pages — loaded on demand ──────────────────────────────────────────
 const Home            = lazy(() => import("@/pages/home"));
@@ -69,48 +70,48 @@ function PageLoader() {
 function Router() {
   return (
     <ChunkErrorBoundary>
-    <Suspense fallback={<PageLoader />}>
-      <Switch>
-        {/* Public */}
-        <Route path="/" component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/portfolio" component={Portfolio} />
-        <Route path="/portfolio/:id" component={PortfolioDetail} />
-        <Route path="/services" component={Services} />
-        <Route path="/articles" component={Articles} />
-        <Route path="/articles/:slug" component={ArticleDetail} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/book" component={Book} />
-        <Route path="/community" component={Community} />
+      <Suspense fallback={<PageLoader />}>
+        <Switch>
+          {/* Public */}
+          <Route path="/" component={Home} />
+          <Route path="/about" component={About} />
+          <Route path="/portfolio" component={Portfolio} />
+          <Route path="/portfolio/:id" component={PortfolioDetail} />
+          <Route path="/services" component={Services} />
+          <Route path="/articles" component={Articles} />
+          <Route path="/articles/:slug" component={ArticleDetail} />
+          <Route path="/contact" component={Contact} />
+          <Route path="/book" component={Book} />
+          <Route path="/community" component={Community} />
 
-        {/* Auth */}
-        <Route path="/auth/login" component={Login} />
-        <Route path="/auth/register" component={Register} />
-        <Route path="/auth/callback" component={AuthCallback} />
+          {/* Auth */}
+          <Route path="/auth/login" component={Login} />
+          <Route path="/auth/register" component={Register} />
+          <Route path="/auth/callback" component={AuthCallback} />
 
-        {/* Client */}
-        <Route path="/client" component={ClientDashboard} />
-        <Route path="/client/consultations" component={ClientConsultations} />
-        <Route path="/client/messages" component={ClientMessages} />
-        <Route path="/client/files" component={ClientFiles} />
-        <Route path="/client/invoices" component={ClientInvoices} />
+          {/* Client */}
+          <Route path="/client" component={ClientDashboard} />
+          <Route path="/client/consultations" component={ClientConsultations} />
+          <Route path="/client/messages" component={ClientMessages} />
+          <Route path="/client/files" component={ClientFiles} />
+          <Route path="/client/invoices" component={ClientInvoices} />
 
-        {/* Admin */}
-        <Route path="/admin" component={AdminDashboard} />
-        <Route path="/admin/leads" component={AdminLeads} />
-        <Route path="/admin/clients" component={AdminClients} />
-        <Route path="/admin/consultations" component={AdminConsultations} />
-        <Route path="/admin/projects" component={AdminProjects} />
-        <Route path="/admin/articles" component={AdminArticles} />
-        <Route path="/admin/services" component={AdminServices} />
-        <Route path="/admin/analytics" component={AdminAnalytics} />
-        <Route path="/admin/settings" component={AdminSettings} />
-        <Route path="/admin/email" component={AdminEmail} />
-        <Route path="/admin/faqs" component={AdminFaqs} />
+          {/* Admin */}
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/leads" component={AdminLeads} />
+          <Route path="/admin/clients" component={AdminClients} />
+          <Route path="/admin/consultations" component={AdminConsultations} />
+          <Route path="/admin/projects" component={AdminProjects} />
+          <Route path="/admin/articles" component={AdminArticles} />
+          <Route path="/admin/services" component={AdminServices} />
+          <Route path="/admin/analytics" component={AdminAnalytics} />
+          <Route path="/admin/settings" component={AdminSettings} />
+          <Route path="/admin/email" component={AdminEmail} />
+          <Route path="/admin/faqs" component={AdminFaqs} />
 
-        <Route component={NotFound} />
-      </Switch>
-    </Suspense>
+          <Route component={NotFound} />
+        </Switch>
+      </Suspense>
     </ChunkErrorBoundary>
   );
 }
@@ -121,6 +122,8 @@ function App() {
       <TooltipProvider>
         <LanguageProvider>
           <AuthProvider>
+            {/* Detects Render cold-start and shows an Arabic loading overlay */}
+            <ServerWakeup />
             <SplashScreen />
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
               <Router />

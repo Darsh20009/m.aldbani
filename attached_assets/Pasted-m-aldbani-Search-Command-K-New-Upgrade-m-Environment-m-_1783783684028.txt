@@ -1,0 +1,130 @@
+m.aldbani
+
+
+Search
+Command+
+K
+
+New
+
+Upgrade
+
+
+m
+Environment
+m.aldbani
+Events
+Settings
+Monitor
+Logs
+Metrics
+Manage
+Environment
+Shell
+Scaling
+Previews
+Disk
+One-Off Jobs
+
+Changelog
+Invite a friend
+
+Contact support
+Render Status
+Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more.
+Upgrade now
+
+Application logs
+Search
+instance
+:
+xxmq8
+
+
+
+Last hour
+
+
+
+{"level":30,"time":1783783630367,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","port":10000,"msg":"Server listening"}
+{"level":30,"time":1783783631317,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","msg":"Connected to MongoDB Atlas"}
+{"level":30,"time":1783783631872,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":1,"method":"HEAD","url":"/"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+{"level":30,"time":1783783634185,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":2,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783645095,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":3,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783645103,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":4,"method":"GET","url":"/assets/index-M5OgPYcA.js"},"res":{"statusCode":200},"responseTime":4,"msg":"request completed"}
+{"level":30,"time":1783783645104,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":5,"method":"GET","url":"/assets/index-CGuMLmf0.css"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1783783645197,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":6,"method":"GET","url":"/manifest.json"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783645853,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":7,"method":"GET","url":"/icons/apple-touch-icon.png"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783646920,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":8,"method":"GET","url":"/sw.js"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783652787,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":9,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653094,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":10,"method":"GET","url":"/assets/vendor-query-A_xKzeEf.js"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1783783653096,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":11,"method":"GET","url":"/assets/index-B2Yd_7Ep.css"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783653109,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":12,"method":"GET","url":"/assets/vendor-router-0mdZYfQC.js"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783653110,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":13,"method":"GET","url":"/assets/vendor-react-D4Zz_aXP.js"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783653115,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":14,"method":"GET","url":"/assets/index-CaS-X_B3.js"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783653117,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":15,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783653740,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":16,"method":"GET","url":"/assets/RootLayout-DeRoYvoF.js"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783653756,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":18,"method":"GET","url":"/assets/home-DkGazhMw.js"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1783783653758,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":17,"method":"GET","url":"/assets/vendor-motion-CcjxpgQN.js"},"res":{"statusCode":200},"responseTime":6,"msg":"request completed"}
+{"level":30,"time":1783783653760,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":19,"method":"GET","url":"/assets/Logo-B7T0S3yA.js"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+{"level":30,"time":1783783653761,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":20,"method":"GET","url":"/assets/twitter-BvLkfakQ.js"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1783783653762,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":21,"method":"GET","url":"/assets/use-site-settings-P6fP_Q8X.js"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1783783653770,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":22,"method":"GET","url":"/assets/mail-CnTV76z1.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653776,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":23,"method":"GET","url":"/assets/phone-koqEOdHh.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653780,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":24,"method":"GET","url":"/assets/chevron-down-Da_qcRWJ.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653788,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":25,"method":"GET","url":"/assets/arrow-up-right-D46hNfWm.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653810,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":26,"method":"GET","url":"/assets/genmz_no_bg-zGtalj4P.js"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783653812,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":27,"method":"GET","url":"/assets/arrow-right-DgYQfc4F.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653814,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":28,"method":"GET","url":"/favicon.png"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653832,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":29,"method":"GET","url":"/icons/apple-touch-icon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783653860,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":30,"method":"GET","url":"/sw.js"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783654100,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":31,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783654112,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":32,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+{"level":30,"time":1783783654137,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":33,"method":"GET","url":"/assets/fuji_no_bg-Iwr36kWF.png"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783654145,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":34,"method":"GET","url":"/assets/genmz_no_bg-hqMgxGIm.png"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783654159,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":35,"method":"GET","url":"/assets/qirox_no_bg-Bi8wzayp.png"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783654161,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":36,"method":"GET","url":"/assets/community_no_bg-D3MQSfii.png"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783654171,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":37,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783654172,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":38,"method":"GET","url":"/icons/icon-192.png"},"res":{"statusCode":200},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783654188,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":39,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783654371,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":41,"method":"GET","url":"/api/services"},"res":{"statusCode":304},"responseTime":67,"msg":"request completed"}
+{"level":30,"time":1783783654373,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":42,"method":"GET","url":"/api/faqs"},"res":{"statusCode":304},"responseTime":63,"msg":"request completed"}
+{"level":30,"time":1783783654466,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":40,"method":"GET","url":"/api/settings"},"res":{"statusCode":304},"responseTime":169,"msg":"request completed"}
+{"level":30,"time":1783783654514,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":43,"method":"GET","url":"/icons/icon-512.png"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783657438,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":44,"method":"GET","url":"/assets/button-ByWQ1Fm9.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783657439,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":45,"method":"GET","url":"/assets/index-7ZvHP73g.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783657440,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":46,"method":"GET","url":"/assets/chevron-up-C6R0eusB.js"},"res":{"statusCode":200},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783657441,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":48,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783657442,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":47,"method":"GET","url":"/assets/index-DpSRGK3P.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783657453,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":49,"method":"GET","url":"/assets/book-CSJWE9m-.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783657454,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":50,"method":"GET","url":"/assets/zod-B2X-PV4Y.js"},"res":{"statusCode":200},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783657458,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":51,"method":"GET","url":"/assets/input-C2a66f3x.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783657459,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":52,"method":"GET","url":"/assets/label-DkZCNNP0.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783657460,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":53,"method":"GET","url":"/assets/Combination-Bpd4xTlJ.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783657706,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":54,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783657760,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":55,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":304},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783660784,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":56,"method":"GET","url":"/assets/loader-circle-C0cZGFTA.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783660786,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":57,"method":"GET","url":"/assets/eye-Bvt8Tbux.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783660801,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":58,"method":"GET","url":"/assets/login-Crd5lI-H.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783660803,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":59,"method":"GET","url":"/assets/sparkles-BOqk2S74.js"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783662297,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":60,"method":"GET","url":"/auth/login"},"res":{"statusCode":200},"responseTime":2,"msg":"request completed"}
+{"level":30,"time":1783783662847,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":61,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783662873,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":62,"method":"GET","url":"/icons/apple-touch-icon.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783662909,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":63,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783663043,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":64,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783663105,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":65,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783663798,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":66,"method":"GET","url":"/auth/login"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783664183,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":67,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783664184,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":68,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783664186,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":69,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783664209,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":70,"method":"GET","url":"/icons/apple-touch-icon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783664458,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":71,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783664673,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":72,"method":"GET","url":"/sw.js"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783665053,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":73,"method":"GET","url":"/auth/login"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783665435,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":74,"method":"GET","url":"/icons/apple-touch-icon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783665445,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":75,"method":"GET","url":"/logo-transparent.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783665449,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":76,"method":"GET","url":"/manifest.json"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783665450,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":77,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783665710,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":78,"method":"GET","url":"/favicon.png"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}
+{"level":30,"time":1783783665968,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":79,"method":"GET","url":"/sw.js"},"res":{"statusCode":304},"responseTime":0,"msg":"request completed"}
+{"level":30,"time":1783783667339,"pid":1,"hostname":"srv-d8sl5sugvqtc738cqs9g-hibernate-5b6945df7-xxmq8","req":{"id":80,"method":"GET","url":"/sw.js"},"res":{"statusCode":304},"responseTime":1,"msg":"request completed"}

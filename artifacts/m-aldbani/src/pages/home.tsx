@@ -8,6 +8,7 @@ import { ArrowRight, ArrowLeft, ArrowUpRight, ExternalLink, X } from "lucide-rea
 import { LogoBrandImage, LogoInline } from "../components/Logo";
 import { Tilt3D } from "../components/Tilt3D";
 import { LuxuryConnectPanel } from "../components/LuxuryConnectPanel";
+import { AuthNudge } from "../components/AuthNudge";
 
 /* ── Brand logo imports ─────────────────────────── */
 import fujiLogo      from "@assets/fuji_no_bg.png";
@@ -1169,6 +1170,9 @@ export default function Home() {
           7. LUXURY CONNECT — WhatsApp + FAQ, merged at the very bottom
       ══════════════════════════════════════════ */}
       <LuxuryConnectPanel />
+
+      {/* Floating sign-in nudge for non-logged-in visitors */}
+      <AuthNudge />
 
     </RootLayout>
   );

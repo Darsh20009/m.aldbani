@@ -8,4 +8,9 @@ router.get("/healthz", (_req, res) => {
   res.json(data);
 });
 
+/** Fast ping — used by the frontend to detect cold-start spin-up time */
+router.get("/ping", (_req, res) => {
+  res.json({ ok: true, ts: Date.now() });
+});
+
 export default router;
