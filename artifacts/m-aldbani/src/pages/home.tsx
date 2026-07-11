@@ -101,10 +101,10 @@ function Marquee({ items, rtl = false }: { items: string[]; rtl?: boolean }) {
 
 /* ── iPad 3D partner card ────────────────────────── */
 function IpadPartnerCard({
-  name, logo, url, screenBg = "#0a0a0a", invert = false, delay = 0,
+  name, logo, url, screenBg = "#0a0a0a", invert = false, delay = 0, compact = false,
 }: {
   name: string; logo?: string; url: string;
-  screenBg?: string; invert?: boolean; delay?: number;
+  screenBg?: string; invert?: boolean; delay?: number; compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -123,14 +123,15 @@ function IpadPartnerCard({
             style={{
               transform: "rotateY(-18deg) rotateX(7deg)",
               transformStyle: "preserve-3d",
-              width: 170,
-              height: 238,
+              width: compact ? 100 : 170,
+              height: compact ? 140 : 238,
             }}
           >
             {/* ── Front face ── */}
             <div
-              className="absolute inset-0 rounded-[22px] overflow-hidden"
+              className="absolute inset-0 overflow-hidden"
               style={{
+                borderRadius: compact ? 14 : 22,
                 background: "linear-gradient(145deg, #2c2c2e, #1a1a1c)",
                 boxShadow:
                   "0 28px 70px rgba(0,0,0,0.55), 0 6px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.09)",
@@ -138,8 +139,8 @@ function IpadPartnerCard({
             >
               {/* Screen */}
               <div
-                className="absolute rounded-[14px] flex items-center justify-center overflow-hidden"
-                style={{ inset: 10, background: screenBg }}
+                className="absolute flex items-center justify-center overflow-hidden"
+                style={{ inset: compact ? 6 : 10, borderRadius: compact ? 9 : 14, background: screenBg }}
               >
                 {logo && (
                   <img
@@ -222,18 +223,20 @@ function IpadPartnerCard({
           </div>
         </div>
 
-        {/* Label */}
-        <div className="text-center">
-          <p
-            className="text-sm font-bold transition-colors duration-300 group-hover:text-blue-600"
-            style={{ color: BLACK }}
-          >
-            {name}
-          </p>
-          <p className="text-[11px] mt-0.5 transition-opacity duration-300 group-hover:opacity-100 opacity-60" style={{ color: TITANIUM }}>
-            اضغط للزيارة ↗
-          </p>
-        </div>
+        {/* Label — hidden in compact mode */}
+        {!compact && (
+          <div className="text-center">
+            <p
+              className="text-sm font-bold transition-colors duration-300 group-hover:text-blue-600"
+              style={{ color: BLACK }}
+            >
+              {name}
+            </p>
+            <p className="text-[11px] mt-0.5 transition-opacity duration-300 group-hover:opacity-100 opacity-60" style={{ color: TITANIUM }}>
+              اضغط للزيارة ↗
+            </p>
+          </div>
+        )}
       </motion.div>
 
       {/* ── Iframe modal ── */}
@@ -572,31 +575,20 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {/* Trusted by brands — one seamless strip, no per-logo background boxes */}
-          <motion.div {...fu(0.25)} className="mt-16 w-full max-w-3xl">
-            <div className="flex items-center gap-3 mb-5">
+          {/* Partners — compact iPad 3D row */}
+          <motion.div {...fu(0.25)} className="mt-16 w-full">
+            <div className="flex items-center gap-3 mb-6">
               <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(0,0,0,0.12))" }} />
               <p className="text-[10px] font-bold uppercase tracking-[0.3em] whitespace-nowrap" style={{ color: TITANIUM }}>
                 {t("Brands I've Worked With", "علامات عملت معها")}
               </p>
               <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(0,0,0,0.12), transparent)" }} />
             </div>
-            <div className="rounded-3xl py-8 px-6" style={{ background: BLACK }}>
-              <div className="flex items-center gap-8 md:gap-12 flex-wrap justify-center">
-                {[
-                  { img: fujiLogo,      name: "Fuji Cafe",  h: 40, invert: true },
-                  { img: qiroxLogo,     name: "QIROX",      h: 26, invert: false },
-                  { img: communityLogo, name: "Community",  h: 44, invert: false },
-                  { img: genmzImg,      name: "GEN M&Z",    h: 44, invert: true },
-                ].map(({ img, name, h, invert }, i) => (
-                  <img key={i} src={img} alt={name}
-                    className="object-contain transition-opacity hover:opacity-100"
-                    style={{ height: h, maxWidth: 110, opacity: 0.9, filter: invert ? "brightness(0) invert(1)" : "none" }} />
-                ))}
-                <span className="text-[13px] font-black tracking-wide" style={{ color: "#fff", opacity: 0.85 }}>
-                  {t("MATCHA POWER", "ماتشا باور")}
-                </span>
-              </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 justify-items-center">
+              <IpadPartnerCard name="Fuji Cafe"    logo={fujiLogo}      url="https://www.fuji.cafe/"           screenBg="#ffffff" invert={false} compact delay={0}    />
+              <IpadPartnerCard name="QIROX Studio" logo={qiroxLogo}     url="https://qiroxstudio.online/"      screenBg="#0a0a0a" invert={false} compact delay={0.06} />
+              <IpadPartnerCard name="Community"    logo={communityLogo} url="https://mmt-community.site/"      screenBg="#0f1e3d" invert={false} compact delay={0.12} />
+              <IpadPartnerCard name="GEN M&Z"      logo={genmzImg}      url="https://www.genmz.store/"         screenBg="#111111" invert={true}  compact delay={0.18} />
             </div>
           </motion.div>
         </motion.div>
@@ -768,63 +760,6 @@ export default function Home() {
               </motion.button>
             </Link>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          3.5. PARTNERS — iPad 3D showcase
-      ══════════════════════════════════════════ */}
-      <section className="py-24 overflow-hidden" style={{ background: "#fff" }}>
-        <div className="max-w-6xl mx-auto px-6 lg:px-12">
-
-          <motion.div {...fu(0)} className="text-center mb-16">
-            <Eyebrow en="Our Partners" ar="شركاؤنا" t={t} />
-            <h2 className="text-4xl md:text-5xl font-black mt-2" style={{ color: BLACK }}>
-              {t("Brands We've Built Together", "علامات بنيناها معاً")}
-            </h2>
-            <p className="mt-4 text-[15px] max-w-xl mx-auto" style={{ color: TITANIUM }}>
-              {t(
-                "Click any brand to explore their world.",
-                "اضغط على أي علامة لاستكشاف عالمها.",
-              )}
-            </p>
-          </motion.div>
-
-          {/* 2-col on mobile, 4-col on desktop */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-6 justify-items-center">
-            <IpadPartnerCard
-              name="Fuji Cafe"
-              logo={fujiLogo}
-              url="https://www.fuji.cafe/"
-              screenBg="#ffffff"
-              invert={false}
-              delay={0}
-            />
-            <IpadPartnerCard
-              name="QIROX Studio"
-              logo={qiroxLogo}
-              url="https://qiroxstudio.online/"
-              screenBg="#0a0a0a"
-              invert={false}
-              delay={0.08}
-            />
-            <IpadPartnerCard
-              name="Community"
-              logo={communityLogo}
-              url="https://mmt-community.site/"
-              screenBg="#0f1e3d"
-              invert={false}
-              delay={0.16}
-            />
-            <IpadPartnerCard
-              name="GEN M&Z"
-              logo={genmzImg}
-              url="https://www.genmz.store/"
-              screenBg="#111111"
-              invert={true}
-              delay={0.24}
-            />
-          </div>
         </div>
       </section>
 
