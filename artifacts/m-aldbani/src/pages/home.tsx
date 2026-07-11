@@ -41,8 +41,8 @@ const fadeIn = (delay = 0) => ({
 });
 
 /* ── Rotating word badge (F&B / RETAIL / HOSPITALITY…) ──── */
-const BADGE_WORDS_EN = ["F&B", "CAFES", "RESTAURANTS", "HOSPITALITY"];
-const BADGE_WORDS_AR = ["مطاعم", "مقاهي", "ضيافة", "علامات"];
+const BADGE_WORDS_EN = ["F&B", "BRAND STRATEGY", "BUSINESS DEV", "OPERATIONS"];
+const BADGE_WORDS_AR = ["F&B", "استراتيجية العلامة", "تطوير الأعمال", "إدارة العمليات"];
 
 function RotatingWordBadge({ isRTL }: { isRTL: boolean }) {
   const words = isRTL ? BADGE_WORDS_AR : BADGE_WORDS_EN;
