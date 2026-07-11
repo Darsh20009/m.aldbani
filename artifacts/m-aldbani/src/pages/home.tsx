@@ -533,7 +533,7 @@ function ServiceRow({
     >
       {/* ── row ── */}
       <div
-        className="flex items-center justify-between py-6 md:py-7 gap-4 transition-colors duration-200"
+        className={`flex items-center justify-between py-6 md:py-7 gap-4 transition-colors duration-200 ${isRTL ? "flex-row-reverse" : ""}`}
         style={{ borderBottom: "1px solid rgba(0,0,0,0.08)" }}
       >
         {/* index */}
@@ -990,7 +990,7 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start ${isRTL ? "lg:[direction:rtl]" : ""}`}>
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start ${isRTL ? "[direction:rtl]" : ""}`}>
 
             {/* Left — brand identity card */}
             <motion.div
@@ -1043,6 +1043,7 @@ export default function Home() {
                     key={i}
                     {...fu(0.1 + i * 0.06)}
                     className="timeline-row"
+                    style={isRTL ? { direction: "rtl" } : undefined}
                   >
                     <span className="text-sm font-semibold flex-1" style={{ color: GRAPHITE }}>{exp.role}</span>
                     <span className="text-sm font-bold" style={{ color: BLACK }}>{exp.company}</span>
@@ -1134,7 +1135,7 @@ export default function Home() {
         </motion.div>
 
         {/* Footer bar */}
-        <div className="absolute bottom-0 left-0 right-0 px-8 py-5 flex items-center justify-between border-t"
+        <div className={`absolute bottom-0 left-0 right-0 px-8 py-5 flex items-center justify-between border-t ${isRTL ? "flex-row-reverse" : ""}`}
           style={{ borderColor: "rgba(255,255,255,0.06)" }}>
           <div className="flex items-center gap-2.5">
             <LogoBrandImage size={22} style={{ opacity: 0.5, filter: "brightness(0) invert(1)" }} />
