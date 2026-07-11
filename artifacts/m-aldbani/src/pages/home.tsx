@@ -1,5 +1,5 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import { useLanguage } from "../hooks/use-language";
 import { RootLayout } from "../components/layout/RootLayout";
 import { Link } from "wouter";
@@ -38,6 +38,46 @@ const fadeIn = (delay = 0) => ({
   viewport: { once: true },
   transition: { duration: 0.6, delay },
 });
+
+/* ── Rotating word badge (F&B / RETAIL / HOSPITALITY…) ──── */
+const BADGE_WORDS_EN = ["F&B", "CAFES", "RESTAURANTS", "HOSPITALITY"];
+const BADGE_WORDS_AR = ["مطاعم", "مقاهي", "ضيافة", "علامات"];
+
+function RotatingWordBadge({ isRTL }: { isRTL: boolean }) {
+  const words = isRTL ? BADGE_WORDS_AR : BADGE_WORDS_EN;
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % words.length);
+    }, 2200);
+    return () => clearInterval(id);
+  }, [words.length]);
+
+  return (
+    <span
+      className="relative inline-flex items-center justify-center overflow-hidden rounded-2xl font-black text-white text-xl md:text-2xl px-4 py-1 mx-1 shadow-lg"
+      style={{ background: `linear-gradient(135deg, ${GOLD}, #a8914a)`, letterSpacing: "-0.01em" }}
+    >
+      {/* invisible widest word keeps badge width stable */}
+      <span className="invisible whitespace-nowrap">
+        {words.reduce((a, b) => (a.length > b.length ? a : b))}
+      </span>
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={words[index]}
+          className="absolute inset-0 flex items-center justify-center whitespace-nowrap"
+          initial={{ y: 24, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -24, opacity: 0 }}
+          transition={{ duration: 0.45, ease: EASE }}
+        >
+          {words[index]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
 
 /* ── Marquee strip ──────────────────────────────── */
 function Marquee({ items, rtl = false }: { items: string[]; rtl?: boolean }) {
@@ -252,13 +292,8 @@ export default function Home() {
                 {t("& BUSINESS", "والأعمال")}
               </span>
 
-              {/* Gold F&B badge */}
-              <span
-                className="inline-flex items-center justify-center rounded-2xl font-black text-white text-xl md:text-2xl px-4 py-1 mx-1 shadow-lg"
-                style={{ background: `linear-gradient(135deg, ${GOLD}, #a8914a)`, letterSpacing: "-0.01em" }}
-              >
-                F&B
-              </span>
+              {/* Gold rotating badge */}
+              <RotatingWordBadge isRTL={isRTL} />
 
               <span
                 className="font-black tracking-[-0.04em] leading-none"
