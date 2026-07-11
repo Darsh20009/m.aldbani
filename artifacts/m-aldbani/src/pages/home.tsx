@@ -331,10 +331,10 @@ function IpadPartnerCard({
 
 /* ── Process card (tilted) ──────────────────────── */
 function ProcessCard({
-  num, title, desc, rotate = "0deg", translate = "0px,0px", zIndex = 0,
+  num, title, desc, rotate = "0deg", left = "calc(50% - 145px)", top = "60px", zIndex = 0,
 }: {
   num: string; title: string; desc: string;
-  rotate?: string; translate?: string; zIndex?: number;
+  rotate?: string; left?: string; top?: string; zIndex?: number;
 }) {
   return (
     <motion.div
@@ -347,9 +347,9 @@ function ProcessCard({
       style={{
         background: "#ffffff",
         border: "1px solid rgba(0,0,0,0.07)",
-        left: "calc(50% - 145px)",
-        top: "60px",
-        transform: `rotate(${rotate}) translate(${translate})`,
+        left,
+        top,
+        transform: `rotate(${rotate})`,
         zIndex,
         width: "290px",
         minHeight: "210px",
@@ -889,19 +889,19 @@ export default function Home() {
             <div className="relative" style={{ width: 700 }}>
               <ProcessCard
                 num="1" zIndex={1}
-                rotate="-6deg" translate="-220px, 30px"
+                rotate="-6deg" left="20px" top="70px"
                 title={t("Connect", "التواصل")}
                 desc={t("Book a free intro call to discuss your vision and goals.", "احجز مكالمة مجانية لمناقشة رؤيتك وأهدافك.")}
               />
               <ProcessCard
                 num="2" zIndex={3}
-                rotate="1.5deg" translate="0px, -20px"
+                rotate="1.5deg" left="calc(50% - 145px)" top="40px"
                 title={t("Strategize", "التخطيط")}
                 desc={t("We build a tailored action plan aligned with your brand objectives.", "نبني خطة عمل مصممة لأهداف علامتك التجارية.")}
               />
               <ProcessCard
                 num="3" zIndex={2}
-                rotate="-2.5deg" translate="218px, 15px"
+                rotate="-2.5deg" left="calc(100% - 310px)" top="65px"
                 title={t("Execute", "التنفيذ")}
                 desc={t("Full execution — systems, operations, brand, results.", "تنفيذ كامل: أنظمة، عمليات، علامة تجارية، نتائج.")}
               />
