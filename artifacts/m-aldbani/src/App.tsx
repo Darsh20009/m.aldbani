@@ -41,6 +41,7 @@ import AdminServices from "@/pages/admin/services";
 import AdminAnalytics from "@/pages/admin/analytics";
 import AdminSettings from "@/pages/admin/settings";
 import AdminEmail from "@/pages/admin/email";
+import AdminFaqs from "@/pages/admin/faqs";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +85,7 @@ function Router() {
       <Route path="/admin/analytics" component={AdminAnalytics} />
       <Route path="/admin/settings" component={AdminSettings} />
       <Route path="/admin/email" component={AdminEmail} />
+      <Route path="/admin/faqs" component={AdminFaqs} />
 
       <Route component={NotFound} />
     </Switch>

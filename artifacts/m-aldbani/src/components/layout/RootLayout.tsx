@@ -5,7 +5,6 @@ import { ScrollProgress } from "../ScrollProgress";
 import { useLanguage } from "../../hooks/use-language";
 import { useSiteSettings } from "../../hooks/use-site-settings";
 import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram } from "lucide-react";
-import { WhatsAppTab } from "../WhatsAppTab";
 
 const BLACK    = "#0F0F10";
 const GOLD     = "#C7AC70";
@@ -30,7 +29,6 @@ export function RootLayout({ children }: { children: ReactNode }) {
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       <ScrollProgress />
       <Navbar />
-      <WhatsAppTab />
       <main className="flex-1 pt-[72px]">
         {children}
       </main>

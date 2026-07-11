@@ -7,6 +7,7 @@ import { useListServices } from "@workspace/api-client-react";
 import { ArrowRight, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { LogoBrandImage, LogoInline } from "../components/Logo";
 import { Tilt3D } from "../components/Tilt3D";
+import { LuxuryConnectPanel } from "../components/LuxuryConnectPanel";
 
 /* ── Brand logo imports ─────────────────────────── */
 import fujiLogo      from "@assets/fuji_no_bg.png";
@@ -786,6 +787,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ══════════════════════════════════════════
+          7. LUXURY CONNECT — WhatsApp + FAQ, merged at the very bottom
+      ══════════════════════════════════════════ */}
+      <LuxuryConnectPanel />
 
     </RootLayout>
   );

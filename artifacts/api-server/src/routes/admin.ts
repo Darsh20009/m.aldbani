@@ -7,6 +7,7 @@ import { Article } from "../models/Article";
 import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
+import { Faq } from "../models/Faq";
 import { logger } from "../lib/logger";
 import { sendEmail, renderBrandedEmail } from "../lib/email";
 import multer from "multer";
@@ -159,6 +160,48 @@ router.delete("/leads/:id", async (req: Request, res: Response) => {
     res.json({ message: "Lead deleted" });
   } catch (err) {
     logger.error({ err }, "Delete lead error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// FAQs CRUD (admin — includes drafts sourced from client feedback)
+router.get("/faqs", async (_req: Request, res: Response) => {
+  try {
+    const faqs = await Faq.find().sort({ order: 1, createdAt: -1 });
+    res.json(faqs.map(fmt));
+  } catch (err) {
+    logger.error({ err }, "List faqs error");
+    res.json([]);
+  }
+});
+
+router.post("/faqs", async (req: Request, res: Response) => {
+  try {
+    const faq = await Faq.create(req.body);
+    res.status(201).json(fmt(faq));
+  } catch (err) {
+    logger.error({ err }, "Create faq error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.patch("/faqs/:id", async (req: Request, res: Response) => {
+  try {
+    const faq = await Faq.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!faq) { res.status(404).json({ error: "Not found" }); return; }
+    res.json(fmt(faq));
+  } catch (err) {
+    logger.error({ err }, "Update faq error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.delete("/faqs/:id", async (req: Request, res: Response) => {
+  try {
+    await Faq.findByIdAndDelete(req.params.id);
+    res.json({ message: "FAQ deleted" });
+  } catch (err) {
+    logger.error({ err }, "Delete faq error");
     res.status(500).json({ error: "Server error" });
   }
 });

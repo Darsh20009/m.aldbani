@@ -5,6 +5,7 @@ import { Article } from "../models/Article";
 import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
+import { Faq } from "../models/Faq";
 import { logger } from "../lib/logger";
 import { notifyAdmin } from "../lib/email";
 
@@ -186,6 +187,17 @@ router.get("/settings", async (_req: Request, res: Response) => {
   } catch (err) {
     logger.error({ err }, "Get public settings error");
     res.json({});
+  }
+});
+
+// FAQs
+router.get("/faqs", async (_req: Request, res: Response) => {
+  try {
+    const faqs = await Faq.find({ published: true }).sort({ order: 1, createdAt: -1 });
+    res.json(faqs.map(formatDoc));
+  } catch (err) {
+    logger.error({ err }, "List faqs error");
+    res.json([]);
   }
 });
 

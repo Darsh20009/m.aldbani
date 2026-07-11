@@ -4,6 +4,7 @@ import { Project } from "./models/Project";
 import { Service } from "./models/Service";
 import { Article } from "./models/Article";
 import { CommunityPost } from "./models/CommunityPost";
+import { Faq } from "./models/Faq";
 import { logger } from "./lib/logger";
 
 async function seed() {
@@ -225,6 +226,40 @@ async function seed() {
         comments: [],
         seenBy: [],
         publishedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+      },
+    ]);
+  }
+
+  // FAQs
+  const faqCount = await Faq.countDocuments();
+  if (faqCount === 0) {
+    await Faq.insertMany([
+      {
+        question: "How quickly do you respond to project inquiries?",
+        questionAr: "كم يستغرق الرد على استفسارات المشاريع؟",
+        answer: "I personally reply to WhatsApp messages within minutes during working hours, and within 24 hours otherwise.",
+        answerAr: "أرد شخصياً على رسائل واتساب خلال دقائق في أوقات العمل، وخلال 24 ساعة في غير ذلك.",
+        source: "feedback",
+        published: true,
+        order: 1,
+      },
+      {
+        question: "Do you work with F&B brands outside Saudi Arabia?",
+        questionAr: "هل تعمل مع علامات F&B خارج السعودية؟",
+        answer: "Yes — most of my consulting work covers Saudi Arabia and the wider Gulf region, with remote engagements available worldwide.",
+        answerAr: "نعم — معظم أعمالي الاستشارية تغطي السعودية ومنطقة الخليج، مع إمكانية العمل عن بُعد لأي مكان في العالم.",
+        source: "feedback",
+        published: true,
+        order: 2,
+      },
+      {
+        question: "What's included in a free intro call?",
+        questionAr: "ما الذي تتضمنه المكالمة التعريفية المجانية؟",
+        answer: "A 20-minute call to understand your project, assess fit, and outline next steps — no obligation.",
+        answerAr: "مكالمة مدتها 20 دقيقة لفهم مشروعك وتقييم الملاءمة وتحديد الخطوات القادمة — دون أي التزام.",
+        source: "manual",
+        published: true,
+        order: 3,
       },
     ]);
   }
