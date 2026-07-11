@@ -1,7 +1,12 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 
-const rawPort = process.env["API_PORT"] || process.env["PORT"];
+// In production (Render/Docker) PORT is injected by the platform — respect it first.
+// In development (Replit) API_PORT=8080 keeps the Express server off the Vite dev port (5000).
+const rawPort =
+  process.env.NODE_ENV === "production"
+    ? process.env["PORT"] || process.env["API_PORT"]
+    : process.env["API_PORT"] || process.env["PORT"];
 
 if (!rawPort) {
   throw new Error(

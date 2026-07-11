@@ -36,8 +36,9 @@ COPY --from=builder /app/artifacts/api-server/dist/ ./artifacts/api-server/dist/
 COPY --from=builder /app/artifacts/m-aldbani/dist/ ./artifacts/m-aldbani/dist/
 
 ENV NODE_ENV=production
-ENV PORT=8080
+# PORT is injected by the hosting platform (Render injects PORT=5000 by default).
+# Do NOT hardcode PORT here so the platform value always wins.
 
-EXPOSE 8080
+EXPOSE 5000
 
 CMD ["node", "--enable-source-maps", "artifacts/api-server/dist/index.mjs"]
