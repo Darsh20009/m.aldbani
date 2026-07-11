@@ -696,7 +696,7 @@ export default function Home() {
               </span>
 
               {/* MD logo embedded in headline */}
-              <LogoInline size={Math.min(100, 80)} dark className="mx-1" />
+              <LogoInline size={Math.min(70, 54)} dark className="mx-1" />
 
               <span
                 className="font-black tracking-[-0.04em] leading-none"
