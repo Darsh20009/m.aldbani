@@ -45,7 +45,7 @@ export async function requireAuth(
     // "logout all devices" (which increments tokenVersion) takes effect immediately.
     if (decoded.tokenVersion !== undefined && decoded.id !== "fallback-admin-id") {
       const dbUser = await User.findById(decoded.id).select("tokenVersion").lean();
-      if (!dbUser || dbUser.tokenVersion !== decoded.tokenVersion) {
+      if (!dbUser || (dbUser.tokenVersion ?? 0) !== (decoded.tokenVersion ?? 0)) {
         res.status(401).json({ error: "انتهت جلستك. يرجى تسجيل الدخول مجدداً." });
         return;
       }
