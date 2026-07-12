@@ -12,6 +12,7 @@ declare global {
     __RUNTIME_CONFIG__?: {
       GOOGLE_CLIENT_ID?: string;
       APPLE_CLIENT_ID?: string;
+      APPLE_REDIRECT_URI?: string;
     };
   }
 }
@@ -29,5 +30,13 @@ export function getAppleClientId(): string {
     window.__RUNTIME_CONFIG__?.APPLE_CLIENT_ID ||
     (import.meta.env.VITE_APPLE_CLIENT_ID as string | undefined) ||
     ""
+  );
+}
+
+export function getAppleRedirectUri(): string {
+  return (
+    window.__RUNTIME_CONFIG__?.APPLE_REDIRECT_URI ||
+    (import.meta.env.VITE_APPLE_REDIRECT_URI as string | undefined) ||
+    window.location.origin
   );
 }

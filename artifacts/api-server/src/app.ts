@@ -55,6 +55,7 @@ if (process.env.NODE_ENV === "production") {
     const config = {
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
       APPLE_CLIENT_ID: process.env.APPLE_CLIENT_ID || "",
+      APPLE_REDIRECT_URI: process.env.APPLE_REDIRECT_URI || "",
     };
     const script = `<script>window.__RUNTIME_CONFIG__=${JSON.stringify(config)};</script>`;
     return html.includes("</head>")

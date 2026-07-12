@@ -11,7 +11,7 @@ import { Eye, EyeOff, Sparkles, ArrowLeft, ArrowRight, Phone, Mail, Lock, Loader
 import { useEffect, useState } from "react";
 import { LogoBrandImage } from "../../components/Logo";
 import { GoogleLoginButton } from "../../components/ai/GoogleLoginButton";
-import { getGoogleClientId, getAppleClientId } from "../../lib/runtime-config";
+import { getGoogleClientId, getAppleClientId, getAppleRedirectUri } from "../../lib/runtime-config";
 
 declare global {
   interface Window {
@@ -151,7 +151,7 @@ export default function Login() {
       window.AppleID?.auth.init({
         clientId: appleClientId,
         scope: "name email",
-        redirectURI: window.location.origin,
+        redirectURI: getAppleRedirectUri(),
         usePopup: true,
       });
     };
@@ -180,9 +180,16 @@ export default function Login() {
       toast({ title: "مرحباً بك!", description: `أهلاً ${result.user.name}` });
       setLocation(result.user.role === "admin" ? "/admin" : "/client");
     } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const isPopupClosed = msg.toLowerCase().includes("cancel") || msg.toLowerCase().includes("popup");
+      const isDomainError = msg.toLowerCase().includes("invalid_request") || msg.toLowerCase().includes("redirect");
       toast({
-        title: "فشل تسجيل الدخول",
-        description: err instanceof Error ? err.message : "حاول مجدداً",
+        title: "فشل تسجيل الدخول بـApple",
+        description: isPopupClosed
+          ? "تم إغلاق نافذة تسجيل الدخول. حاول مجدداً."
+          : isDomainError
+          ? "الدومين الحالي غير مسجّل في Apple Developer. يجب إضافة دومين Replit في Apple Console."
+          : msg || "حاول مجدداً",
         variant: "destructive",
       });
     } finally {
