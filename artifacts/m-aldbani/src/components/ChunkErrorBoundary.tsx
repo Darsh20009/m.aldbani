@@ -3,6 +3,12 @@ import { Component, type ReactNode } from "react";
 interface Props { children: ReactNode; }
 interface State { error: Error | null; reloading: boolean; }
 
+const RELOAD_FLAG_KEY = "chunk-error-reload-at";
+// If a previous auto-reload happened within this window, don't try again —
+// avoids an infinite reload loop when the failure isn't actually a stale build
+// (e.g. offline, blocked request, real network outage).
+const RELOAD_COOLDOWN_MS = 10_000;
+
 /** Catches React.lazy() chunk-load failures (stale build after a new deploy)
  *  and automatically reloads the page once so the user gets the new version.
  *  If the reload itself fails, shows a manual reload button. */
@@ -16,11 +22,29 @@ export class ChunkErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error) {
-    if (this.isChunkError(error) && !this.reloadAttempted) {
+    if (this.isChunkError(error) && !this.reloadAttempted && this.canAutoReload()) {
       this.reloadAttempted = true;
       this.setState({ reloading: true });
+      try {
+        sessionStorage.setItem(RELOAD_FLAG_KEY, String(Date.now()));
+      } catch {
+        // sessionStorage unavailable (e.g. private mode) — proceed without the guard
+      }
       // Small delay so React finishes the current render cycle
       setTimeout(() => window.location.reload(), 150);
+    }
+  }
+
+  /** Only auto-reload if we haven't already auto-reloaded very recently.
+   *  Prevents a refresh loop when the error is a genuine network failure
+   *  rather than a stale build after a deploy. */
+  private canAutoReload() {
+    try {
+      const last = sessionStorage.getItem(RELOAD_FLAG_KEY);
+      if (!last) return true;
+      return Date.now() - Number(last) > RELOAD_COOLDOWN_MS;
+    } catch {
+      return true;
     }
   }
 
