@@ -13,6 +13,7 @@ import { useAuth, type User } from "../hooks/use-auth";
 import { useLanguage } from "../hooks/use-language";
 import { useToast } from "@/hooks/use-toast";
 import { LogoBrandImage } from "./Logo";
+import { getGoogleClientId, getAppleClientId } from "../lib/runtime-config";
 
 const GOLD   = "#C7AC70";
 const DARK   = "#0F1118";
@@ -52,8 +53,7 @@ export function AuthNudge() {
      boundary) for every guest visitor whenever that env var is missing.
      Only call it — and only render the button that uses it — when a client
      ID is actually configured for this deploy. */
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
-  const hasGoogleClientId = Boolean(googleClientId);
+  const hasGoogleClientId = Boolean(getGoogleClientId());
   const handleGoogleSuccess = async (accessToken: string) => {
     setGoogleLoading(true);
     try {
@@ -89,7 +89,7 @@ export function AuthNudge() {
   };
 
   /* ── Apple ── */
-  const appleClientId = import.meta.env.VITE_APPLE_CLIENT_ID as string | undefined;
+  const appleClientId = getAppleClientId();
 
   useEffect(() => {
     if (!appleClientId) return;

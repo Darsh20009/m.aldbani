@@ -24,6 +24,14 @@ COPY attached_assets/ ./attached_assets/
 
 RUN pnpm --filter @workspace/api-server run build
 
+# NOTE: GOOGLE_CLIENT_ID / APPLE_CLIENT_ID are intentionally NOT passed as
+# Vite build-time env vars here. Render's Docker builds don't receive
+# dashboard-configured environment variables at build time (see Render's
+# "Using Secrets with Docker" docs), so anything read via import.meta.env.VITE_*
+# would always bake in as empty on Render. Instead, the server injects these
+# public client IDs into index.html at runtime — see app.ts — which works
+# identically in every environment. Do not reintroduce VITE_GOOGLE_CLIENT_ID /
+# VITE_APPLE_CLIENT_ID as a fix without re-reading this note.
 RUN PORT=3000 BASE_PATH=/ NODE_ENV=production \
     pnpm --filter @workspace/m-aldbani run build
 

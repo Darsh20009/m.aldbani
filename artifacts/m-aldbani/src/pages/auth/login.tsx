@@ -11,6 +11,7 @@ import { Eye, EyeOff, Sparkles, ArrowLeft, ArrowRight, Phone, Mail, Lock, Loader
 import { useEffect, useState } from "react";
 import { LogoBrandImage } from "../../components/Logo";
 import { GoogleLoginButton } from "../../components/ai/GoogleLoginButton";
+import { getGoogleClientId, getAppleClientId } from "../../lib/runtime-config";
 
 declare global {
   interface Window {
@@ -74,8 +75,7 @@ export default function Login() {
   // time (e.g. not configured yet on a deploy target). Only call the hook — and
   // only render the button that uses it — when a client ID is actually present,
   // otherwise the whole page (and app, since this hook mounts eagerly) crashes.
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
-  const hasGoogleClientId = Boolean(googleClientId);
+  const hasGoogleClientId = Boolean(getGoogleClientId());
   const handleGoogleSuccess = async (accessToken: string) => {
     setGoogleLoading(true);
     try {
@@ -101,7 +101,7 @@ export default function Login() {
   const handleGoogleError = () => {
     toast({ title: "فشل تسجيل الدخول بـGoogle", description: "حاول مجدداً", variant: "destructive" });
   };
-  const appleClientId = import.meta.env.VITE_APPLE_CLIENT_ID as string | undefined;
+  const appleClientId = getAppleClientId();
   const hasAppleClientId = Boolean(appleClientId);
   const isRTL = language === "ar";
   const ArrowBack = isRTL ? ArrowRight : ArrowLeft;
