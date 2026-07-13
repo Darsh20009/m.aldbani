@@ -78,6 +78,7 @@ APPLE_CLIENT_ID = "maldbani.site"
 GOOGLE_CLIENT_ID = "816620217030-s0bt7h5nijaslp5sl62a0nspmq4a82sp.apps.googleusercontent.com"
 VITE_APPLE_CLIENT_ID = "maldbani.site"
 VITE_GOOGLE_CLIENT_ID = "816620217030-s0bt7h5nijaslp5sl62a0nspmq4a82sp.apps.googleusercontent.com"
+VITE_APPLE_REDIRECT_URI = "https://m-aldbani.site/api/auth/apple/callback"
 
 [nix]
 channel = "stable-25_05"
