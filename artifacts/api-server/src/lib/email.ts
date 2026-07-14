@@ -1,5 +1,17 @@
 import nodemailer from "nodemailer";
 import { logger } from "./logger";
+import { SiteSettings } from "../models/SiteSettings";
+
+/** Resolves where admin/owner notifications should be sent: the address
+ * configured in the admin Settings page, falling back to ADMIN_EMAIL. */
+export async function getNotificationEmail(): Promise<string> {
+  try {
+    const s = await SiteSettings.findOne();
+    return s?.notificationEmail || process.env.ADMIN_EMAIL || "";
+  } catch {
+    return process.env.ADMIN_EMAIL || "";
+  }
+}
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "server222.web-hosting.com",

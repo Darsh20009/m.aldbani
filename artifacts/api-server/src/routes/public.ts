@@ -7,14 +7,7 @@ import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
 import { Faq } from "../models/Faq";
 import { logger } from "../lib/logger";
-import { notifyAdmin, sendClientBookingConfirmation } from "../lib/email";
-
-async function getNotificationEmail(): Promise<string> {
-  try {
-    const s = await SiteSettings.findOne();
-    return s?.notificationEmail || "";
-  } catch { return ""; }
-}
+import { notifyAdmin, sendClientBookingConfirmation, getNotificationEmail } from "../lib/email";
 
 const router = Router();
 

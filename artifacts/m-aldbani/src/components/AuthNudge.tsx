@@ -14,6 +14,7 @@ import { useLanguage } from "../hooks/use-language";
 import { useToast } from "@/hooks/use-toast";
 import { LogoBrandImage } from "./Logo";
 import { getGoogleClientId, getAppleClientId } from "../lib/runtime-config";
+import { socialButtonVisibility } from "../lib/social-auth-platform";
 
 const GOLD   = "#C7AC70";
 const DARK   = "#0F1118";
@@ -54,6 +55,7 @@ export function AuthNudge() {
      Only call it — and only render the button that uses it — when a client
      ID is actually configured for this deploy. */
   const hasGoogleClientId = Boolean(getGoogleClientId());
+  const { showGoogle, showApple } = useState(() => socialButtonVisibility())[0];
   const handleGoogleSuccess = async (accessToken: string) => {
     setGoogleLoading(true);
     try {
@@ -200,8 +202,9 @@ export function AuthNudge() {
           </div>
 
           {/* Google — only mounted (and only calls useGoogleLogin) when a
-              client ID is configured for this deploy; see comment above. */}
-          {hasGoogleClientId ? (
+              client ID is configured for this deploy; see comment above.
+              Hidden on iOS, where Apple Sign In is shown instead. */}
+          {showGoogle && (hasGoogleClientId ? (
             <AuthNudgeGoogleButton
               onSuccess={handleGoogleSuccess}
               onError={handleGoogleError}
@@ -230,29 +233,31 @@ export function AuthNudge() {
                 {t("Continue with Google", "المتابعة بـGoogle")}
               </span>
             </button>
-          )}
+          ))}
 
-          {/* Apple */}
-          <button
-            disabled={appleLoading}
-            onClick={handleApple}
-            style={{
-              width: "100%", display: "flex", alignItems: "center",
-              justifyContent: "center", gap: 10, height: 42,
-              background: "#000", borderRadius: 10,
-              border: "1px solid rgba(255,255,255,0.12)",
-              fontWeight: 600, fontSize: 13, color: "#fff",
-              cursor: "pointer", marginBottom: 14,
-              opacity: appleLoading ? 0.6 : 1, transition: "opacity 0.2s",
-            }}
-          >
-            {appleLoading ? <Loader2 size={15} className="animate-spin" /> : (
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.27.07 2.15.75 2.88.77 1.06-.16 2.06-.87 3.22-.82 1.38.09 2.42.67 3.09 1.77-2.85 1.71-2.18 5.4.56 6.44-.66 1.68-1.55 3.35-2.75 4.7zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-              </svg>
-            )}
-            {appleLoading ? t("Signing in…", "جاري الدخول…") : t("Continue with Apple", "المتابعة بـApple")}
-          </button>
+          {/* Apple — hidden on Android, where Google is shown instead. */}
+          {showApple && (
+            <button
+              disabled={appleLoading}
+              onClick={handleApple}
+              style={{
+                width: "100%", display: "flex", alignItems: "center",
+                justifyContent: "center", gap: 10, height: 42,
+                background: "#000", borderRadius: 10,
+                border: "1px solid rgba(255,255,255,0.12)",
+                fontWeight: 600, fontSize: 13, color: "#fff",
+                cursor: "pointer", marginBottom: 14,
+                opacity: appleLoading ? 0.6 : 1, transition: "opacity 0.2s",
+              }}
+            >
+              {appleLoading ? <Loader2 size={15} className="animate-spin" /> : (
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.27.07 2.15.75 2.88.77 1.06-.16 2.06-.87 3.22-.82 1.38.09 2.42.67 3.09 1.77-2.85 1.71-2.18 5.4.56 6.44-.66 1.68-1.55 3.35-2.75 4.7zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                </svg>
+              )}
+              {appleLoading ? t("Signing in…", "جاري الدخول…") : t("Continue with Apple", "المتابعة بـApple")}
+            </button>
+          )}
 
           {/* Divider + link */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>

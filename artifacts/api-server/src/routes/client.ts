@@ -6,6 +6,7 @@ import { SharedFile } from "../models/SharedFile";
 import { Invoice } from "../models/Invoice";
 import { Notification } from "../models/Notification";
 import { logger } from "../lib/logger";
+import { notifyAdmin, getNotificationEmail } from "../lib/email";
 
 const router = Router();
 router.use(requireAuth);
@@ -47,6 +48,18 @@ router.post("/messages", async (req: AuthRequest, res: Response) => {
       content,
       read: false,
     });
+
+    const adminEmail = await getNotificationEmail();
+    if (adminEmail) {
+      notifyAdmin({
+        adminEmail,
+        subject: `New Message — ${req.user!.name}`,
+        title: "New Client Message",
+        body: `A client sent a new message from the client portal.`,
+        details: { Client: req.user!.name, Message: content },
+      }).catch((err) => logger.error({ err }, "Failed to notify admin of client message"));
+    }
+
     res.status(201).json(fmt(msg));
   } catch (err) {
     logger.error({ err }, "Send message error");

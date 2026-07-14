@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { LogoBrandImage } from "../../components/Logo";
 import { GoogleLoginButton } from "../../components/ai/GoogleLoginButton";
 import { getGoogleClientId, getAppleClientId, getAppleRedirectUri } from "../../lib/runtime-config";
+import { socialButtonVisibility } from "../../lib/social-auth-platform";
 
 declare global {
   interface Window {
@@ -103,6 +104,7 @@ export default function Login() {
   };
   const appleClientId = getAppleClientId();
   const hasAppleClientId = Boolean(appleClientId);
+  const { showGoogle, showApple } = useState(() => socialButtonVisibility())[0];
   const isRTL = language === "ar";
   const ArrowBack = isRTL ? ArrowRight : ArrowLeft;
 
@@ -313,8 +315,9 @@ export default function Login() {
           <div className="space-y-3 mb-6">
             {/* Google — client-side popup flow via @react-oauth/google.
                 Only mounted when a client ID is configured for this deploy;
-                otherwise show a disabled-looking button that explains why. */}
-            {hasGoogleClientId ? (
+                otherwise show a disabled-looking button that explains why.
+                Hidden on iOS, where Apple Sign In is shown instead. */}
+            {showGoogle && (hasGoogleClientId ? (
               <GoogleLoginButton
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
@@ -339,27 +342,29 @@ export default function Login() {
                 </svg>
                 {t("Continue with Google", "المتابعة بـ Google")}
               </motion.button>
-            )}
+            ))}
 
-            {/* Apple */}
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.01, y: -1 }}
-              whileTap={{ scale: 0.98 }}
-              disabled={appleLoading}
-              onClick={handleApple}
-              className="w-full flex items-center justify-center gap-3 h-12 rounded-xl font-semibold text-sm transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: "#000", color: "white" }}
-            >
-              {appleLoading ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                </svg>
-              )}
-              {appleLoading ? t("Signing in…", "جاري التحقق…") : t("Continue with Apple", "المتابعة بـ Apple")}
-            </motion.button>
+            {/* Apple — hidden on Android, where Google is shown instead. */}
+            {showApple && (
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.01, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={appleLoading}
+                onClick={handleApple}
+                className="w-full flex items-center justify-center gap-3 h-12 rounded-xl font-semibold text-sm transition-all hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+                style={{ background: "#000", color: "white" }}
+              >
+                {appleLoading ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                  </svg>
+                )}
+                {appleLoading ? t("Signing in…", "جاري التحقق…") : t("Continue with Apple", "المتابعة بـ Apple")}
+              </motion.button>
+            )}
           </div>
 
           {/* Divider */}
