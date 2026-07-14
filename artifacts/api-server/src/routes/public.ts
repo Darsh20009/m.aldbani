@@ -7,7 +7,7 @@ import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
 import { Faq } from "../models/Faq";
 import { logger } from "../lib/logger";
-import { notifyAdmin } from "../lib/email";
+import { notifyAdmin, sendClientBookingConfirmation } from "../lib/email";
 
 async function getNotificationEmail(): Promise<string> {
   try {
@@ -133,6 +133,18 @@ router.post("/consultations/book", async (req: Request, res: Response) => {
       { upsert: true }
     );
 
+    // Build Google Calendar URL
+    const [y, m, d] = date.split("-");
+    const [h, min] = time.split(":");
+    const dur = Number(duration) || 60;
+    const start = `${y}${m}${d}T${h}${min}00`;
+    const endH = String(parseInt(h) + Math.floor(dur / 60)).padStart(2, "0");
+    const endM = String((parseInt(min) + dur % 60) % 60).padStart(2, "0");
+    const end = `${y}${m}${d}T${endH}${endM}00`;
+    const calTitle = encodeURIComponent(`استشارة مع محمد الدباني`);
+    const calDetails = encodeURIComponent(`نوع الاستشارة: ${type}\nالعميل: ${clientName}`);
+    const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${calTitle}&dates=${start}/${end}&details=${calDetails}&location=Online`;
+
     // Notify admin
     const adminEmail = await getNotificationEmail();
     if (adminEmail) {
@@ -151,10 +163,18 @@ router.post("/consultations/book", async (req: Request, res: Response) => {
           Duration: `${duration} min`,
           Notes: notes || "—",
         },
-      });
+      }).catch(() => {});
     }
 
-    res.status(201).json(formatDoc(consultation));
+    // Send confirmation to client
+    if (clientEmail) {
+      sendClientBookingConfirmation({
+        clientEmail, clientName, type, date, time,
+        duration: Number(duration), notes, googleCalUrl,
+      }).catch(() => {});
+    }
+
+    res.status(201).json({ ...formatDoc(consultation), googleCalUrl });
   } catch (err) {
     logger.error({ err }, "Book consultation error");
     res.status(500).json({ error: "Server error" });

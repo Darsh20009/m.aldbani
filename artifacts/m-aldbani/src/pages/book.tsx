@@ -123,6 +123,7 @@ export default function Book() {
 
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [bookingResult, setBookingResult] = useState<any>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -144,12 +145,8 @@ export default function Book() {
 
   const onSubmit = (data: FormValues) => {
     bookConsultation.mutate({ data }, {
-      onSuccess: () => {
-        toast({
-          title: t("Booking Confirmed!", "تم تأكيد الحجز!"),
-          description: t("We will contact you shortly.", "سنتواصل معك قريباً.")
-        });
-        setLocation("/");
+      onSuccess: (result: any) => {
+        setBookingResult(result);
       },
       onError: () => {
         toast({
@@ -159,6 +156,29 @@ export default function Book() {
         });
       }
     });
+  };
+
+  const downloadIcs = () => {
+    const d = form.getValues("date").replace(/-/g, "");
+    const t2 = form.getValues("time").replace(":", "");
+    const dur = 60;
+    const endH = String(parseInt(form.getValues("time").split(":")[0]) + 1).padStart(2, "0");
+    const endT = `${endH}${form.getValues("time").split(":")[1]}00`;
+    const ics = [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//M-ALDBANI//EN",
+      "BEGIN:VEVENT",
+      `DTSTART:${d}T${t2}00`,
+      `DTEND:${d}T${endT}`,
+      `SUMMARY:استشارة مع محمد الدباني`,
+      `DESCRIPTION:نوع الاستشارة: ${form.getValues("type")}`,
+      "LOCATION:Online",
+      "STATUS:CONFIRMED",
+      "END:VEVENT", "END:VCALENDAR"
+    ].join("\r\n");
+    const blob = new Blob([ics], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = "consultation.ics"; a.click();
+    URL.revokeObjectURL(url);
   };
 
   const selectedType = form.watch("type");
@@ -184,6 +204,47 @@ export default function Book() {
     const d = new Date(dateStr);
     return d.toLocaleDateString("ar-SA", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
   };
+
+  if (bookingResult) {
+    const gcalUrl = bookingResult.googleCalUrl ?? `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("استشارة مع محمد الدباني")}&dates=${form.getValues("date").replace(/-/g,"")}T${form.getValues("time").replace(":","")+"00"}/${form.getValues("date").replace(/-/g,"")}T${String(parseInt(form.getValues("time").split(":")[0])+1).padStart(2,"0")+form.getValues("time").split(":")[1]+"00"}`;
+    return (
+      <RootLayout>
+        <section className="min-h-screen py-16 px-4">
+          <div className="max-w-2xl mx-auto">
+            <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
+              <div className="glass-card rounded-2xl p-8 md:p-12">
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+                  className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+                </motion.div>
+                <h2 className="text-2xl font-bold font-heading mb-2">{t("Booking Confirmed!", "تم تأكيد الحجز! 🎉")}</h2>
+                <p className="text-foreground/60 mb-8">{t("A confirmation email has been sent to you.", "تم إرسال بريد تأكيد إلى بريدك الإلكتروني")}</p>
+                <div className="bg-muted/40 rounded-xl p-5 text-start space-y-3 mb-8">
+                  <div className="flex items-center gap-3"><Calendar className="w-4 h-4 text-primary shrink-0" /><span className="text-sm font-semibold">{form.getValues("date")}</span></div>
+                  <div className="flex items-center gap-3"><Clock className="w-4 h-4 text-primary shrink-0" /><span className="text-sm font-semibold">{formatTime(form.getValues("time"))}</span></div>
+                  <div className="flex items-center gap-3"><Sparkles className="w-4 h-4 text-primary shrink-0" /><span className="text-sm font-semibold">{servicesToShow.find(s => s.id === form.getValues("type"))?.[language === "ar" ? "titleAr" : "title"]}</span></div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                  <a href={gcalUrl} target="_blank" rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-colors">
+                    <Calendar className="w-4 h-4" />{t("Add to Google Calendar", "أضف لـ Google Calendar")}
+                  </a>
+                  <button onClick={downloadIcs}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-foreground/90 hover:bg-foreground text-white text-sm font-bold transition-colors">
+                    <Calendar className="w-4 h-4" />{t("Add to Apple Calendar", "أضف لـ Apple Calendar")}
+                  </button>
+                </div>
+                <button onClick={() => setLocation("/")} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors">
+                  {t("Back to Home", "العودة للرئيسية")}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      </RootLayout>
+    );
+  }
 
   return (
     <RootLayout>
@@ -240,7 +301,6 @@ export default function Book() {
             })}
           </div>
 
-          {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <AnimatePresence mode="wait">

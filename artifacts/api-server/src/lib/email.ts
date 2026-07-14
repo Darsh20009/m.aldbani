@@ -210,6 +210,85 @@ function emailShell(opts: {
 </html>`;
 }
 
+/** Send booking confirmation email to the client (Arabic). */
+export async function sendClientBookingConfirmation(opts: {
+  clientEmail: string;
+  clientName: string;
+  type: string;
+  date: string;
+  time: string;
+  duration: number;
+  notes?: string;
+  googleCalUrl?: string;
+}): Promise<void> {
+  const { clientEmail, clientName, type, date, time, duration, googleCalUrl } = opts;
+
+  const bodyHtml = `
+    <p style="margin:0 0 8px;color:#3a3733;font-size:15px;font-family:Arial,sans-serif;direction:rtl;text-align:right">
+      مرحباً <strong>${clientName}</strong>،
+    </p>
+    <p style="margin:0 0 24px;color:#3a3733;font-size:15px;line-height:1.75;font-family:Arial,sans-serif;direction:rtl;text-align:right">
+      تم تأكيد حجز استشارتك بنجاح. إليك تفاصيل موعدك:
+    </p>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+      style="border:1px solid rgba(0,0,0,0.07);border-radius:14px;overflow:hidden;
+             margin-bottom:28px;box-shadow:0 2px 8px rgba(0,0,0,0.04);direction:rtl">
+      <tr style="background:#F5F3EE">
+        <td style="padding:11px 16px;color:#8a8580;font-size:11px;font-family:Arial,sans-serif;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.05);white-space:nowrap;font-weight:600">نوع الاستشارة</td>
+        <td style="padding:11px 16px;font-size:14px;color:#0F0F10;font-family:Arial,sans-serif;border-bottom:1px solid rgba(0,0,0,0.05);font-weight:500">${type}</td>
+      </tr>
+      <tr style="background:#FFFFFF">
+        <td style="padding:11px 16px;color:#8a8580;font-size:11px;font-family:Arial,sans-serif;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.05);white-space:nowrap;font-weight:600">التاريخ</td>
+        <td style="padding:11px 16px;font-size:14px;color:#0F0F10;font-family:Arial,sans-serif;border-bottom:1px solid rgba(0,0,0,0.05);font-weight:500">${date}</td>
+      </tr>
+      <tr style="background:#F5F3EE">
+        <td style="padding:11px 16px;color:#8a8580;font-size:11px;font-family:Arial,sans-serif;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.05);white-space:nowrap;font-weight:600">الوقت</td>
+        <td style="padding:11px 16px;font-size:14px;color:#0F0F10;font-family:Arial,sans-serif;border-bottom:1px solid rgba(0,0,0,0.05);font-weight:500">${time}</td>
+      </tr>
+      <tr style="background:#FFFFFF">
+        <td style="padding:11px 16px;color:#8a8580;font-size:11px;font-family:Arial,sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-weight:600">المدة</td>
+        <td style="padding:11px 16px;font-size:14px;color:#0F0F10;font-family:Arial,sans-serif;font-weight:500">${duration} دقيقة</td>
+      </tr>
+    </table>
+
+    ${googleCalUrl ? `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="direction:rtl;margin-bottom:24px">
+      <tr>
+        <td style="border-radius:10px;background:linear-gradient(135deg,#2563EB,#7C3AED)">
+          <a href="${googleCalUrl}" target="_blank"
+             style="display:inline-block;padding:13px 28px;color:#ffffff;font-size:14px;
+                    font-weight:700;font-family:Arial,sans-serif;text-decoration:none;
+                    letter-spacing:0.03em">
+            📅 أضف للتقويم — Google Calendar
+          </a>
+        </td>
+      </tr>
+    </table>` : ""}
+
+    <p style="margin:24px 0 0;color:#b0aaa4;font-size:12px;font-family:Arial,sans-serif;
+              line-height:1.6;border-top:1px solid rgba(0,0,0,0.06);padding-top:20px;
+              direction:rtl;text-align:right">
+      سيتواصل معك فريق محمد الدباني قريباً لتأكيد رابط الاجتماع.
+      إذا كان لديك أي استفسار تواصل معنا عبر البريد الإلكتروني.
+    </p>
+  `;
+
+  const html = emailShell({
+    dir: "rtl", lang: "ar",
+    title: "✅ تم تأكيد حجز استشارتك",
+    preheader: `حجزك بتاريخ ${date} الساعة ${time} مؤكد`,
+    bodyHtml,
+  });
+
+  await sendEmail({
+    to: clientEmail,
+    subject: `تم تأكيد استشارتك بتاريخ ${date}`,
+    html,
+    text: `مرحباً ${clientName}، تم تأكيد استشارتك بتاريخ ${date} الساعة ${time}.`,
+  });
+}
+
 export async function notifyAdmin(opts: {
   adminEmail: string;
   subject: string;
