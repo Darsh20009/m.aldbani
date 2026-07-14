@@ -5,3 +5,4 @@
 - [Duplicate artifact workflows](artifact-workflow-duplicates.md) — plain .replit workflows and artifact/* canvas workflows conflict on same ports; fix by removing plain ones via removeWorkflow() so artifact workflows can claim the ports
 - [Mongoose .lean() skips defaults](mongoose-lean-defaults.md) — fields missing on old documents read as undefined via .lean(), breaking equality checks like tokenVersion auth comparisons
 - [API server port-detection workaround](api-server-port-detection.md) — standalone workflow for port 8080 times out despite server being healthy; background it inside the frontend workflow instead
+- [Dev-domain curl unreliable for 502](dev-domain-curl-502.md) — shell curl to public dev domain can show 502 even when app/browser are fine; cross-check with Screenshot or ask user to hard-refresh before escalating
