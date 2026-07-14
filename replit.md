@@ -4,9 +4,12 @@ Personal brand platform for Mohammed Al-Dabbani — bilingual (AR/EN) consulting
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — API server (port 8080, MongoDB Atlas)
-- `pnpm --filter @workspace/m-aldbani run dev` — React frontend (port 5000)
+- The "Start application" workflow runs both services: the API server (port 8080, backgrounded) and the Vite frontend (port 5000, webview). Vite proxies `/api` and `/uploads` to `localhost:8080`.
+  - Only port 5000 is workflow-monitored/forwarded; a single combined workflow is used because the platform's port-detection didn't pick up a standalone 8080 workflow even though the server bound `0.0.0.0` correctly (see Gotchas).
+- `pnpm --filter @workspace/api-server run dev` — API server alone (port 8080, MongoDB Atlas)
+- `pnpm --filter @workspace/m-aldbani run dev` — React frontend alone (port 5000)
 - `pnpm --filter @workspace/api-server exec tsx src/seed.ts` — Re-seed MongoDB with demo data
+- Required secret: `MONGODB_URI` (MongoDB Atlas connection string). Optional secrets for full functionality: `GOOGLE_CLIENT_SECRET` (Google sign-in), `MOONSHOT_API_KEY` (AI assistant), `SMTP_PASS` (email sending), `ADMIN_EMAIL`/`ADMIN_PASSWORD`/`ADMIN_NAME`/`ADMIN_PHONE` (seed admin account) — not yet configured.
 
 ## Stack
 

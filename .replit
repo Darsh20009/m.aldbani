@@ -24,13 +24,13 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pnpm --filter @workspace/m-aldbani run dev"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash -c 'pnpm --filter @workspace/api-server run dev > /tmp/api-server.log 2>&1 & pnpm --filter @workspace/m-aldbani run dev'"
+waitForPort = 5000
 
 [agent]
 stack = "BEST_EFFORT_FALLBACK"
