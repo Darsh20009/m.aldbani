@@ -9,6 +9,7 @@ import { AdminAIAgent } from "../ai/AdminAIAgent";
 import {
   LayoutDashboard, Target, Users, CalendarDays, Briefcase, FileText,
   Settings, BarChart3, LogOut, Menu, X, Globe, SlidersHorizontal, Mail, HelpCircle,
+  Receipt, ClipboardList,
 } from "lucide-react";
 
 const navItems = [
@@ -16,6 +17,8 @@ const navItems = [
   { href: "/admin/leads",         label: "Leads CRM",     labelAr: "العملاء المحتملون",  icon: Target },
   { href: "/admin/clients",       label: "Clients",       labelAr: "العملاء",             icon: Users },
   { href: "/admin/consultations", label: "Consultations", labelAr: "الاستشارات",          icon: CalendarDays },
+  { href: "/admin/proposals",     label: "Proposals",     labelAr: "عروض الأسعار",        icon: ClipboardList },
+  { href: "/admin/invoices",      label: "Invoices",      labelAr: "الفواتير",            icon: Receipt },
   { href: "/admin/projects",      label: "Portfolio",     labelAr: "المشاريع",            icon: Briefcase },
   { href: "/admin/articles",      label: "Articles",      labelAr: "المقالات",            icon: FileText },
   { href: "/admin/services",      label: "Services",      labelAr: "الخدمات",             icon: Settings },

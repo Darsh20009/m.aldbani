@@ -13,6 +13,8 @@ import { sendEmail, renderBrandedEmail } from "../lib/email";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
+import { Invoice } from "../models/Invoice";
+import { Proposal } from "../models/Proposal";
 import { mkdirSync } from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -414,6 +416,198 @@ router.get("/analytics", async (_req: Request, res: Response) => {
     });
   } catch (err) {
     logger.error({ err }, "Analytics error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// ── INVOICES (admin manage) ──────────────────────────────────────────────────
+router.get("/invoices", async (_req: Request, res: Response) => {
+  try {
+    const invoices = await Invoice.find().sort({ createdAt: -1 }).populate("clientId", "name email");
+    res.json(invoices.map((inv: any) => ({
+      id: inv._id.toString(),
+      clientId: inv.clientId?._id?.toString() ?? inv.clientId?.toString(),
+      clientName: inv.clientId?.name ?? "",
+      clientEmail: inv.clientId?.email ?? "",
+      number: inv.number,
+      amount: inv.amount,
+      currency: inv.currency,
+      status: inv.status,
+      dueDate: inv.dueDate?.toISOString(),
+      paidAt: inv.paidAt?.toISOString() ?? null,
+      items: inv.items,
+      createdAt: inv.createdAt?.toISOString(),
+    })));
+  } catch (err) {
+    logger.error({ err }, "Admin get invoices error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/invoices", async (req: Request, res: Response) => {
+  try {
+    const { clientId, items, dueDate, notes } = req.body as {
+      clientId: string;
+      items: { description: string; quantity: number; price: number }[];
+      dueDate: string;
+      notes?: string;
+    };
+    if (!clientId || !items?.length || !dueDate) {
+      res.status(400).json({ error: "clientId, items, and dueDate are required" });
+      return;
+    }
+    const count = await Invoice.countDocuments();
+    const number = `INV-${new Date().getFullYear()}-${String(count + 1).padStart(3, "0")}`;
+    const amount = items.reduce((s, i) => s + i.quantity * i.price, 0);
+    const inv = await Invoice.create({ clientId, number, amount, items, dueDate: new Date(dueDate), status: "pending" });
+    res.json({ id: inv._id.toString(), number: inv.number, amount: inv.amount, status: inv.status });
+  } catch (err) {
+    logger.error({ err }, "Create invoice error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.patch("/invoices/:id", async (req: Request, res: Response) => {
+  try {
+    const inv = await Invoice.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!inv) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ id: inv._id.toString(), status: inv.status });
+  } catch (err) {
+    logger.error({ err }, "Update invoice error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.delete("/invoices/:id", async (req: Request, res: Response) => {
+  try {
+    await Invoice.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    logger.error({ err }, "Delete invoice error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// ── PROPOSALS ────────────────────────────────────────────────────────────────
+router.get("/proposals", async (_req: Request, res: Response) => {
+  try {
+    const proposals = await Proposal.find().sort({ createdAt: -1 }).populate("clientId", "name email");
+    res.json(proposals.map((p: any) => ({
+      id: p._id.toString(),
+      clientId: p.clientId?._id?.toString() ?? p.clientId?.toString(),
+      clientName: p.clientId?.name ?? "",
+      clientEmail: p.clientId?.email ?? "",
+      number: p.number,
+      title: p.title,
+      items: p.items,
+      total: p.total,
+      currency: p.currency,
+      status: p.status,
+      validUntil: p.validUntil?.toISOString(),
+      notes: p.notes ?? "",
+      sentAt: p.sentAt?.toISOString() ?? null,
+      createdAt: p.createdAt?.toISOString(),
+    })));
+  } catch (err) {
+    logger.error({ err }, "Get proposals error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/proposals", async (req: Request, res: Response) => {
+  try {
+    const { clientId, title, items, validUntil, notes } = req.body as {
+      clientId: string; title: string;
+      items: { description: string; quantity: number; unitPrice: number }[];
+      validUntil: string; notes?: string;
+    };
+    if (!clientId || !title || !items?.length || !validUntil) {
+      res.status(400).json({ error: "clientId, title, items, and validUntil are required" });
+      return;
+    }
+    const count = await Proposal.countDocuments();
+    const number = `PRO-${new Date().getFullYear()}-${String(count + 1).padStart(3, "0")}`;
+    const total = items.reduce((s, i) => s + i.quantity * i.unitPrice, 0);
+    const proposal = await Proposal.create({ clientId, number, title, items, total, validUntil: new Date(validUntil), notes, status: "draft" });
+    res.json({ id: proposal._id.toString(), number: proposal.number, total: proposal.total });
+  } catch (err) {
+    logger.error({ err }, "Create proposal error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.patch("/proposals/:id", async (req: Request, res: Response) => {
+  try {
+    const update = { ...req.body };
+    if (update.items) update.total = update.items.reduce((s: number, i: any) => s + i.quantity * i.unitPrice, 0);
+    const p = await Proposal.findByIdAndUpdate(req.params.id, update, { new: true });
+    if (!p) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ id: p._id.toString(), status: p.status, total: p.total });
+  } catch (err) {
+    logger.error({ err }, "Update proposal error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.delete("/proposals/:id", async (req: Request, res: Response) => {
+  try {
+    await Proposal.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    logger.error({ err }, "Delete proposal error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/proposals/:id/send", async (req: Request, res: Response) => {
+  try {
+    const p = await Proposal.findById(req.params.id).populate<{ clientId: { name: string; email: string } }>("clientId", "name email");
+    if (!p) { res.status(404).json({ error: "Not found" }); return; }
+
+    const itemsHtml = p.items.map((it, i) =>
+      `<tr style="background:${i % 2 === 0 ? "#F5F3EE" : "#FFFFFF"}">
+        <td style="padding:10px 16px;font-size:14px;color:#0F0F10;font-family:Arial,sans-serif">${it.description}</td>
+        <td style="padding:10px 16px;font-size:14px;color:#0F0F10;font-family:Arial,sans-serif;text-align:center">${it.quantity}</td>
+        <td style="padding:10px 16px;font-size:14px;color:#0F0F10;font-family:Arial,sans-serif;text-align:right">${it.unitPrice.toLocaleString("ar-SA")} ر.س</td>
+        <td style="padding:10px 16px;font-size:14px;font-weight:700;color:#0F0F10;font-family:Arial,sans-serif;text-align:right">${(it.quantity * it.unitPrice).toLocaleString("ar-SA")} ر.س</td>
+      </tr>`
+    ).join("");
+
+    const bodyHtml = `
+      <p style="margin:0 0 20px;color:#3a3733;font-size:15px;font-family:Arial,sans-serif;direction:rtl;text-align:right">
+        مرحباً <strong>${(p.clientId as any).name}</strong>،<br/>
+        يسعدنا إرسال عرض السعر التالي إليكم.
+      </p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+        style="border:1px solid rgba(0,0,0,0.07);border-radius:14px;overflow:hidden;margin-bottom:24px;direction:rtl">
+        <thead>
+          <tr style="background:#0F0F10">
+            <th style="padding:10px 16px;color:#FAF8F4;font-size:11px;font-family:Arial,sans-serif;text-align:right;font-weight:600;letter-spacing:0.05em">الوصف</th>
+            <th style="padding:10px 16px;color:#FAF8F4;font-size:11px;font-family:Arial,sans-serif;text-align:center;font-weight:600">الكمية</th>
+            <th style="padding:10px 16px;color:#FAF8F4;font-size:11px;font-family:Arial,sans-serif;text-align:right;font-weight:600">سعر الوحدة</th>
+            <th style="padding:10px 16px;color:#FAF8F4;font-size:11px;font-family:Arial,sans-serif;text-align:right;font-weight:600">الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>${itemsHtml}</tbody>
+        <tfoot>
+          <tr style="background:linear-gradient(135deg,#0F0F10,#1a1060)">
+            <td colspan="3" style="padding:14px 16px;color:#C7AC70;font-size:13px;font-weight:700;font-family:Arial,sans-serif;text-align:right;direction:rtl">الإجمالي الكلي</td>
+            <td style="padding:14px 16px;color:#C7AC70;font-size:16px;font-weight:900;font-family:Arial,sans-serif;text-align:right">${p.total.toLocaleString("ar-SA")} ر.س</td>
+          </tr>
+        </tfoot>
+      </table>
+      <p style="margin:0 0 6px;color:#8a8580;font-size:12px;font-family:Arial,sans-serif;direction:rtl;text-align:right">
+        صالح حتى: <strong style="color:#0F0F10">${new Date(p.validUntil).toLocaleDateString("ar-SA")}</strong>
+      </p>
+      ${p.notes ? `<p style="margin:16px 0 0;color:#3a3733;font-size:13px;font-family:Arial,sans-serif;line-height:1.7;direction:rtl;text-align:right;border-top:1px solid rgba(0,0,0,0.06);padding-top:14px">${p.notes}</p>` : ""}
+    `;
+
+    const html = renderBrandedEmail({ dir: "rtl", lang: "ar", title: `عرض سعر: ${p.title}`, preheader: `إجمالي العرض: ${p.total.toLocaleString("ar-SA")} ر.س`, bodyHtml });
+    await sendEmail({ to: (p.clientId as any).email, subject: `عرض سعر ${p.number} — ${p.title}`, html, text: `عرض سعر ${p.number}: ${p.title} — الإجمالي: ${p.total.toLocaleString("ar-SA")} ر.س` });
+    await Proposal.findByIdAndUpdate(p._id, { status: "sent", sentAt: new Date() });
+    res.json({ ok: true });
+  } catch (err) {
+    logger.error({ err }, "Send proposal error");
     res.status(500).json({ error: "Server error" });
   }
 });

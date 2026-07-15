@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ClientAIChat } from "../ai/ClientAIChat";
 import {
   LayoutDashboard, CalendarDays, MessageSquare, FolderOpen, Receipt,
-  LogOut, ArrowLeft, ArrowRight,
+  LogOut, ArrowLeft, ArrowRight, ClipboardList,
 } from "lucide-react";
 
 export function ClientLayout({ children }: { children: ReactNode }) {
@@ -41,6 +41,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
     { href: "/client/messages",      label: t("Messages",       "الرسائل"),    icon: MessageSquare },
     { href: "/client/files",         label: t("Files",          "الملفات"),    icon: FolderOpen },
     { href: "/client/invoices",      label: t("Invoices",       "الفواتير"),   icon: Receipt },
+    { href: "/client/proposals",     label: t("Proposals",      "عروض الأسعار"), icon: ClipboardList },
   ];
 
   const ArrowIcon = language === "ar" ? ArrowRight : ArrowLeft;

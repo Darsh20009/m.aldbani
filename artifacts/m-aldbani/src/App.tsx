@@ -36,6 +36,7 @@ const ClientMessages      = lazy(() => import("@/pages/client/messages"));
 const ClientFiles         = lazy(() => import("@/pages/client/files"));
 const ClientInvoices      = lazy(() => import("@/pages/client/invoices"));
 
+
 // ── Admin pages ───────────────────────────────────────────────────────────────
 const AdminDashboard     = lazy(() => import("@/pages/admin/dashboard"));
 const AdminLeads         = lazy(() => import("@/pages/admin/leads"));
@@ -48,6 +49,9 @@ const AdminAnalytics     = lazy(() => import("@/pages/admin/analytics"));
 const AdminSettings      = lazy(() => import("@/pages/admin/settings"));
 const AdminEmail         = lazy(() => import("@/pages/admin/email"));
 const AdminFaqs          = lazy(() => import("@/pages/admin/faqs"));
+const AdminProposals     = lazy(() => import("@/pages/admin/proposals"));
+const AdminInvoices      = lazy(() => import("@/pages/admin/invoices"));
+const ClientProposals    = lazy(() => import("@/pages/client/proposals"));
 
 // ── Query client — 5-min staleTime prevents re-fetch on every navigation ──────
 const queryClient = new QueryClient({
@@ -99,6 +103,7 @@ function Router() {
           <Route path="/client/messages" component={ClientMessages} />
           <Route path="/client/files" component={ClientFiles} />
           <Route path="/client/invoices" component={ClientInvoices} />
+          <Route path="/client/proposals" component={ClientProposals} />
 
           {/* Admin */}
           <Route path="/admin" component={AdminDashboard} />
@@ -112,6 +117,8 @@ function Router() {
           <Route path="/admin/settings" component={AdminSettings} />
           <Route path="/admin/email" component={AdminEmail} />
           <Route path="/admin/faqs" component={AdminFaqs} />
+          <Route path="/admin/proposals" component={AdminProposals} />
+          <Route path="/admin/invoices" component={AdminInvoices} />
 
           <Route component={NotFound} />
         </Switch>

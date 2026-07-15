@@ -94,6 +94,50 @@ router.get("/invoices", async (req: AuthRequest, res: Response) => {
   }
 });
 
+router.get("/proposals", async (req: AuthRequest, res: Response) => {
+  try {
+    const { Proposal } = await import("../models/Proposal");
+    const proposals = await Proposal.find({ clientId: req.user!.id }).sort({ createdAt: -1 });
+    // Mark unseen "sent" proposals as "viewed"
+    await Proposal.updateMany({ clientId: req.user!.id, status: "sent" }, { status: "viewed", viewedAt: new Date() });
+    res.json(proposals.map((p) => ({
+      id: p._id.toString(),
+      number: p.number,
+      title: p.title,
+      items: p.items,
+      total: p.total,
+      currency: p.currency,
+      status: p.status,
+      validUntil: p.validUntil?.toISOString(),
+      notes: p.notes ?? "",
+      createdAt: p.createdAt?.toISOString(),
+    })));
+  } catch (err) {
+    logger.error({ err }, "Get proposals error");
+    res.json([]);
+  }
+});
+
+router.post("/proposals/:id/respond", async (req: AuthRequest, res: Response) => {
+  try {
+    const { Proposal } = await import("../models/Proposal");
+    const { decision } = req.body as { decision: "accepted" | "rejected" };
+    if (!["accepted", "rejected"].includes(decision)) {
+      res.status(400).json({ error: "decision must be accepted or rejected" });
+      return;
+    }
+    const p = await Proposal.findOne({ _id: req.params.id, clientId: req.user!.id });
+    if (!p) { res.status(404).json({ error: "Not found" }); return; }
+    p.status = decision;
+    p.respondedAt = new Date();
+    await p.save();
+    res.json({ ok: true, status: p.status });
+  } catch (err) {
+    logger.error({ err }, "Respond proposal error");
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 router.get("/notifications", async (req: AuthRequest, res: Response) => {
   try {
     const notifications = await Notification.find({ userId: req.user!.id }).sort({ createdAt: -1 }).limit(50);
