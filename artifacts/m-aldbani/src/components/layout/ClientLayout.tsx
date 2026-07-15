@@ -55,7 +55,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
         <div className="h-20 flex items-center px-5 border-b border-border/60"
           style={{ background: "linear-gradient(135deg, #08102E 0%, #0F1E56 100%)" }}>
           <Link href="/" className="flex items-center gap-3 group">
-            <LogoBrandImage size={38} className="flex-shrink-0 logo-img-nav" />
+            <LogoBrandImage size={38} className="flex-shrink-0 logo-img-nav" variant="light" />
             <div>
               <p className="font-heading font-bold text-sm text-white leading-none">
                 {language === "ar" ? settings.siteNameAr : settings.siteNameEn}

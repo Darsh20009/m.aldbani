@@ -63,7 +63,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <div className="h-[68px] flex items-center px-4 border-b border-border/60 shrink-0"
         style={{ background: "linear-gradient(135deg, #08102E 0%, #0F1E56 100%)" }}>
         <Link href="/" className="flex items-center gap-3 group">
-          <LogoBrandImage size={34} className="flex-shrink-0 logo-img-nav" />
+          <LogoBrandImage size={34} className="flex-shrink-0 logo-img-nav" variant="light" />
           <div>
             <p className="font-heading font-bold text-sm text-white leading-none tracking-wide">M-ALDBANI</p>
             <p className="text-[10px] text-white/40 mt-0.5 tracking-wider uppercase">Admin CRM</p>

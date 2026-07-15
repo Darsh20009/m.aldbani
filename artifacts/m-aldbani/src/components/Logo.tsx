@@ -13,19 +13,23 @@ interface LogoProps {
   size?: number;
 }
 
-/** Real brand image logo — the actual 3D blue gradient MD mark */
+/** Real brand image logo — the M/D mark.
+ *  variant="dark" (default) = dark-ink mark, for light backgrounds.
+ *  variant="light" = cream-ink mark, for dark/navy backgrounds. */
 export function LogoBrandImage({
   size = 44,
   className = "",
   style = {},
+  variant = "dark",
 }: {
   size?: number;
   className?: string;
   style?: React.CSSProperties;
+  variant?: "dark" | "light";
 }) {
   return (
     <img
-      src="/logo-transparent.png"
+      src={variant === "light" ? "/logo-light.png" : "/logo-transparent.png"}
       alt="M-ALDBANI"
       width={size}
       height={size}
@@ -70,10 +74,10 @@ export function LogoMark({ className = "", color = "#0F0F10", size = 44 }: LogoP
 }
 
 /** Full lockup: MD image mark + wordmark stacked */
-export function LogoFull({ className = "", color = "#0F0F10", height = 48 }: { className?: string; color?: string; height?: number }) {
+export function LogoFull({ className = "", color = "#0F0F10", height = 48, variant = "dark" }: { className?: string; color?: string; height?: number; variant?: "dark" | "light" }) {
   return (
     <div className={`flex flex-col items-center gap-1 ${className}`} style={{ height }}>
-      <LogoBrandImage size={Math.round(height * 0.72)} />
+      <LogoBrandImage size={Math.round(height * 0.72)} variant={variant} />
       <div
         style={{
           color,
@@ -92,10 +96,10 @@ export function LogoFull({ className = "", color = "#0F0F10", height = 48 }: { c
 }
 
 /** Pill-style logo for the navbar: real brand image + text side by side */
-export function LogoPill({ className = "", color = "#0F0F10" }: { className?: string; color?: string }) {
+export function LogoPill({ className = "", color = "#0F0F10", variant = "dark" }: { className?: string; color?: string; variant?: "dark" | "light" }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      <LogoBrandImage size={32} />
+      <LogoBrandImage size={32} variant={variant} />
       <span className="text-[13px] font-bold tracking-tight leading-none" style={{ color }}>
         M-ALDBANI
       </span>
@@ -108,17 +112,19 @@ export function LogoInline({
   size = 80,
   dark = true,
   className = "",
+  variant = "dark",
 }: {
   size?: number;
   dark?: boolean;
   className?: string;
+  variant?: "dark" | "light";
 }) {
   return (
     <span
       className={`inline-flex items-center justify-center flex-shrink-0 ${className}`}
       style={{ width: size, height: size }}
     >
-      <LogoBrandImage size={size} />
+      <LogoBrandImage size={size} variant={variant} />
     </span>
   );
 }
