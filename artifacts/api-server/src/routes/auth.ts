@@ -249,14 +249,52 @@ router.post("/apple", async (req: Request, res: Response) => {
 
 /* ── Forgot Password ──────────────────────────── */
 router.post("/forgot-password", async (req: Request, res: Response) => {
-  const { email } = req.body as { email?: string };
-  if (!email) { res.status(400).json({ error: "البريد الإلكتروني مطلوب" }); return; }
+  const { email, phone } = req.body as { email?: string; phone?: string };
+  const identifier = (email || phone || "").trim().toLowerCase();
+  if (!identifier) { res.status(400).json({ error: "البريد الإلكتروني مطلوب" }); return; }
+
+  const digits9 = (p: string) => p.replace(/\D/g, "").slice(-9);
 
   // Always respond with 200 so we don't leak whether the email exists
   res.json({ message: "إذا كان البريد مسجلاً، ستصلك رسالة خلال دقائق" });
 
   try {
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    // ── Admin fallback account (not stored in MongoDB) ──────────────────────
+    const isAdminEmail = identifier === ADMIN_EMAIL.toLowerCase();
+    const isAdminPhone = phone && digits9(phone) === digits9(ADMIN_PHONE);
+    if (isAdminEmail || isAdminPhone) {
+      const proto = (req.headers["x-forwarded-proto"] as string) || req.protocol;
+      const host  = (req.headers["x-forwarded-host"] as string) || req.get("host");
+      const adminHtml = renderBrandedEmail({
+        dir: "rtl", lang: "ar",
+        title: "معلومات حساب الأدمن",
+        preheader: "طلب إعادة تعيين كلمة مرور الأدمن",
+        bodyHtml: `
+          <p style="margin:0 0 20px;color:#3a3733;font-size:16px;line-height:1.8;font-family:Arial,sans-serif">
+            مرحباً، تلقينا طلب إعادة تعيين كلمة مرور حساب الأدمن.
+          </p>
+          <p style="margin:0 0 28px;color:#3a3733;font-size:15px;line-height:1.75;font-family:Arial,sans-serif">
+            حساب الأدمن يستخدم كلمة مرور يُدارها مباشرةً من إعدادات المنصة (متغير <strong>ADMIN_PASSWORD</strong>).
+            لتغيير كلمة المرور، قم بتحديث هذا المتغير من لوحة إعدادات النظام.
+          </p>
+          <p style="margin:0;color:#9a9590;font-size:12px;font-family:Arial,sans-serif">
+            إذا لم تكن أنت من أرسل هذا الطلب، تجاهل هذه الرسالة.
+          </p>
+        `,
+      });
+      await sendEmail({
+        to: ADMIN_EMAIL,
+        subject: "طلب إعادة تعيين كلمة مرور الأدمن — منصة محمد الدباني",
+        html: adminHtml,
+        text: "لتغيير كلمة مرور الأدمن، قم بتحديث متغير ADMIN_PASSWORD في إعدادات النظام.",
+      });
+      logger.info("Admin forgot-password email sent");
+      return;
+    }
+
+    const user = await User.findOne(
+      identifier.includes("@") ? { email: identifier } : { phone: identifier }
+    );
     // Legacy documents can be missing the `provider` field even though the
     // schema defaults it to "local" — Mongoose only applies defaults on
     // fresh saves, not to data already sitting in the DB (see .lean() note).
