@@ -1,16 +1,22 @@
 ---
-name: Duplicate artifact workflows
-description: Why restarting a workflow by a guessed "artifacts/*" name can create/duplicate canvas-managed workflows, and how orphaned processes can hold ports after a failed restart.
+name: Artifact workflow — combined command
+description: How to run both services after platform auto-registered artifacts with new port assignments
 ---
 
-This project (and possibly others with a canvas/mockup-sandbox setup) has two parallel sets of workflows targeting the same underlying services:
+When the platform auto-registers artifacts (automatic_updates: "Added artifact / Configured workflows changed"), the preview router switches to artifact-managed ports. For this project:
+- m-aldbani web: port **23559** (artifact.toml [services.env] PORT=23559, BASE_PATH=/)
+- api-server: port **8080**
 
-- Plain workflows defined in `.replit` (e.g. `API Server`, `Start application`) — removable via `removeWorkflow`.
-- Canvas/artifact-managed workflows named like `artifacts/<dir>: <label>` (e.g. `artifacts/api-server: API Server`, `artifacts/m-aldbani: web`, `artifacts/mockup-sandbox: Component Preview Server`) — these are tied to registered artifacts and CANNOT be removed via `removeWorkflow` (`PROHIBITED_ACTION`).
+**Why the API server standalone workflow fails:** port 8080 detection times out in a standalone artifact workflow (same root cause as the old plain workflow).
 
-**Why:** If both sets try to bind the same port (e.g. 8080, 23559), one will fail with `EADDRINUSE`/"Port already in use". Restarting the failing one again doesn't help if a previous process is still alive and holding the port (workflow marked "failed" doesn't guarantee the child process actually exited).
+**Fix:** Configure `artifacts/m-aldbani: web` with a combined command that backgrounds the API server:
+```
+bash -c 'pnpm --filter @workspace/api-server run dev > /tmp/api-server.log 2>&1 & PORT=23559 BASE_PATH=/ pnpm --filter @workspace/m-aldbani run dev'
+```
+waitForPort: 23559. Leave `artifacts/api-server: API Server` not started.
 
-**How to apply:**
-- Don't guess or invent `artifacts/*` workflow names hoping to fix a failure — check `listWorkflows()` first to see what actually exists.
-- If a workflow keeps failing with a port-in-use error even after restart, check for orphaned processes with `ss -ltnp | grep <port>` or `ps aux | grep vite`/`node`, and `kill -9` the stale PID before restarting.
-- When both a plain `.replit` workflow and an artifact-managed workflow exist for the same service, remove the plain one (it's the duplicate) and keep the artifact-managed one, since the latter can't be deleted anyway.
+**Steps when this breaks:**
+1. `removeWorkflow({ name: "Start application" })` — remove the old plain workflow
+2. `lsof -ti :5000 :8080 :23559 | xargs kill -9` — kill orphaned processes
+3. `configureWorkflow({ name: "artifacts/m-aldbani: web", command: "...", waitForPort: 23559 })`
+4. `WorkflowsRestart("artifacts/m-aldbani: web")`
