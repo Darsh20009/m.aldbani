@@ -219,7 +219,8 @@ export default function Book() {
                   <CheckCircle2 className="w-10 h-10 text-emerald-500" />
                 </motion.div>
                 <h2 className="text-2xl font-bold font-heading mb-2">{t("Booking Confirmed!", "تم تأكيد الحجز! 🎉")}</h2>
-                <p className="text-foreground/60 mb-8">{t("A confirmation email has been sent to you.", "تم إرسال بريد تأكيد إلى بريدك الإلكتروني")}</p>
+                <p className="text-foreground/60 mb-1">{t("A confirmation email has been sent to you.", "تم إرسال بريد تأكيد إلى بريدك الإلكتروني")}</p>
+                <p className="text-foreground/40 text-xs mb-8">{t("Didn't get it? Check your spam/junk folder.", "لم تستلمها؟ تحقق من مجلد الرسائل غير المرغوب فيها (Spam)")}</p>
                 <div className="bg-muted/40 rounded-xl p-5 text-start space-y-3 mb-8">
                   <div className="flex items-center gap-3"><Calendar className="w-4 h-4 text-primary shrink-0" /><span className="text-sm font-semibold">{form.getValues("date")}</span></div>
                   <div className="flex items-center gap-3"><Clock className="w-4 h-4 text-primary shrink-0" /><span className="text-sm font-semibold">{formatTime(form.getValues("time"))}</span></div>

@@ -6,8 +6,9 @@ import { Consultation } from "../models/Consultation";
 import { Lead } from "../models/Lead";
 import { SiteSettings } from "../models/SiteSettings";
 import { Faq } from "../models/Faq";
+import { User } from "../models/User";
 import { logger } from "../lib/logger";
-import { notifyAdmin, sendClientBookingConfirmation, getNotificationEmail } from "../lib/email";
+import { notifyAdmin, sendClientBookingConfirmation, sendContactConfirmation, getNotificationEmail } from "../lib/email";
 
 const router = Router();
 
@@ -98,8 +99,13 @@ router.post("/contact", async (req: Request, res: Response) => {
         title: "New Contact Message",
         body: `You received a new message from the contact form on your website.`,
         details: { Name: name, Email: email, Message: message },
-      });
+      }).catch(() => {});
     }
+
+    // Confirm receipt to the visitor
+    sendContactConfirmation({ clientEmail: email, clientName: name, message }).catch((err) => {
+      logger.error({ err }, "Failed to send contact confirmation email");
+    });
 
     res.json({ message: "Message received. We'll be in touch soon." });
   } catch (err) {
@@ -159,11 +165,14 @@ router.post("/consultations/book", async (req: Request, res: Response) => {
       }).catch(() => {});
     }
 
-    // Send confirmation to client
+    // Send confirmation to client — if this email has no account yet,
+    // include a "create your account" invite so they can track bookings later.
     if (clientEmail) {
+      const existingUser = await User.findOne({ email: clientEmail.toLowerCase().trim() }).catch(() => null);
       sendClientBookingConfirmation({
         clientEmail, clientName, type, date, time,
         duration: Number(duration), notes, googleCalUrl,
+        hasAccount: !!existingUser,
       }).catch(() => {});
     }
 

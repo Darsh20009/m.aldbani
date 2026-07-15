@@ -29,8 +29,13 @@ export default function Register() {
   const [, setLocation] = useLocation();
   const mut = useRegister();
 
+  const prefillEmail = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("email") || undefined
+    : undefined;
+
   const { register, handleSubmit, formState: { errors } } = useForm<F>({
     resolver: zodResolver(schema),
+    defaultValues: prefillEmail ? { email: prefillEmail } : undefined,
   });
 
   const onSubmit = (data: F) => {

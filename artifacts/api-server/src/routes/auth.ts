@@ -257,7 +257,11 @@ router.post("/forgot-password", async (req: Request, res: Response) => {
 
   try {
     const user = await User.findOne({ email: email.toLowerCase().trim() });
-    if (!user || user.provider !== "local") return; // only local accounts can reset password
+    // Legacy documents can be missing the `provider` field even though the
+    // schema defaults it to "local" — Mongoose only applies defaults on
+    // fresh saves, not to data already sitting in the DB (see .lean() note).
+    // Treat missing/local as password-based; only skip real OAuth accounts.
+    if (!user || user.provider === "google" || user.provider === "apple") return;
 
     const token = crypto.randomBytes(32).toString("hex");
     user.resetPasswordToken = token;

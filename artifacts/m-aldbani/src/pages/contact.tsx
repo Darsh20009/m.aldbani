@@ -247,8 +247,14 @@ export default function Contact() {
                   <h3 className="text-2xl font-black font-heading mb-2" style={{ color: OFF_WHITE }}>
                     {t("Message Sent!", "تم الإرسال!")}
                   </h3>
-                  <p className="mb-6" style={{ color: TITANIUM }}>
+                  <p className="mb-2" style={{ color: TITANIUM }}>
                     {t("I'll get back to you within 24 hours.", "سأرد عليك خلال 24 ساعة.")}
+                  </p>
+                  <p className="mb-6 text-xs max-w-xs" style={{ color: TITANIUM, opacity: 0.7 }}>
+                    {t(
+                      "Check your inbox for a confirmation — if you don't see it, please check your spam/junk folder.",
+                      "تحقق من بريدك الوارد لتأكيد الاستلام — وإذا لم تجدها، تحقق من مجلد الرسائل غير المرغوب فيها (Spam)."
+                    )}
                   </p>
                   <button
                     onClick={() => setSent(false)}
